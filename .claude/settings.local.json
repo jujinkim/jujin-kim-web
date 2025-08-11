@@ -4,7 +4,8 @@
       "WebFetch(domain:jujinkim.com)",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "deny": []
   }

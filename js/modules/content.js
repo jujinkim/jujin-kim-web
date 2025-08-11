@@ -80,19 +80,23 @@ function loadAboutSection() {
     const aboutSection = document.querySelector('#about .section-content');
     aboutSection.innerHTML = `
         <p>> Hello, World! I'm Jujin Kim.</p>
-        <p>> Software Engineer | Android App Developer | Tech Enthusiast</p>
-        <p>> Currently working at Samsung, developing apps used by millions</p>
-        <p>> Specializing in Android development with Kotlin and clean architecture</p>
+        <p>> Software Engineer | Application Developer</p>
+        <p>> Based in Suwon, Republic of Korea</p>
         <br>
-        <p>> Professional Philosophy:</p>
-        <p>  "Code is like humor. When you have to explain it, it's bad."</p>
+        <p>> Currently working at Samsung Electronics</p>
+        <p>> Developing Weather Client for Samsung devices</p>
+        <p>> Previously worked on Galaxy Store development</p>
         <br>
-        <p>> Current Focus:</p>
-        <p>  • Developing Samsung's weather client</p>
-        <p>  • Leveraging AI tools for enhanced development</p>
-        <p>  • Exploring innovative solutions across platforms</p>
+        <p>> Education:</p>
+        <p>  • Bachelor of Computer Science</p>
+        <p>  • Namseoul University (2011-2016)</p>
         <br>
-        <p class="cursor">> Building the future of mobile experiences_</p>
+        <p>> Experience:</p>
+        <p>  • 7+ years in Android development</p>
+        <p>  • Former Mash-up Android team leader</p>
+        <p>  • Microsoft Student Partner alumnus</p>
+        <br>
+        <p class="cursor">> Building elegant mobile solutions_</p>
     `;
 }
 
@@ -100,22 +104,41 @@ function loadCareerSection() {
     const careerSection = document.querySelector('#career .section-content');
     careerSection.innerHTML = `
         <div class="career-entry">
-            <p>> [Present] Software Engineer @ Samsung</p>
-            <p>  └─ Developing Samsung Weather client</p>
+            <p>> [2020-Present] Samsung Electronics</p>
+            <p>  └─ Weather Client App Developer</p>
             <p>  └─ Android application development</p>
             <p>  └─ Tech: Kotlin, Android</p>
         </div>
         <br>
         <div class="career-entry">
-            <p>> [Previous] Software Engineer @ Samsung Galaxy Store</p>
-            <p>  └─ Contributed to Galaxy Store development</p>
-            <p>  └─ Tech: Kotlin, Android</p>
+            <p>> [2017-2020] Samsung Electronics</p>
+            <p>  └─ Galaxy Store Client App Developer</p>
+            <p>  └─ Android application development</p>
+            <p>  └─ Tech: Kotlin, Java, Android</p>
         </div>
         <br>
         <div class="career-entry">
-            <p>> GitHub Achievements:</p>
-            <p>  └─ Arctic Code Vault Contributor</p>
-            <p>  └─ Pull Shark x2</p>
+            <p>> [2015-2016] Namseoul University</p>
+            <p>  └─ VR/AR Student Researcher</p>
+            <p>  └─ Tech: Unity, Eon, VR, AR</p>
+        </div>
+        <br>
+        <div class="career-entry">
+            <p>> [2015-2016] Microsoft Student Partners</p>
+            <p>  └─ Student Developer</p>
+            <p>  └─ Microsoft ecosystem development</p>
+        </div>
+        <br>
+        <div class="career-entry">
+            <p>> [2014-2016] Freelance Developer</p>
+            <p>  └─ Web and application development</p>
+            <p>  └─ Tech: HTML, JavaScript, PHP, C#</p>
+        </div>
+        <br>
+        <div class="career-entry">
+            <p>> Education:</p>
+            <p>  └─ B.S. Computer Science</p>
+            <p>  └─ Namseoul University (2011-2016)</p>
         </div>
     `;
 }
@@ -125,54 +148,57 @@ function loadProjectsSection() {
     projectsSection.innerHTML = `
         <h3>>> Professional Projects</h3>
         <div class="project">
-            <p>[1] <strong>Samsung Weather Client</strong></p>
-            <p>    Weather application pre-installed on Samsung Galaxy devices</p>
-            <p>    Serving millions of users globally with real-time weather data</p>
-            <p>    Tech: Kotlin, Jetpack Compose, Clean Architecture, RESTful APIs</p>
+            <p>[*] <strong>Samsung Weather Client</strong></p>
+            <p>    Weather application for Samsung devices</p>
+            <p>    Used by millions of users</p>
+            <p>    Tech: Kotlin, Android</p>
             <p>    Status: <span style="color: var(--terminal-highlight)">ACTIVE</span></p>
         </div>
         <br>
         <div class="project">
-            <p>[2] <strong>Samsung Galaxy Store</strong></p>
-            <p>    Official app marketplace for Samsung Galaxy devices</p>
-            <p>    Enhanced performance and implemented new features</p>
-            <p>    Tech: Kotlin, Android SDK, Material Design, Backend Integration</p>
+            <p>[*] <strong>Samsung Galaxy Store</strong></p>
+            <p>    App marketplace for Samsung devices</p>
+            <p>    Tech: Kotlin, Android</p>
             <p>    Status: <span style="color: var(--terminal-highlight)">COMPLETED</span></p>
         </div>
         <br>
         <h3>>> Personal Projects</h3>
         <div class="project">
-            <p>[3] <strong>Frequaw Legacy</strong></p>
-            <p>    Android widget application for frequency analysis</p>
-            <p>    Open source project with community contributions</p>
-            <p>    Tech: Kotlin, Android Widgets, Material Design</p>
-            <p>    <a href="https://github.com/jujinkim/Frequaw-legacy" target="_blank">→ View on GitHub</a></p>
+            <p>[2021] <strong>Frequaw</strong></p>
+            <p>      Android app providing frequently used apps list</p>
+            <p>      Available on Google Play Store</p>
         </div>
         <br>
         <div class="project">
-            <p>[4] <strong>Feelring AI Alarm</strong></p>
-            <p>    AI-powered alarm service prototype with music generation</p>
-            <p>    Innovative wake-up experience using AI-generated content</p>
-            <p>    Tech: Python, AI/ML, Music Generation APIs</p>
-            <p>    <a href="https://github.com/jujinkim/feelring-prototype-musicgen" target="_blank">→ View on GitHub</a></p>
+            <p>[2020] <strong>Turnipism</strong></p>
+            <p>      Animal Crossing Turnip price calculator</p>
+            <p>      Available on Google Play Store</p>
         </div>
         <br>
         <div class="project">
-            <p>[5] <strong>Language Learning Telegram Bot</strong></p>
-            <p>    Interactive bot for language learning assistance</p>
-            <p>    Automated language practice and vocabulary building</p>
-            <p>    Tech: Python, Telegram Bot API, Natural Language Processing</p>
-            <p>    <a href="https://github.com/jujinkim/learn-lang-telegram-bot" target="_blank">→ View on GitHub</a></p>
+            <p>[2018] <strong>WeatherBear</strong></p>
+            <p>      Weather and fine dust information app</p>
+            <p>      Available on Google Play Store</p>
         </div>
         <br>
-        <h3>>> Languages Used (from GitHub)</h3>
-        <pre>
-[████████████████████] Kotlin
-[████████████        ] Python  
-[██████████          ] JavaScript
-[████████            ] C#
-[██████              ] HTML
-        </pre>
+        <div class="project">
+            <p>[2016] <strong>Seoul Luci Festival Project</strong></p>
+            <p>      Media facade projection using Kinect</p>
+            <p>      Dance capture displayed on library building</p>
+            <p>      Tech: KinectV2, Unity3D</p>
+        </div>
+        <br>
+        <div class="project">
+            <p>[2016] <strong>AI Game Learning Project</strong></p>
+            <p>      Genetic algorithm-based AI for dodging missiles</p>
+            <p>      Tech: C#, Genetic Algorithm</p>
+        </div>
+        <br>
+        <div class="project">
+            <p>[2015] <strong>AR Photozone for Kids</strong></p>
+            <p>      AR experience with historical figures</p>
+            <p>      Tech: AR, Unity</p>
+        </div>
     `;
 }
 
@@ -181,39 +207,33 @@ function loadTechnologiesSection() {
     techSection.innerHTML = `
         <div class="tech-grid">
             <div class="tech-category">
-                <h3>>> Mobile Development</h3>
+                <h3>>> Primary Skills</h3>
+                <p>• Android Development</p>
                 <p>• Kotlin</p>
-                <p>• Android SDK</p>
-                <p>• Jetpack Compose</p>
-                <p>• Material Design</p>
-                <p>• Clean Architecture</p>
+                <p>• Java</p>
             </div>
             <br>
             <div class="tech-category">
-                <h3>>> Architecture & Patterns</h3>
-                <p>• MVVM / MVP</p>
-                <p>• Clean Architecture</p>
-                <p>• Dependency Injection</p>
-                <p>• Repository Pattern</p>
-                <p>• Observer Pattern</p>
+                <h3>>> Additional Skills</h3>
+                <p>• Unity C#</p>
+                <p>• JavaScript</p>
+                <p>• Web Development</p>
             </div>
             <br>
             <div class="tech-category">
-                <h3>>> Tools & Platforms</h3>
-                <p>• Android Studio</p>
-                <p>• IntelliJ IDEA</p>
-                <p>• Git / GitHub</p>
-                <p>• Firebase</p>
-                <p>• RESTful APIs</p>
+                <h3>>> Experience Areas</h3>
+                <p>• VR/AR Development</p>
+                <p>• Game Development</p>
+                <p>• Mobile Applications</p>
+                <p>• Media Facades</p>
             </div>
             <br>
             <div class="tech-category">
-                <h3>>> AI & Innovation</h3>
-                <p>• GitHub Copilot</p>
-                <p>• ChatGPT / Claude</p>
-                <p>• AI-Powered Prototyping</p>
-                <p>• Code Quality Enhancement</p>
-                <p>• Cross-Platform Solutions</p>
+                <h3>>> Achievements</h3>
+                <p>• 2021: 2nd place - Startup Pivoting Hackathon</p>
+                <p>• 2018-2020: Mash-up Android Team Leader</p>
+                <p>• 2015: 3rd place - Nexon NOS 7th</p>
+                <p>• GitHub Arctic Code Vault Contributor</p>
             </div>
         </div>
     `;
