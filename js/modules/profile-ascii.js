@@ -1,7 +1,13 @@
 // ASCII art profile picture with hover effect
 export function initProfilePicture() {
     const profileContainer = document.getElementById('profile-picture');
-    if (!profileContainer) return;
+    if (!profileContainer) {
+        console.log('Profile container not found');
+        return;
+    }
+    
+    // Clear any existing content
+    profileContainer.innerHTML = '';
     
     // Create ASCII container
     const asciiContainer = document.createElement('div');
@@ -13,9 +19,20 @@ export function initProfilePicture() {
     imageContainer.className = 'original-profile';
     
     const img = document.createElement('img');
-    // Use size parameter for better quality
-    img.src = 'https://github.com/jujinkim.png?size=200';
+    // Use local downloaded image file
+    img.src = 'img/profile.png';
     img.alt = 'Jujin Kim';
+    
+    // Add load event listener to ensure image loads
+    img.onload = function() {
+        console.log('Profile image loaded successfully from:', img.src);
+    };
+    
+    img.onerror = function() {
+        console.error('Failed to load profile image from:', img.src);
+        // Try fallback
+        this.src = 'https://avatars.githubusercontent.com/u/8042462?v=4';
+    };
     
     imageContainer.appendChild(img);
     
@@ -23,14 +40,10 @@ export function initProfilePicture() {
     profileContainer.appendChild(asciiContainer);
     profileContainer.appendChild(imageContainer);
     
-    // Use fallback ASCII art (CORS prevents reading GitHub images)
+    // Use ASCII art
     asciiContainer.innerHTML = getFallbackASCII();
     
-    // Ensure image loads
-    img.onerror = function() {
-        // Try alternative URL
-        img.src = 'https://avatars.githubusercontent.com/u/8042462?v=4';
-    };
+    console.log('Profile picture initialized');
 }
 
 function generateASCII(img, container) {
@@ -82,28 +95,43 @@ function generateASCII(img, container) {
 }
 
 function getFallbackASCII() {
-    // Fallback ASCII art portrait - more detailed
+    // Detailed ASCII art portrait
     return `<pre class="ascii-art-profile">
-           .::----::.           
-        .:+*########*+:.        
-      .:*##############*:.      
-     :*##################*:     
-    :#####################+     
-   .########################.   
-   *######****####****######*   
-  :######*:...*##*...:*######:  
-  *######+    :##:    +######*  
-  #######*    :##:    *#######  
-  #######*   .+##+.   *#######  
-  *######+   *####*   +######*  
-  :######*..*######*..*######:  
-   *#######################*   
-   .######################*.   
-    :####################*     
-     :*################*:     
-      .:*############*:.      
-        .:+*######*+:.        
-           .::--::.           
+▓▓                          ░▒▓▓▒                    ▓▓▓█▓░░░░░ 
+▒░                    ░▓▒░  ░▒▓▓▒                    ▒▓▒░░ ░▓▓▒░
+▒░░                  ▓███████████                   ░▒▒▒▓████▒░░
+▒░░                ▒▓████████████                   ░██▒ ░░▒▒▒▓▓
+░░░░            ▓█████████████████▓▒                  ▒████▒▒███
+░░░░░░        ▓███████████████████████                   ▒     █
+▒▒▒▒░░░░░░░░▒██████████████████████████▓               ▒██      
+▒▒▒▒▒▒▒░░░░████████████████▓▓████████████                ░      
+ ▒▒▒▒▒▒▒▒▒██████████▓▒░         ▒████████▓  ▒▓      ▒░      ░   
+  ▒▒▒▒▒▒▒█████████░               ░███████▓████▒                
+  ░▒▒▒▒▒████████▓░                  ▓████████████              ░
+   ▒▒▒▓▓████████░             ░░░    ░████████████             ░
+   ░▒▓▓████████▒         ░▓▓▓▓░    ░███████████████             
+    ▒▓▓████████▓▒▒▓▓▒    ░░░░░▒█████ █░ ██▒▓████████            
+     ▓▓█████████▓░░▒░░░░░██████████ ▓    ▓▒ ▒███████▒           
+     ▒▓██████▒░   ░▒██████████████░▒▒    ░▓▒ ▓███████           
+      ▒█████▒▒▒▓█████▓▒█░ ░▓█████▓░       ░░░░███████           
+       ▓█████████████░█▓     ░░░               ▒▒░              
+       ▒▓███████████░██░      ░▒▒░░░▒░░                         
+       ░▒▓██████████▒░░░   ░▓█▓▓▒▒▓▒▒▒▒░▒▒▒▓▒░░                 
+       ░▒▒▓██░       ░▒▒██▓▓▓▒░░░▒▓▓▓▒▒▒▒▒▒████████▓▒░░░        
+ ▒    ░▒▒▒▒▒▓▓░░░   ░░░░▒▒░░░░░▒▒▓██▒░▒▒▒▒▓█████████████████████
+█▓  ░░▒▒▓▓▓▓▓█▓▒▒░░░░░░░░▒▓▓██████▒░░▒▒▒▒▓▓█████████████████████
+█▓░░▒▒▓▓▓████▒▓▓▒▒▒░░▒▒▓██▓▒█▓▒▒░░  ░▒▒▒▓▓██████████████████████
+█▓▒▒▒▓▓███████▒▓▓▒▒▒▒▒▒▓██▓▒▒▒▓▒░   ░░▒▒▓▓█▓▒▒▒▒████████████████
+██▒▓▓▓███████████▓▓▓▒▒▒▒▒▒▒▒▒▒▒░░░░░░░▒▒▓▓▓▒▒▒▒▒████████████████
+██▓▓███████████████▓▓▓▓▒▒░░▒░░░░░░░░░▒▓▓▓▓▓▒▒▒▓█████████████████
+████████████████▒▒▒████▓▒▒▒▒░░▒▒▒▒▒▓▓▓▓█▓▓▒▒▒▒░     ████████████
+███████████████▒▒▒▒▒▒███▓▓▒▒▒▓▓█████████▓▓▒▒░░░     ░███████████
+██████▒░  ░░▒▒▒▒▒▒▒▒▒▓████████████████▓▓▓▒▒▒░░░      ▓██████████
+█▒░                ░▒▒▓███████████████▓▓▓▒▒▒░░░       ▓█████████
+                        ▓████████████▓▓▓▓▒▒▒░░         █████████
+░                   ░░░▓██████████▓▓▓▓▓▓▒▒▒░░░         █████████
+▒▒▒▒▒░░░░    ░░▒▓▓▓▓▓▓██████████████▓▓▓▓▒▒▒░░          ▒████████
+▓▓▒▓▓▓▒▒▓▓████████▓▓█████████▓▓█████▓▓▓▒▒▒░             ▓███████
 </pre>`;
 }
 
