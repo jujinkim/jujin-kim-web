@@ -1,0 +1,77 @@
+#starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.3;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+.star {
+    animation: twinkle 3s infinite;
+    animation-delay: calc(var(--delay) * 1s);
+}
+
+@keyframes scan-line {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+}
+
+.scan-line {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to bottom, 
+        transparent, 
+        var(--terminal-highlight), 
+        transparent);
+    opacity: 0.1;
+    animation: scan-line 8s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+@keyframes glitch {
+    0%, 100% { 
+        text-shadow: 
+            2px 0 var(--terminal-dim),
+            -2px 0 var(--terminal-highlight);
+    }
+    25% { 
+        text-shadow: 
+            -2px 0 var(--terminal-dim),
+            2px 0 var(--terminal-highlight);
+    }
+    50% { 
+        text-shadow: 
+            2px 0 var(--terminal-highlight),
+            -2px 0 var(--terminal-dim);
+    }
+}
+
+.glitch {
+    animation: glitch 3s infinite;
+}
+
+@keyframes matrix-rain {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+}
+
+.matrix-char {
+    position: fixed;
+    color: var(--terminal-dim);
+    animation: matrix-rain var(--duration) linear infinite;
+    animation-delay: var(--delay);
+    opacity: 0.5;
+    font-size: 10px;
+    pointer-events: none;
+}

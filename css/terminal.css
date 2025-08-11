@@ -1,0 +1,225 @@
+:root {
+    --terminal-bg: #0a0e14;
+    --terminal-fg: #52d053;
+    --terminal-border: #3eb73e;
+    --terminal-highlight: #6eff6e;
+    --terminal-dim: #2a7a2a;
+    --terminal-accent: #40c940;
+    --terminal-font: 'Consolas', 'Monaco', 'Courier New', monospace;
+    --border-char: '═';
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --terminal-bg: #ffffff;
+        --terminal-fg: #1a5f1a;
+        --terminal-border: #2d7a2d;
+        --terminal-highlight: #238823;
+        --terminal-dim: #7ab87a;
+        --terminal-accent: #3a9b3a;
+    }
+}
+
+* {
+    font-family: var(--terminal-font) !important;
+}
+
+body {
+    font-family: var(--terminal-font);
+    background-color: var(--terminal-bg);
+    color: var(--terminal-fg);
+    font-size: 14px;
+    line-height: 1.4;
+    position: relative;
+}
+
+#terminal-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    background: transparent;
+}
+
+#terminal-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-top: 40px;
+}
+
+#ascii-title {
+    color: var(--terminal-highlight);
+    font-size: 14px;
+    line-height: 1.1;
+    letter-spacing: 0;
+    white-space: pre;
+    font-weight: bold;
+    text-shadow: 0 0 10px var(--terminal-dim);
+}
+
+.menu-border, .content-border {
+    border: 1px solid var(--terminal-border);
+    padding: 15px;
+    position: relative;
+    background-color: var(--terminal-bg);
+}
+
+#terminal-menu {
+    margin-bottom: 20px;
+}
+
+.menu-list {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.menu-item {
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.menu-item:hover {
+    background-color: var(--terminal-dim);
+    color: var(--terminal-bg);
+}
+
+.menu-item.focused {
+    outline: 1px dashed var(--terminal-highlight);
+    outline-offset: 2px;
+}
+
+.menu-item.active {
+    background-color: var(--terminal-fg);
+    color: var(--terminal-bg);
+}
+
+.menu-item.active .menu-indicator {
+    color: var(--terminal-highlight);
+}
+
+.menu-item.active .menu-indicator::after {
+    content: 'X';
+    position: absolute;
+    left: 1px;
+}
+
+.menu-indicator {
+    margin-right: 5px;
+}
+
+#terminal-content {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 60px;
+}
+
+.content-section {
+    padding: 20px;
+    animation: typewriter 0.3s steps(20);
+}
+
+.content-section h2 {
+    color: var(--terminal-highlight);
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.section-content {
+    color: var(--terminal-fg);
+}
+
+.section-content p {
+    margin-bottom: 10px;
+}
+
+#terminal-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--terminal-bg);
+    border-top: 1px dashed var(--terminal-border);
+    padding: 10px 20px;
+    z-index: 100;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+.keyboard-guide {
+    color: var(--terminal-dim);
+}
+
+.keyboard-guide span {
+    background-color: var(--terminal-dim);
+    color: var(--terminal-bg);
+    padding: 2px 4px;
+    margin: 0 2px;
+}
+
+.keyboard-guide a {
+    color: var(--terminal-fg);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.keyboard-guide a:hover {
+    color: var(--terminal-highlight);
+    text-decoration: underline;
+}
+
+.keyboard-guide a span {
+    background-color: var(--terminal-dim);
+    color: var(--terminal-bg);
+    padding: 2px 4px;
+    margin: 0 2px;
+}
+
+.keyboard-guide a:hover span {
+    background-color: var(--terminal-highlight);
+}
+
+.copyright {
+    color: var(--terminal-dim);
+}
+
+.copyright a {
+    color: var(--terminal-highlight);
+    text-decoration: underline;
+}
+
+.copyright a:hover {
+    background-color: var(--terminal-highlight);
+    color: var(--terminal-bg);
+}
+
+@keyframes typewriter {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.cursor::after {
+    content: '█';
+    animation: blink 1s infinite;
+    color: var(--terminal-highlight);
+}

@@ -1,0 +1,155 @@
+@media screen and (max-width: 1200px) {
+    #terminal-container {
+        padding: 15px;
+    }
+    
+    #ascii-title {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #terminal-container {
+        padding: 10px;
+    }
+    
+    #ascii-title {
+        font-size: 12px;
+        line-height: 1;
+    }
+    
+    #terminal-header {
+        margin-bottom: 15px;
+        padding-top: 20px;
+    }
+    
+    .menu-list {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .menu-item {
+        padding: 5px 8px;
+        font-size: 12px;
+    }
+    
+    .menu-border {
+        padding: 10px;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .keyboard-guide {
+        order: 2;
+    }
+    
+    .content-section {
+        padding: 15px;
+    }
+    
+    body {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #terminal-container {
+        padding: 5px;
+    }
+    
+    #ascii-title {
+        font-size: 10px;
+        line-height: 1;
+        letter-spacing: 0;
+    }
+    
+    #terminal-header {
+        margin-bottom: 10px;
+        padding-top: 10px;
+    }
+    
+    .menu-list {
+        gap: 3px;
+    }
+    
+    .menu-item {
+        padding: 4px 6px;
+        font-size: 11px;
+    }
+    
+    .menu-indicator {
+        display: none;
+    }
+    
+    .keyboard-guide {
+        font-size: 10px;
+    }
+    
+    .keyboard-guide span {
+        padding: 1px 2px;
+        margin: 0 1px;
+    }
+    
+    .content-section {
+        padding: 10px;
+    }
+    
+    .content-section h2 {
+        font-size: 14px;
+    }
+    
+    #terminal-footer {
+        padding: 8px 10px;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    #terminal-container {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+    
+    body {
+        font-size: 16px;
+    }
+    
+    #ascii-title {
+        font-size: 16px;
+    }
+    
+    #terminal-header {
+        padding-top: 60px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+@media print {
+    #starfield,
+    .scan-line,
+    .matrix-char {
+        display: none;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .menu-border::before,
+    .menu-border::after,
+    .content-border::before,
+    .content-border::after {
+        display: none;
+    }
+}

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jujin Kim - Software Engineer</title>
+    <meta name="description" content="Personal portfolio of Jujin Kim, Software Engineer">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/terminal.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div id="terminal-container">
+        <canvas id="starfield" class="background-animation"></canvas>
+        
+        <header id="terminal-header">
+            <pre id="ascii-title"></pre>
+        </header>
+
+        <nav id="terminal-menu" role="navigation" aria-label="Main navigation">
+            <div class="menu-border">
+                <ul class="menu-list">
+                    <li class="menu-item" data-section="home" tabindex="0">
+                        <span class="menu-indicator">[ ]</span> Home
+                    </li>
+                    <li class="menu-item" data-section="about" tabindex="0">
+                        <span class="menu-indicator">[ ]</span> About Me
+                    </li>
+                    <li class="menu-item" data-section="career" tabindex="0">
+                        <span class="menu-indicator">[ ]</span> Career
+                    </li>
+                    <li class="menu-item" data-section="projects" tabindex="0">
+                        <span class="menu-indicator">[ ]</span> Projects & Skills
+                    </li>
+                    <li class="menu-item" data-section="technologies" tabindex="0">
+                        <span class="menu-indicator">[ ]</span> Technologies
+                    </li>
+                    <li class="menu-item" data-section="contact" tabindex="0">
+                        <span class="menu-indicator">[ ]</span> Contact & Links
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main id="terminal-content">
+            <div class="content-border">
+                <section id="home" class="content-section">
+                    <h2>&gt; Welcome</h2>
+                    <div class="section-content">
+                        <p>Welcome to my terminal interface. Use the menu above to navigate.</p>
+                    </div>
+                </section>
+
+                <section id="about" class="content-section" style="display: none;">
+                    <h2>&gt; About Me</h2>
+                    <div class="section-content">
+                        <p>Welcome to my terminal. I'm a software engineer passionate about creating elegant solutions to complex problems.</p>
+                    </div>
+                </section>
+
+                <section id="career" class="content-section" style="display: none;">
+                    <h2>&gt; Career</h2>
+                    <div class="section-content">
+                        <p>Professional experience and journey...</p>
+                    </div>
+                </section>
+
+                <section id="projects" class="content-section" style="display: none;">
+                    <h2>&gt; Projects & Skills</h2>
+                    <div class="section-content">
+                        <p>Featured projects and technical skills...</p>
+                    </div>
+                </section>
+
+                <section id="technologies" class="content-section" style="display: none;">
+                    <h2>&gt; Technologies</h2>
+                    <div class="section-content">
+                        <p>Tech stack and tools...</p>
+                    </div>
+                </section>
+
+                <section id="contact" class="content-section" style="display: none;">
+                    <h2>&gt; Contact & Links</h2>
+                    <div class="section-content">
+                        <p>Get in touch...</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer id="terminal-footer">
+            <div class="footer-content">
+                <div class="keyboard-guide">
+                    <a href="#" onclick="event.preventDefault(); window.openHelp(); return false;"><span>^G</span> Help</a> | 
+                    <span>←→↑↓</span> Navigate | 
+                    <span>Enter</span> Select | 
+                    <a href="#" onclick="event.preventDefault(); document.querySelector('[data-section=home]').click(); return false;"><span>ESC</span> Home</a> | 
+                    <a href="#" onclick="event.preventDefault(); window.setTheme('light'); return false;" title="Light">8</a>/<a href="#" onclick="event.preventDefault(); window.setTheme('dark'); return false;" title="Dark">9</a>/<a href="#" onclick="event.preventDefault(); window.setTheme('system'); return false;" title="System">0</a> Theme
+                </div>
+                <div class="copyright">
+                    © 2025 Jujin Kim | <a href="https://github.com/jujinkim/jujin-kim-web" target="_blank" rel="noopener">GitHub</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <div id="help-modal" class="modal-overlay">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h2 class="modal-title">Terminal Help</h2>
+                <button class="modal-close" aria-label="Close">[X]</button>
+            </div>
+            <div class="modal-content">
+                <h3>Keyboard Navigation</h3>
+                <ul>
+                    <li><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> - Navigate through menu items</li>
+                    <li><kbd>Enter</kbd> - Select current menu item</li>
+                    <li><kbd>ESC</kbd> - Return to Home page</li>
+                    <li><kbd>Ctrl</kbd> + <kbd>G</kbd> - Open this help window</li>
+                </ul>
+                
+                <h3>Theme Controls</h3>
+                <ul>
+                    <li><kbd>8</kbd> - Light theme</li>
+                    <li><kbd>9</kbd> - Dark theme</li>
+                    <li><kbd>0</kbd> - System theme (follows OS preference)</li>
+                </ul>
+
+                <h3>Mouse Navigation</h3>
+                <ul>
+                    <li>Click any menu item to select it</li>
+                    <li>Hover over menu items to highlight</li>
+                </ul>
+
+                <h3>Menu Options</h3>
+                <ul>
+                    <li><strong>Home</strong> - Welcome page and quick overview</li>
+                    <li><strong>About Me</strong> - Personal introduction and background</li>
+                    <li><strong>Career</strong> - Professional experience timeline</li>
+                    <li><strong>Projects & Skills</strong> - Featured projects and technical skills</li>
+                    <li><strong>Technologies</strong> - Tech stack and tools</li>
+                    <li><strong>Contact & Links</strong> - Ways to get in touch</li>
+                </ul>
+
+                <h3>Tips</h3>
+                <ul>
+                    <li>This terminal follows your system theme preference</li>
+                    <li>All animations can be disabled with reduced motion settings</li>
+                    <li>The interface is fully responsive and mobile-friendly</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                Press <kbd>ESC</kbd> or click [X] to close
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
