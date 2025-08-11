@@ -3,21 +3,29 @@ function calculateAge() {
     const today = new Date();
     
     let years = today.getFullYear() - birthDate.getFullYear();
-    let months = today.getMonth() - birthDate.getMonth();
     
-    // Adjust if birthday hasn't occurred this year
-    if (months < 0 || (months === 0 && today.getDate() < birthDate.getDate())) {
+    // Calculate the current year's birthday
+    const thisYearBirthday = new Date(today.getFullYear(), 9, 20);
+    
+    // If birthday hasn't occurred this year, subtract one year
+    if (today < thisYearBirthday) {
         years--;
-        months += 12;
     }
     
-    // If we haven't reached the birthday day this month, subtract one month
-    if (today.getDate() < birthDate.getDate() && months > 0) {
-        months--;
-    }
+    // Calculate days since last birthday
+    const lastBirthday = today < thisYearBirthday 
+        ? new Date(today.getFullYear() - 1, 9, 20)
+        : thisYearBirthday;
     
-    // Return age with month as decimal (e.g., 32.3 for 32 years 3 months)
-    return `${years}.${months}`;
+    const daysSinceBirthday = Math.floor((today - lastBirthday) / (1000 * 60 * 60 * 24));
+    
+    // Calculate percentage of year passed (0-9)
+    const yearProgress = Math.floor((daysSinceBirthday / 365) * 10);
+    
+    // Cap at 9 to keep single digit
+    const decimal = Math.min(yearProgress, 9);
+    
+    return `v${years}.${decimal}`;
 }
 
 export function initContent() {
@@ -33,10 +41,10 @@ function loadHomeSection() {
     const homeSection = document.querySelector('#home .section-content');
     homeSection.innerHTML = `
         <pre style="color: var(--terminal-highlight);">
-╔══════════════════════════════════════════════════════════════╗
-║                     JUJIN KIM TERMINAL                        ║
-║                    Software Engineer v${calculateAge()}                    ║
-╚══════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════╗
+║                   JUJIN KIM TERMINAL                     ║
+║                Software Engineer ${calculateAge()}                   ║
+╚══════════════════════════════════════════════════════════╝
         </pre>
         <div style="animation: typewriter 0.5s steps(20);">
             <p>> Initializing system... <span style="color: var(--terminal-highlight)">[OK]</span></p>
@@ -44,19 +52,16 @@ function loadHomeSection() {
             <p>> Connecting to GitHub... <span style="color: var(--terminal-highlight)">[OK]</span></p>
         </div>
         <br>
-        <pre style="color: var(--terminal-accent);">
- ┌─────────────────────────────────────────────────────────┐
- │                                                         │
- │  <strong>JUJIN KIM</strong>                                            │
- │  Android App Developer @ Samsung                       │
- │  Building Weather App for millions of users            │
- │                                                         │
- │  <span style="color: var(--terminal-highlight);">◆</span> Kotlin Expert     <span style="color: var(--terminal-highlight);">◆</span> Clean Architecture        │
- │  <span style="color: var(--terminal-highlight);">◆</span> AI-Powered Dev    <span style="color: var(--terminal-highlight);">◆</span> Open Source Contributor   │
- │                                                         │
- │  📍 Seoul, South Korea                                 │
- └─────────────────────────────────────────────────────────┘
-        </pre>
+        <div style="color: var(--terminal-accent); padding: 20px 0;">
+            <p style="font-size: 18px; font-weight: bold; color: var(--terminal-highlight);">JUJIN KIM</p>
+            <p>Android App Developer @ Samsung</p>
+            <p>Building Weather App for millions of users</p>
+            <br>
+            <p>◆ Kotlin Expert     ◆ Clean Architecture</p>
+            <p>◆ AI-Powered Dev    ◆ Open Source Contributor</p>
+            <br>
+            <p>📍 Seoul, South Korea</p>
+        </div>
         <br>
         <p style="color: var(--terminal-highlight);">> Quick Access:</p>
         <div style="margin-left: 20px;">
@@ -218,15 +223,13 @@ function loadContactSection() {
             <p>> Location: Seoul, South Korea 🇰🇷</p>
             <p>> Timezone: UTC+9 (KST)</p>
             <br>
-            <pre>
-╔══════════════════════════════════════════════════════════════╗
-║  Feel free to reach out for collaborations or just a chat!   ║
-║                                                                ║
-║  > Open for: Freelance projects                               ║
-║  > Interested in: Open source contributions                   ║
-║  > Available for: Technical consulting                        ║
-╚══════════════════════════════════════════════════════════════╝
-            </pre>
+            <div style="padding: 20px 0; color: var(--terminal-accent);">
+                <p style="color: var(--terminal-highlight); font-weight: bold;">Feel free to reach out for collaborations or just a chat!</p>
+                <br>
+                <p>> Open for: Freelance projects</p>
+                <p>> Interested in: Open source contributions</p>
+                <p>> Available for: Technical consulting</p>
+            </div>
             <br>
             <p class="cursor">> Waiting for connection..._</p>
         </div>

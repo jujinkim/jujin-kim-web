@@ -26,6 +26,7 @@
     .menu-list {
         flex-wrap: wrap;
         gap: 5px;
+        font-size: 11px;
     }
     
     .menu-item {

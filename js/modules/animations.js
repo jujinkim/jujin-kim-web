@@ -71,17 +71,21 @@ function createMatrixRain() {
     matrixContainer.style.pointerEvents = 'none';
     matrixContainer.style.zIndex = '0';
     
-    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+    const chars = '01가나다라마바사아자차카타파하김주진서울코딩개발프로그래머안녕하세요반갑습니다';
     const columns = Math.floor(window.innerWidth / 20);
     
     for (let i = 0; i < columns; i++) {
-        const span = document.createElement('span');
-        span.className = 'matrix-char';
-        span.textContent = chars[Math.floor(Math.random() * chars.length)];
-        span.style.left = `${i * 20}px`;
-        span.style.setProperty('--duration', `${Math.random() * 10 + 10}s`);
-        span.style.setProperty('--delay', `${Math.random() * 10}s`);
-        matrixContainer.appendChild(span);
+        // Create multiple characters per column for more density
+        for (let j = 0; j < 3; j++) {
+            const span = document.createElement('span');
+            span.className = 'matrix-char';
+            span.textContent = chars[Math.floor(Math.random() * chars.length)];
+            span.style.left = `${i * 20}px`;
+            span.style.setProperty('--duration', `${Math.random() * 15 + 10}s`);
+            span.style.setProperty('--delay', `${Math.random() * 15}s`);
+            span.style.fontSize = `${Math.random() * 6 + 10}px`;
+            matrixContainer.appendChild(span);
+        }
     }
     
     document.body.appendChild(matrixContainer);
