@@ -24,6 +24,36 @@
     font-family: var(--terminal-font) !important;
 }
 
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--terminal-bg);
+    border: 1px solid var(--terminal-border);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--terminal-dim);
+    border: 1px solid var(--terminal-border);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--terminal-fg);
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--terminal-bg);
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--terminal-dim) var(--terminal-bg);
+}
+
 body {
     font-family: var(--terminal-font);
     background-color: var(--terminal-bg);
