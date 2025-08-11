@@ -46,12 +46,9 @@ function selectMenuItem(index) {
     
     menuItems.forEach(item => {
         item.classList.remove('active');
-        // Keep all indicators as [ ] - background highlight is enough
-        item.querySelector('.menu-indicator').textContent = '[ ]';
     });
     
     menuItem.classList.add('active');
-    // Don't change the indicator for active item
     
     showSection(sectionId);
     currentSection = sectionId;
