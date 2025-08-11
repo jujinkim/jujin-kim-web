@@ -60,7 +60,7 @@ function loadHomeSection() {
             <p>◆ Kotlin Expert     ◆ Clean Architecture</p>
             <p>◆ AI-Powered Dev    ◆ Open Source Contributor</p>
             <br>
-            <p>📍 Seoul, South Korea</p>
+            <p>📍 Suwon, South Korea</p>
         </div>
         <br>
         <p style="color: var(--terminal-highlight);">> Quick Access:</p>
