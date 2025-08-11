@@ -238,32 +238,50 @@ function loadTechnologiesSection() {
         <div class="tech-grid">
             <div class="tech-category">
                 <h3>>> Primary Skills</h3>
-                <p>• Android Development</p>
-                <p>• Kotlin</p>
-                <p>• Java</p>
+                <p>• <strong>Android Development</strong></p>
+                <p style="color: var(--terminal-dim);">  7+ years building native Android apps</p>
+                <p>• <strong>Kotlin</strong></p>
+                <p style="color: var(--terminal-dim);">  Primary language for Android development</p>
+                <p>• <strong>Java</strong></p>
+                <p style="color: var(--terminal-dim);">  Strong foundation in OOP and Android legacy code</p>
             </div>
             <br>
             <div class="tech-category">
                 <h3>>> Additional Skills</h3>
-                <p>• Unity C#</p>
-                <p>• JavaScript</p>
-                <p>• Web Development</p>
+                <p>• <strong>Unity C#</strong></p>
+                <p style="color: var(--terminal-dim);">  VR/AR projects and game development</p>
+                <p>• <strong>JavaScript</strong></p>
+                <p style="color: var(--terminal-dim);">  Web development and interactive UIs</p>
+                <p>• <strong>Python</strong></p>
+                <p style="color: var(--terminal-dim);">  Automation scripts and AI projects</p>
             </div>
             <br>
             <div class="tech-category">
                 <h3>>> Experience Areas</h3>
-                <p>• VR/AR Development</p>
-                <p>• Game Development</p>
-                <p>• Mobile Applications</p>
-                <p>• Media Facades</p>
+                <p>• <strong>VR/AR Development</strong></p>
+                <p style="color: var(--terminal-dim);">  Kinect, Unity, educational experiences</p>
+                <p>• <strong>Game Development</strong></p>
+                <p style="color: var(--terminal-dim);">  Unity, multiplayer, AI game agents</p>
+                <p>• <strong>Mobile Applications</strong></p>
+                <p style="color: var(--terminal-dim);">  Consumer apps with millions of users</p>
+                <p>• <strong>Computer Vision</strong></p>
+                <p style="color: var(--terminal-dim);">  OpenCV, real-time visual effects</p>
             </div>
             <br>
             <div class="tech-category">
-                <h3>>> Achievements</h3>
-                <p>• 2021: 2nd place - Startup Pivoting Hackathon</p>
-                <p>• 2018-2020: Mash-up Android Team Leader</p>
-                <p>• 2015: 3rd place - Nexon NOS 7th</p>
-                <p>• GitHub Arctic Code Vault Contributor</p>
+                <h3>>> Achievements & Communities</h3>
+                <p>• <strong>2021: Startup Pivoting Hackathon</strong></p>
+                <p style="color: var(--terminal-dim);">  2nd place winner at KITA</p>
+                <p>• <strong>2018-2020: Mash-up</strong></p>
+                <p style="color: var(--terminal-dim);">  7th Android Team Leader</p>
+                <p>  <a href="https://mash-up.kr" target="_blank">→ mash-up.kr</a></p>
+                <p>• <strong>2015: Nexon NOS 7th</strong></p>
+                <p style="color: var(--terminal-dim);">  3rd place in game programming competition</p>
+                <p>• <strong>2015-2016: Microsoft Student Partners</strong></p>
+                <p style="color: var(--terminal-dim);">  9th Generation participant</p>
+                <p>• <strong>GitHub Arctic Code Vault</strong></p>
+                <p style="color: var(--terminal-dim);">  Code preserved in Arctic vault for 1000 years</p>
+                <p>  <a href="https://github.com/jujinkim" target="_blank">→ View GitHub Profile</a></p>
             </div>
         </div>
     `;
