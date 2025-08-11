@@ -1,3 +1,25 @@
+function calculateAge() {
+    const birthDate = new Date(1992, 9, 20); // October 20, 1992 (month is 0-indexed)
+    const today = new Date();
+    
+    let years = today.getFullYear() - birthDate.getFullYear();
+    let months = today.getMonth() - birthDate.getMonth();
+    
+    // Adjust if birthday hasn't occurred this year
+    if (months < 0 || (months === 0 && today.getDate() < birthDate.getDate())) {
+        years--;
+        months += 12;
+    }
+    
+    // If we haven't reached the birthday day this month, subtract one month
+    if (today.getDate() < birthDate.getDate() && months > 0) {
+        months--;
+    }
+    
+    // Return age with month as decimal (e.g., 32.3 for 32 years 3 months)
+    return `${years}.${months}`;
+}
+
 export function initContent() {
     loadHomeSection();
     loadAboutSection();
@@ -13,7 +35,7 @@ function loadHomeSection() {
         <pre style="color: var(--terminal-highlight);">
 ╔══════════════════════════════════════════════════════════════╗
 ║                     JUJIN KIM TERMINAL                        ║
-║                    Software Engineer v1.0                     ║
+║                    Software Engineer v${calculateAge()}                    ║
 ╚══════════════════════════════════════════════════════════════╝
         </pre>
         <div style="animation: typewriter 0.5s steps(20);">
