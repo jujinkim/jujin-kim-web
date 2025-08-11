@@ -39,3 +39,16 @@ logs/
 # Test coverage
 coverage/
 .nyc_output/
+
+# Claude specific
+.claude/settings.local.json
+
+# Backup files
+*.bak
+*.backup
+*_old.*
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
