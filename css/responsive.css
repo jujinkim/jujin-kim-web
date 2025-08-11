@@ -9,6 +9,17 @@
 }
 
 @media screen and (max-width: 768px) {
+    #profile-picture {
+        width: 80px;
+        height: 80px;
+        margin: 15px auto;
+    }
+    
+    .ascii-art-profile {
+        font-size: 4px;
+        line-height: 4px;
+    }
+    
     #terminal-container {
         padding: 10px;
     }

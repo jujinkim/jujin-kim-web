@@ -40,6 +40,7 @@ export function initContent() {
 function loadHomeSection() {
     const homeSection = document.querySelector('#home .section-content');
     homeSection.innerHTML = `
+        <div id="profile-picture"></div>
         <pre style="color: var(--terminal-highlight);">
 ╔══════════════════════════════════════════════════════════╗
 ║                   JUJIN KIM TERMINAL                     ║
