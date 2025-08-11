@@ -125,8 +125,8 @@ function loadCareerSection() {
         <br>
         <div class="career-entry">
             <p>> [2015-2016] Microsoft Student Partners</p>
-            <p>  └─ Student Developer</p>
-            <p>  └─ Microsoft ecosystem development</p>
+            <p>  └─ MSP Program Participant</p>
+            <p>  └─ Student Developer Community</p>
         </div>
         <br>
         <div class="career-entry">
