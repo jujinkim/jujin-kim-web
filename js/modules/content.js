@@ -166,19 +166,19 @@ function loadProjectsSection() {
         <div class="project">
             <p>[2021] <strong>Frequaw</strong></p>
             <p>      Android app providing frequently used apps list</p>
-            <p>      Available on Google Play Store</p>
+            <p>      <a href="https://play.google.com/store/apps/details?id=com.jujinkim.frequaw" target="_blank">→ View on Play Store</a></p>
         </div>
         <br>
         <div class="project">
             <p>[2020] <strong>Turnipism</strong></p>
             <p>      Animal Crossing Turnip price calculator</p>
-            <p>      Available on Google Play Store</p>
+            <p>      <a href="https://play.google.com/store/apps/details?id=com.jujinkim.acturnip" target="_blank">→ View on Play Store</a></p>
         </div>
         <br>
         <div class="project">
             <p>[2018] <strong>WeatherBear</strong></p>
             <p>      Weather and fine dust information app</p>
-            <p>      Available on Google Play Store</p>
+            <p>      <a href="https://play.google.com/store/apps/details?id=com.mashupgroup.weatherbear" target="_blank">→ View on Play Store</a></p>
         </div>
         <br>
         <div class="project">
@@ -191,7 +191,15 @@ function loadProjectsSection() {
         <div class="project">
             <p>[2016] <strong>AI Game Learning Project</strong></p>
             <p>      Genetic algorithm-based AI for dodging missiles</p>
+            <p>      <a href="https://youtu.be/yISf3vsUQpc" target="_blank">→ Watch on YouTube</a></p>
             <p>      Tech: C#, Genetic Algorithm</p>
+        </div>
+        <br>
+        <div class="project">
+            <p>[2015] <strong>Billiards Visual Effect Project</strong></p>
+            <p>      OpenCV-based visual effects for mini pocket ball</p>
+            <p>      <a href="https://youtu.be/DUXIdIJ6ylM" target="_blank">→ Watch on YouTube</a></p>
+            <p>      Tech: C++, OpenCV</p>
         </div>
         <br>
         <div class="project">
@@ -252,14 +260,22 @@ function loadContactSection() {
     
     contactSection.innerHTML = `
         <div class="contact-info">
+            <h3>>> Professional</h3>
             <p>> Email:    <a href="mailto:jujin@jujin.kim">jujin@jujin.kim</a></p>
-            <p>> GitHub:   <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
             <p>> LinkedIn: <a href="https://linkedin.com/in/jujinkim" target="_blank">linkedin.com/in/jujinkim</a></p>
-            <p>> Blog:     <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
-            <p>> Website:  <a href="https://jujin.kim" target="_blank">jujin.kim</a></p>
+            <p>> GitHub:   <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
             <br>
-            <p>> Location: Suwon, South Korea 🇰🇷</p>
-            <p>> Timezone: UTC+9 (KST) - Current: ${kstTime}</p>
+            <h3>>> Personal</h3>
+            <p>> Website:  <a href="https://jujin.kim" target="_blank">jujin.kim</a></p>
+            <p>> Blog:     <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
+            <p>> Instagram: <a href="https://instagram.com/jujin__kim" target="_blank">@jujin__kim</a></p>
+            <p>> Facebook:  <a href="https://facebook.com/jujinjujinjujin" target="_blank">facebook.com/jujinjujinjujin</a></p>
+            <p>> Steam:     <a href="https://steamcommunity.com/id/buchakim" target="_blank">steamcommunity.com/id/buchakim</a></p>
+            <br>
+            <h3>>> Location</h3>
+            <p>> City: Suwon, South Korea 🇰🇷</p>
+            <p>> Timezone: UTC+9 (KST)</p>
+            <p>> Current Time: ${kstTime}</p>
             <br>
             <div style="padding: 20px 0; color: var(--terminal-accent);">
                 <p style="color: var(--terminal-highlight); font-weight: bold;">내 줏대로 살자 - Living by my own principles</p>
