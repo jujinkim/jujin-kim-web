@@ -11,31 +11,7 @@ export function initTheme() {
         }
     });
     
-    document.addEventListener('keydown', (e) => {
-        // Don't handle if user is typing in an input or modal is open
-        if (document.activeElement.tagName === 'INPUT' || 
-            document.activeElement.tagName === 'TEXTAREA' ||
-            document.getElementById('help-modal').classList.contains('active')) {
-            return;
-        }
-        
-        if (!e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
-            switch(e.key) {
-                case '8':
-                    e.preventDefault();
-                    setTheme('light');
-                    break;
-                case '9':
-                    e.preventDefault();
-                    setTheme('dark');
-                    break;
-                case '0':
-                    e.preventDefault();
-                    setTheme('system');
-                    break;
-            }
-        }
-    });
+    // Removed keyboard shortcuts for theme switching - now click only
 }
 
 function updateTheme(isDark) {
@@ -49,12 +25,12 @@ function updateTheme(isDark) {
         root.style.setProperty('--terminal-dim', '#2a7a2a');
         root.style.setProperty('--terminal-accent', '#40c940');
     } else {
-        root.style.setProperty('--terminal-bg', '#ffffff');
-        root.style.setProperty('--terminal-fg', '#1a5f1a');
+        root.style.setProperty('--terminal-bg', '#d4d8d4');
+        root.style.setProperty('--terminal-fg', '#0d4d0d');
         root.style.setProperty('--terminal-border', '#2d7a2d');
-        root.style.setProperty('--terminal-highlight', '#238823');
-        root.style.setProperty('--terminal-dim', '#7ab87a');
-        root.style.setProperty('--terminal-accent', '#3a9b3a');
+        root.style.setProperty('--terminal-highlight', '#1a6b1a');
+        root.style.setProperty('--terminal-dim', '#5a8a5a');
+        root.style.setProperty('--terminal-accent', '#2a8a2a');
     }
     
     document.body.dataset.theme = isDark ? 'dark' : 'light';

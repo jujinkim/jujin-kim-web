@@ -11,12 +11,12 @@
 
 @media (prefers-color-scheme: light) {
     :root {
-        --terminal-bg: #ffffff;
-        --terminal-fg: #1a5f1a;
+        --terminal-bg: #d4d8d4;
+        --terminal-fg: #0d4d0d;
         --terminal-border: #2d7a2d;
-        --terminal-highlight: #238823;
-        --terminal-dim: #7ab87a;
-        --terminal-accent: #3a9b3a;
+        --terminal-highlight: #1a6b1a;
+        --terminal-dim: #5a8a5a;
+        --terminal-accent: #2a8a2a;
     }
 }
 
