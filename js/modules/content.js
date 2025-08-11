@@ -41,12 +41,11 @@ function loadHomeSection() {
     const homeSection = document.querySelector('#home .section-content');
     homeSection.innerHTML = `
         <div id="profile-picture"></div>
-        <pre style="color: var(--terminal-highlight);">
-╔══════════════════════════════════════════════════════════╗
-║                   JUJIN KIM TERMINAL                     ║
-║                Software Engineer ${calculateAge()}                   ║
-╚══════════════════════════════════════════════════════════╝
-        </pre>
+        <div style="text-align: left; color: var(--terminal-highlight); margin-bottom: 20px;">
+            <h2 style="font-size: 24px; margin: 0;">JUJIN KIM TERMINAL</h2>
+            <p style="margin: 5px 0;">Software Engineer ${calculateAge()}</p>
+            <div style="border-bottom: 2px solid var(--terminal-border); margin-top: 10px;"></div>
+        </div>
         <div style="animation: typewriter 0.5s steps(20);">
             <p>> Initializing system... <span style="color: var(--terminal-highlight)">[OK]</span></p>
             <p>> Loading profile... <span style="color: var(--terminal-highlight)">[OK]</span></p>
