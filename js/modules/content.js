@@ -65,10 +65,10 @@ function loadHomeSection() {
         <br>
         <p style="color: var(--terminal-highlight);">> Quick Access:</p>
         <div style="margin-left: 20px;">
-            <p>📧 <a href="mailto:jujin@jujinkim.com">jujin@jujinkim.com</a></p>
+            <p>📧 <a href="mailto:jujin@jujin.kim">jujin@jujin.kim</a></p>
             <p>💻 <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
             <p>💼 <a href="https://linkedin.com/in/jujinkim" target="_blank">linkedin.com/in/jujinkim</a></p>
-            <p>📝 <a href="https://blog.jujinkim.com" target="_blank">blog.jujinkim.com</a></p>
+            <p>📝 <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
         </div>
         <br>
         <p style="color: var(--terminal-dim);">> Use arrow keys to navigate menu or press number for quick select</p>
@@ -212,23 +212,32 @@ function loadTechnologiesSection() {
 
 function loadContactSection() {
     const contactSection = document.querySelector('#contact .section-content');
+    
+    // Get current KST time
+    const kstTime = new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Seoul',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
     contactSection.innerHTML = `
         <div class="contact-info">
-            <p>> Email:    <a href="mailto:jujin@jujinkim.com">jujin@jujinkim.com</a></p>
+            <p>> Email:    <a href="mailto:jujin@jujin.kim">jujin@jujin.kim</a></p>
             <p>> GitHub:   <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
             <p>> LinkedIn: <a href="https://linkedin.com/in/jujinkim" target="_blank">linkedin.com/in/jujinkim</a></p>
-            <p>> Blog:     <a href="https://blog.jujinkim.com" target="_blank">blog.jujinkim.com</a></p>
-            <p>> Website:  <a href="https://jujinkim.com" target="_blank">jujinkim.com</a></p>
+            <p>> Blog:     <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
+            <p>> Website:  <a href="https://jujin.kim" target="_blank">jujin.kim</a></p>
             <br>
-            <p>> Location: Seoul, South Korea 🇰🇷</p>
-            <p>> Timezone: UTC+9 (KST)</p>
+            <p>> Location: Suwon, South Korea 🇰🇷</p>
+            <p>> Timezone: UTC+9 (KST) - Current: ${kstTime}</p>
             <br>
             <div style="padding: 20px 0; color: var(--terminal-accent);">
-                <p style="color: var(--terminal-highlight); font-weight: bold;">Feel free to reach out for collaborations or just a chat!</p>
+                <p style="color: var(--terminal-highlight); font-weight: bold;">내 줏대로 살자 - Living by my own principles</p>
                 <br>
-                <p>> Open for: Freelance projects</p>
-                <p>> Interested in: Open source contributions</p>
-                <p>> Available for: Technical consulting</p>
+                <p>> Philosophy: Building something that makes the world a better place</p>
+                <p>> Currently: Learning how to be cool</p>
+                <p>> Open to: Meaningful collaborations</p>
             </div>
             <br>
             <p class="cursor">> Waiting for connection..._</p>
