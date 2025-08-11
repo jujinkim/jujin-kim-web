@@ -100,35 +100,22 @@ function loadCareerSection() {
     const careerSection = document.querySelector('#career .section-content');
     careerSection.innerHTML = `
         <div class="career-entry">
-            <p>> [Present] Software Engineer @ Samsung Electronics</p>
-            <p>  └─ Developing Samsung Weather client for millions of Galaxy users</p>
-            <p>  └─ Building robust Android applications with clean architecture</p>
-            <p>  └─ Optimizing performance and user experience at scale</p>
-            <p>  └─ Tech: Kotlin, Jetpack Compose, Clean Architecture, MVVM</p>
+            <p>> [Present] Software Engineer @ Samsung</p>
+            <p>  └─ Developing Samsung Weather client</p>
+            <p>  └─ Android application development</p>
+            <p>  └─ Tech: Kotlin, Android</p>
         </div>
         <br>
         <div class="career-entry">
             <p>> [Previous] Software Engineer @ Samsung Galaxy Store</p>
-            <p>  └─ Contributed to Galaxy Store app development and maintenance</p>
-            <p>  └─ Enhanced app store experience for Samsung device users</p>
-            <p>  └─ Implemented features and performance optimizations</p>
-            <p>  └─ Tech: Kotlin, Android SDK, Material Design, RESTful APIs</p>
+            <p>  └─ Contributed to Galaxy Store development</p>
+            <p>  └─ Tech: Kotlin, Android</p>
         </div>
         <br>
         <div class="career-entry">
-            <p>> Core Competencies:</p>
-            <p>  └─ Android Native Development (Kotlin/Java)</p>
-            <p>  └─ Modern Android Architecture (MVVM, Clean Architecture)</p>
-            <p>  └─ AI-Enhanced Development Workflow</p>
-            <p>  └─ Large-scale Application Development</p>
-            <p>  └─ User Experience Optimization</p>
-        </div>
-        <br>
-        <div class="career-entry">
-            <p>> Open Source Contributions:</p>
+            <p>> GitHub Achievements:</p>
             <p>  └─ Arctic Code Vault Contributor</p>
-            <p>  └─ Active GitHub presence with 18+ repositories</p>
-            <p>  └─ Focus on mobile apps, AI tools, and developer utilities</p>
+            <p>  └─ Pull Shark x2</p>
         </div>
     `;
 }
@@ -178,24 +165,13 @@ function loadProjectsSection() {
             <p>    <a href="https://github.com/jujinkim/learn-lang-telegram-bot" target="_blank">→ View on GitHub</a></p>
         </div>
         <br>
-        <h3>>> Technical Proficiency</h3>
+        <h3>>> Languages Used (from GitHub)</h3>
         <pre>
-Mobile Dev:    [████████████████████] Kotlin
-               [█████████████████   ] Java
-               [████████████████████] Android SDK
-               [█████████████████   ] Jetpack Compose
-
-Backend:       [████████████        ] Python
-               [██████████          ] Node.js
-               [████████            ] Spring Boot
-
-AI/ML:         [████████████████    ] AI-Assisted Development
-               [██████████████      ] LLM Integration
-               [████████████        ] Prompt Engineering
-
-DevOps:        [█████████████████   ] Git/GitHub
-               [████████████████    ] CI/CD
-               [██████████████      ] Docker
+[████████████████████] Kotlin
+[████████████        ] Python  
+[██████████          ] JavaScript
+[████████            ] C#
+[██████              ] HTML
         </pre>
     `;
 }
