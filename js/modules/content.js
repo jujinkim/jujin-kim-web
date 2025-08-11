@@ -100,24 +100,35 @@ function loadCareerSection() {
     const careerSection = document.querySelector('#career .section-content');
     careerSection.innerHTML = `
         <div class="career-entry">
-            <p>> [Present] Software Engineer @ Samsung</p>
-            <p>  └─ Developing Samsung Weather client for millions of users</p>
+            <p>> [Present] Software Engineer @ Samsung Electronics</p>
+            <p>  └─ Developing Samsung Weather client for millions of Galaxy users</p>
             <p>  └─ Building robust Android applications with clean architecture</p>
-            <p>  └─ Tech: Kotlin, Android SDK, Clean Architecture, MVVM</p>
+            <p>  └─ Optimizing performance and user experience at scale</p>
+            <p>  └─ Tech: Kotlin, Jetpack Compose, Clean Architecture, MVVM</p>
         </div>
         <br>
         <div class="career-entry">
             <p>> [Previous] Software Engineer @ Samsung Galaxy Store</p>
-            <p>  └─ Contributed to Galaxy Store development</p>
-            <p>  └─ Enhanced user experience and app performance</p>
-            <p>  └─ Tech: Kotlin, Android, Material Design</p>
+            <p>  └─ Contributed to Galaxy Store app development and maintenance</p>
+            <p>  └─ Enhanced app store experience for Samsung device users</p>
+            <p>  └─ Implemented features and performance optimizations</p>
+            <p>  └─ Tech: Kotlin, Android SDK, Material Design, RESTful APIs</p>
         </div>
         <br>
         <div class="career-entry">
-            <p>> Specializations:</p>
-            <p>  └─ Android Application Development</p>
-            <p>  └─ AI-Powered Development Tools</p>
-            <p>  └─ Clean Architecture & Design Patterns</p>
+            <p>> Core Competencies:</p>
+            <p>  └─ Android Native Development (Kotlin/Java)</p>
+            <p>  └─ Modern Android Architecture (MVVM, Clean Architecture)</p>
+            <p>  └─ AI-Enhanced Development Workflow</p>
+            <p>  └─ Large-scale Application Development</p>
+            <p>  └─ User Experience Optimization</p>
+        </div>
+        <br>
+        <div class="career-entry">
+            <p>> Open Source Contributions:</p>
+            <p>  └─ Arctic Code Vault Contributor</p>
+            <p>  └─ Active GitHub presence with 18+ repositories</p>
+            <p>  └─ Focus on mobile apps, AI tools, and developer utilities</p>
         </div>
     `;
 }
@@ -125,44 +136,66 @@ function loadCareerSection() {
 function loadProjectsSection() {
     const projectsSection = document.querySelector('#projects .section-content');
     projectsSection.innerHTML = `
-        <h3>>> Featured Projects</h3>
+        <h3>>> Professional Projects</h3>
         <div class="project">
             <p>[1] <strong>Samsung Weather Client</strong></p>
-            <p>    Weather application for Samsung devices</p>
-            <p>    Used by millions of users worldwide</p>
-            <p>    Tech: Kotlin, Android, Material Design, RESTful APIs</p>
+            <p>    Weather application pre-installed on Samsung Galaxy devices</p>
+            <p>    Serving millions of users globally with real-time weather data</p>
+            <p>    Tech: Kotlin, Jetpack Compose, Clean Architecture, RESTful APIs</p>
             <p>    Status: <span style="color: var(--terminal-highlight)">ACTIVE</span></p>
         </div>
         <br>
         <div class="project">
-            <p>[2] <strong>Galaxy Store Contributions</strong></p>
-            <p>    Enhanced app store experience for Samsung users</p>
-            <p>    Performance optimizations and feature development</p>
-            <p>    Tech: Kotlin, Android SDK, Clean Architecture</p>
+            <p>[2] <strong>Samsung Galaxy Store</strong></p>
+            <p>    Official app marketplace for Samsung Galaxy devices</p>
+            <p>    Enhanced performance and implemented new features</p>
+            <p>    Tech: Kotlin, Android SDK, Material Design, Backend Integration</p>
             <p>    Status: <span style="color: var(--terminal-highlight)">COMPLETED</span></p>
         </div>
         <br>
+        <h3>>> Personal Projects</h3>
         <div class="project">
-            <p>[3] <strong>AI-Enhanced Development Workflow</strong></p>
-            <p>    Leveraging AI tools for code quality and rapid prototyping</p>
-            <p>    Tech: GitHub Copilot, ChatGPT, Claude</p>
-            <p>    Status: <span style="color: var(--terminal-highlight)">ONGOING</span></p>
+            <p>[3] <strong>Frequaw Legacy</strong></p>
+            <p>    Android widget application for frequency analysis</p>
+            <p>    Open source project with community contributions</p>
+            <p>    Tech: Kotlin, Android Widgets, Material Design</p>
+            <p>    <a href="https://github.com/jujinkim/Frequaw-legacy" target="_blank">→ View on GitHub</a></p>
         </div>
         <br>
-        <h3>>> Core Skills</h3>
+        <div class="project">
+            <p>[4] <strong>Feelring AI Alarm</strong></p>
+            <p>    AI-powered alarm service prototype with music generation</p>
+            <p>    Innovative wake-up experience using AI-generated content</p>
+            <p>    Tech: Python, AI/ML, Music Generation APIs</p>
+            <p>    <a href="https://github.com/jujinkim/feelring-prototype-musicgen" target="_blank">→ View on GitHub</a></p>
+        </div>
+        <br>
+        <div class="project">
+            <p>[5] <strong>Language Learning Telegram Bot</strong></p>
+            <p>    Interactive bot for language learning assistance</p>
+            <p>    Automated language practice and vocabulary building</p>
+            <p>    Tech: Python, Telegram Bot API, Natural Language Processing</p>
+            <p>    <a href="https://github.com/jujinkim/learn-lang-telegram-bot" target="_blank">→ View on GitHub</a></p>
+        </div>
+        <br>
+        <h3>>> Technical Proficiency</h3>
         <pre>
-Languages:     [████████████████████] Kotlin
+Mobile Dev:    [████████████████████] Kotlin
                [█████████████████   ] Java
-               [████████████        ] JavaScript/TypeScript
-               [██████████          ] Python
-
-Frameworks:    [████████████████████] Android SDK
+               [████████████████████] Android SDK
                [█████████████████   ] Jetpack Compose
-               [████████████        ] Spring Boot
 
-Tools:         [████████████████████] Android Studio
-               [█████████████████   ] Git/GitHub
-               [████████████████    ] AI Dev Tools
+Backend:       [████████████        ] Python
+               [██████████          ] Node.js
+               [████████            ] Spring Boot
+
+AI/ML:         [████████████████    ] AI-Assisted Development
+               [██████████████      ] LLM Integration
+               [████████████        ] Prompt Engineering
+
+DevOps:        [█████████████████   ] Git/GitHub
+               [████████████████    ] CI/CD
+               [██████████████      ] Docker
         </pre>
     `;
 }

@@ -3,7 +3,8 @@
     "allow": [
       "WebFetch(domain:jujinkim.com)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": []
   }
