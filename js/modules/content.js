@@ -166,18 +166,22 @@ function loadProjectsSection() {
         <div class="project">
             <p>[2021] <strong>Frequaw</strong></p>
             <p>      Android app providing frequently used apps list</p>
+            <p style="color: var(--terminal-dim);">      Widget for quick access to your favorite apps</p>
             <p>      <a href="https://play.google.com/store/apps/details?id=com.jujinkim.frequaw" target="_blank">→ View on Play Store</a></p>
         </div>
         <br>
         <div class="project">
             <p>[2020] <strong>Turnipism</strong></p>
             <p>      Animal Crossing Turnip price calculator</p>
+            <p style="color: var(--terminal-dim);">      Helps maximize profits in Animal Crossing: New Horizons</p>
             <p>      <a href="https://play.google.com/store/apps/details?id=com.jujinkim.acturnip" target="_blank">→ View on Play Store</a></p>
         </div>
         <br>
         <div class="project">
             <p>[2018] <strong>WeatherBear</strong></p>
             <p>      Weather and fine dust information app</p>
+            <p style="color: var(--terminal-dim);">      Cute bear character delivers weather updates</p>
+            <p style="color: var(--terminal-dim);">      Team Olaf project at Mash-up</p>
             <p>      <a href="https://play.google.com/store/apps/details?id=com.mashupgroup.weatherbear" target="_blank">→ View on Play Store</a></p>
         </div>
         <br>
@@ -185,19 +189,29 @@ function loadProjectsSection() {
             <p>[2016] <strong>Seoul Luci Festival Project</strong></p>
             <p>      Media facade projection using Kinect</p>
             <p>      Dance capture displayed on library building</p>
+            <p style="color: var(--terminal-dim);">      Interactive art installation for public event</p>
             <p>      Tech: KinectV2, Unity3D</p>
         </div>
         <br>
         <div class="project">
             <p>[2016] <strong>AI Game Learning Project</strong></p>
             <p>      Genetic algorithm-based AI for dodging missiles</p>
+            <p style="color: var(--terminal-dim);">      Self-learning AI improves through generations</p>
             <p>      <a href="https://youtu.be/yISf3vsUQpc" target="_blank">→ Watch on YouTube</a></p>
             <p>      Tech: C#, Genetic Algorithm</p>
         </div>
         <br>
         <div class="project">
+            <p>[2016] <strong>"Flee or Face" VR Game</strong></p>
+            <p>      FPS VR multiplayer game</p>
+            <p style="color: var(--terminal-dim);">      Immersive virtual reality combat experience</p>
+            <p>      Tech: VR, Unity, Multiplayer</p>
+        </div>
+        <br>
+        <div class="project">
             <p>[2015] <strong>Billiards Visual Effect Project</strong></p>
             <p>      OpenCV-based visual effects for mini pocket ball</p>
+            <p style="color: var(--terminal-dim);">      Real-time computer vision for game enhancement</p>
             <p>      <a href="https://youtu.be/DUXIdIJ6ylM" target="_blank">→ Watch on YouTube</a></p>
             <p>      Tech: C++, OpenCV</p>
         </div>
@@ -205,7 +219,15 @@ function loadProjectsSection() {
         <div class="project">
             <p>[2015] <strong>AR Photozone for Kids</strong></p>
             <p>      AR experience with historical figures</p>
+            <p style="color: var(--terminal-dim);">      Educational AR featuring King Sejong and inventions</p>
             <p>      Tech: AR, Unity</p>
+        </div>
+        <br>
+        <div class="project">
+            <p>[2012] <strong>Automatic Game Bot</strong></p>
+            <p>      2D puzzle game automation</p>
+            <p style="color: var(--terminal-dim);">      Screen RGB value reading for automated gameplay</p>
+            <p>      Tech: Game Automation</p>
         </div>
     `;
 }
