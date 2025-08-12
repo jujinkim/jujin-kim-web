@@ -36,7 +36,7 @@ export function initProfilePicture() {
     
     imageContainer.appendChild(img);
     
-    // Add both to profile container
+    // Add both to profile container (ASCII first, then image)
     profileContainer.appendChild(asciiContainer);
     profileContainer.appendChild(imageContainer);
     
