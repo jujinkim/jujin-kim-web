@@ -83,11 +83,13 @@
     color: var(--terminal-dim);
     animation: matrix-rain var(--duration) linear infinite;
     animation-delay: var(--delay);
-    opacity: 0.6;
+    opacity: 0;
     font-size: 12px;
     pointer-events: none;
     text-shadow: 0 0 5px var(--terminal-dim);
     font-family: var(--terminal-font);
+    transform: translateY(-100vh);
+    animation-fill-mode: both;
 }
 
 @keyframes typewriter-lines {

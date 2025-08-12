@@ -82,7 +82,7 @@ function createMatrixRain() {
             span.textContent = chars[Math.floor(Math.random() * chars.length)];
             span.style.left = `${i * 20}px`;
             span.style.setProperty('--duration', `${Math.random() * 15 + 10}s`);
-            span.style.setProperty('--delay', `${Math.random() * 15}s`);
+            span.style.setProperty('--delay', '0s');
             span.style.fontSize = `${Math.random() * 6 + 10}px`;
             matrixContainer.appendChild(span);
         }
