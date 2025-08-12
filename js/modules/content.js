@@ -42,7 +42,7 @@ function loadHomeSection() {
     homeSection.innerHTML = `
         <div id="profile-picture"></div>
         <div style="text-align: left; color: var(--terminal-highlight); margin-bottom: 20px;">
-            <h2 style="font-size: 24px; margin: 0;">JUJIN KIM TERMINAL</h2>
+            <h2 style="font-size: 24px; margin: 0;">JUJIN KIM</h2>
             <p style="margin: 5px 0;">Software Engineer ${calculateAge()}</p>
             <div style="border-bottom: 2px solid var(--terminal-border); margin-top: 10px;"></div>
         </div>
@@ -53,7 +53,6 @@ function loadHomeSection() {
         </div>
         <br>
         <div style="color: var(--terminal-accent); padding: 20px 0;">
-            <p style="font-size: 18px; font-weight: bold; color: var(--terminal-highlight);">JUJIN KIM</p>
             <p>Android App Developer @ Samsung</p>
             <p>Building Weather App for millions of users</p>
             <br>
