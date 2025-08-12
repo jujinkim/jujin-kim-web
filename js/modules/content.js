@@ -60,15 +60,14 @@ function loadHomeSection() {
         <div style="animation: typewriter 0.5s steps(20);">
             <p>> Initializing system... <span style="color: var(--terminal-highlight)">[OK]</span></p>
             <p>> Loading profile... <span style="color: var(--terminal-highlight)">[OK]</span></p>
-            <p>> Connecting to GitHub... <span style="color: var(--terminal-highlight)">[OK]</span></p>
         </div>
         <br>
         <div style="color: var(--terminal-accent); padding: 20px 0;">
-            <p>Android App Developer @ Samsung</p>
-            <p>Building Weather App for millions of users</p>
+            <p>Software Developer</p>
+            <p>Building digital experiences that matter</p>
             <br>
-            <p>◆ Kotlin Expert     ◆ Clean Architecture</p>
-            <p>◆ AI-Powered Dev    ◆ Open Source Contributor</p>
+            <p>◆ App Developer     ◆ Game Developer</p>
+            <p>◆ AI Enthusiast     ◆ Service Builder</p>
             <br>
             <p>📍 Suwon, South Korea</p>
         </div>
