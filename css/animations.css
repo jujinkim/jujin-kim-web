@@ -89,3 +89,85 @@
     text-shadow: 0 0 5px var(--terminal-dim);
     font-family: var(--terminal-font);
 }
+
+@keyframes typewriter-lines {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes typewriter-text {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes blink-cursor {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.typewriter-container {
+    overflow: hidden;
+}
+
+.typewriter-line {
+    opacity: 0;
+    animation: typewriter-lines 0.3s ease-out forwards;
+    animation-delay: calc(var(--line-index) * 0.05s);
+}
+
+#terminal-header {
+    animation: typewriter-lines 0.3s ease-out;
+}
+
+#terminal-menu {
+    opacity: 0;
+    animation: typewriter-lines 0.4s ease-out 0.2s forwards;
+}
+
+#terminal-content {
+    opacity: 0;
+    animation: typewriter-lines 0.5s ease-out 0.4s forwards;
+}
+
+#terminal-footer {
+    opacity: 0;
+    animation: typewriter-lines 0.3s ease-out 0.6s forwards;
+}
+
+.content-section {
+    position: relative;
+}
+
+.content-loading {
+    opacity: 0;
+    animation: typewriter-lines 0.5s ease-out forwards;
+}
+
+@keyframes page-load {
+    0% {
+        opacity: 0;
+        filter: blur(5px);
+    }
+    50% {
+        opacity: 0.5;
+        filter: blur(2px);
+    }
+    100% {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+body {
+    animation: page-load 1s ease-out;
+}

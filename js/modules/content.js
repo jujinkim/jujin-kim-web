@@ -35,6 +35,22 @@ export function initContent() {
     loadProjectsSection();
     loadTechnologiesSection();
     loadContactSection();
+    
+    // Add typewriter effect to initial content
+    setTimeout(() => {
+        animateContent('home');
+    }, 800);
+}
+
+function animateContent(sectionId) {
+    const section = document.querySelector(`#${sectionId} .section-content`);
+    if (!section) return;
+    
+    const elements = section.querySelectorAll('p, h2, div');
+    elements.forEach((element, index) => {
+        element.style.opacity = '0';
+        element.style.animation = `typewriter-lines 0.3s ease-out ${index * 0.05}s forwards`;
+    });
 }
 
 function loadHomeSection() {

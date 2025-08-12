@@ -67,6 +67,13 @@ function showSection(sectionId) {
         targetSection.style.display = 'block';
         targetSection.classList.add('typewriter');
         
+        // Animate content when switching sections
+        const elements = targetSection.querySelectorAll('p, h2, div');
+        elements.forEach((element, index) => {
+            element.style.opacity = '0';
+            element.style.animation = `typewriter-lines 0.2s ease-out ${index * 0.03}s forwards`;
+        });
+        
         setTimeout(() => {
             targetSection.classList.remove('typewriter');
         }, 300);
