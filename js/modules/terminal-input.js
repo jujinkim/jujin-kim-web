@@ -86,8 +86,8 @@ export function initTerminalInput() {
     let outputDiv = homeContent.querySelector('.terminal-output');
     if (!outputDiv) {
         outputDiv = document.createElement('div');
-        outputDiv.className = 'terminal-output';
-        outputDiv.style.cssText = 'margin-top: 20px; color: var(--terminal-fg); min-height: 100px;';
+        outputDiv.className = 'terminal-output no-animation';
+        outputDiv.style.cssText = 'margin-top: 20px; color: var(--terminal-fg); min-height: 100px; opacity: 1;';
         
         // Insert before the cursor line
         const cursorLine = homeContent.querySelector('.cursor');
@@ -99,7 +99,7 @@ export function initTerminalInput() {
     // Update cursor line to show input
     const cursorLine = homeContent.querySelector('.cursor');
     if (cursorLine) {
-        cursorLine.innerHTML = `> <span class="terminal-input"></span><span class="cursor-blink">_</span>`;
+        cursorLine.innerHTML = `> <span class="terminal-input"></span>`;
     }
     
     isActive = true;
@@ -192,6 +192,7 @@ function processCommand() {
     const commandLine = document.createElement('div');
     commandLine.style.color = 'var(--terminal-highlight)';
     commandLine.textContent = `> ${currentInput}`;
+    commandLine.style.opacity = '1';  // Ensure immediate visibility
     outputDiv.appendChild(commandLine);
     
     // Execute command
@@ -207,6 +208,7 @@ function processCommand() {
         const resultDiv = document.createElement('div');
         resultDiv.style.whiteSpace = 'pre-wrap';
         resultDiv.style.marginBottom = '10px';
+        resultDiv.style.opacity = '1';  // Ensure immediate visibility
         resultDiv.textContent = result;
         outputDiv.appendChild(resultDiv);
     }

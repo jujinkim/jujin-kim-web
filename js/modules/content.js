@@ -81,7 +81,7 @@ function loadHomeSection() {
         </div>
         <br>
         <p style="color: var(--terminal-dim);">> Type 'help' for available commands or use Shift+1~6 for menu navigation</p>
-        <p class="cursor">> _</p>
+        <p class="cursor"></p>
     `;
 }
 
@@ -105,7 +105,7 @@ function loadAboutSection() {
         <p>  • Former Mash-up Android team leader</p>
         <p>  • Microsoft Student Partner alumnus</p>
         <br>
-        <p class="cursor">> Building elegant mobile solutions_</p>
+        <p>> Building elegant mobile solutions</p>
     `;
 }
 
@@ -334,7 +334,7 @@ function loadContactSection() {
                 <p>> Open to: Meaningful collaborations</p>
             </div>
             <br>
-            <p class="cursor">> Waiting for connection..._</p>
+            <p>> Waiting for connection...</p>
         </div>
     `;
 }

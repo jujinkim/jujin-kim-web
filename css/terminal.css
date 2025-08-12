@@ -364,4 +364,17 @@ body {
     max-height: 200px;
     overflow-y: auto;
     margin-bottom: 20px;
+    opacity: 1 !important;
+    animation: none !important;
+}
+
+.terminal-output > * {
+    opacity: 1 !important;
+    animation: none !important;
+}
+
+.no-animation,
+.no-animation * {
+    animation: none !important;
+    opacity: 1 !important;
 }
