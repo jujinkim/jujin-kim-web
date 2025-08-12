@@ -6,6 +6,10 @@
     #ascii-title {
         font-size: 12px;
     }
+    
+    #terminal-content {
+        margin-bottom: 90px;
+    }
 }
 
 @media screen and (max-width: 768px) {

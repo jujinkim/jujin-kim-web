@@ -81,6 +81,7 @@
     transition: opacity 0.3s ease;
     z-index: 2;
     opacity: 1;
+    visibility: visible;
 }
 
 .original-profile {
@@ -90,7 +91,8 @@
     width: 100%;
     height: 100%;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 1;
     overflow: hidden;
     display: flex;
@@ -109,10 +111,12 @@
 
 #profile-picture:hover .ascii-profile {
     opacity: 0;
+    visibility: hidden;
 }
 
 #profile-picture:hover .original-profile {
     opacity: 1;
+    visibility: visible;
 }
 
 .ascii-art-profile {
