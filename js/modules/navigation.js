@@ -3,10 +3,6 @@ let menuItems = [];
 let currentMenuIndex = 0;
 let isNavigating = false;
 
-export function openHelpModal() {
-    const modal = document.getElementById('help-modal');
-    modal.classList.add('active');
-}
 
 export function initNavigation() {
     menuItems = document.querySelectorAll('.menu-item');
@@ -29,7 +25,6 @@ export function initNavigation() {
     selectMenuItem(0, true);
     
     addScanLine();
-    initHelpModal();
 }
 
 function highlightMenuItem(index) {
@@ -58,6 +53,13 @@ function selectMenuItem(index, skipAnimation = false) {
 function showSection(sectionId, skipAnimation = false) {
     const sections = document.querySelectorAll('.content-section');
     
+    // Deactivate terminal input when leaving home
+    if (currentSection === 'home' && sectionId !== 'home') {
+        import('./terminal-input.js').then(module => {
+            module.deactivateTerminalInput();
+        });
+    }
+    
     sections.forEach(section => {
         section.style.display = 'none';
     });
@@ -66,12 +68,18 @@ function showSection(sectionId, skipAnimation = false) {
     if (targetSection) {
         targetSection.style.display = 'block';
         
-        // Re-initialize profile picture when showing home section
+        // Re-initialize profile picture and terminal input when showing home section
         if (sectionId === 'home') {
             import('./profile-ascii.js').then(module => {
                 setTimeout(() => {
                     module.initProfilePicture();
                 }, 100);
+            });
+            
+            import('./terminal-input.js').then(module => {
+                setTimeout(() => {
+                    module.initTerminalInput();
+                }, 200);
             });
         }
         
@@ -93,20 +101,29 @@ function showSection(sectionId, skipAnimation = false) {
 }
 
 function handleKeyboardNavigation(e) {
-    const modal = document.getElementById('help-modal');
     
-    if (modal.classList.contains('active') && e.key === 'Escape') {
-        e.preventDefault();
-        closeHelpModal();
+    // Don't handle navigation if user is typing in terminal (home section)
+    if (currentSection === 'home') {
+        // Handle Shift+number for menu navigation
+        // Shift+1 = !, Shift+2 = @, etc.
+        const shiftNumberMap = {
+            '!': 0, '@': 1, '#': 2, '$': 3, '%': 4, '^': 5,
+            '1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5
+        };
+        
+        if (e.shiftKey && shiftNumberMap.hasOwnProperty(e.key)) {
+            e.preventDefault();
+            const index = shiftNumberMap[e.key];
+            if (index < menuItems.length) {
+                selectMenuItem(index);
+            }
+            return;
+        }
+        // Let terminal input handler process other keys
         return;
     }
     
-    // Don't handle number keys if user is typing in an input
-    if (document.activeElement.tagName === 'INPUT' || 
-        document.activeElement.tagName === 'TEXTAREA') {
-        return;
-    }
-    
+    // Normal navigation for non-home sections
     switch(e.key) {
         case 'ArrowUp':
         case 'ArrowLeft':
@@ -128,13 +145,20 @@ function handleKeyboardNavigation(e) {
             e.preventDefault();
             selectMenuItem(0);
             break;
-        case 'g':
-        case 'G':
-            if (e.ctrlKey) {
-                e.preventDefault();
-                openHelpModal();
-            }
-            break;
+    }
+    
+    // Shift+number shortcuts work everywhere
+    const shiftNumberMap = {
+        '!': 0, '@': 1, '#': 2, '$': 3, '%': 4, '^': 5,
+        '1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5
+    };
+    
+    if (e.shiftKey && shiftNumberMap.hasOwnProperty(e.key)) {
+        e.preventDefault();
+        const index = shiftNumberMap[e.key];
+        if (index < menuItems.length) {
+            selectMenuItem(index);
+        }
     }
 }
 
@@ -143,23 +167,6 @@ function navigateMenu(direction) {
     highlightMenuItem(currentMenuIndex);
 }
 
-function initHelpModal() {
-    const modal = document.getElementById('help-modal');
-    const closeBtn = modal.querySelector('.modal-close');
-    
-    closeBtn.addEventListener('click', closeHelpModal);
-    
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeHelpModal();
-        }
-    });
-}
-
-function closeHelpModal() {
-    const modal = document.getElementById('help-modal');
-    modal.classList.remove('active');
-}
 
 function addScanLine() {
     const scanLine = document.createElement('div');

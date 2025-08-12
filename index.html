@@ -86,10 +86,8 @@
         <footer id="terminal-footer">
             <div class="footer-content">
                 <div class="keyboard-guide">
-                    <a href="#" onclick="event.preventDefault(); window.openHelp(); return false;"><span>^G</span> Help</a> | 
-                    <span>←→↑↓</span> Navigate | 
-                    <span>Enter</span> Select | 
-                    <a href="#" onclick="event.preventDefault(); document.querySelector('[data-section=home]').click(); return false;"><span>ESC</span> Home</a> | 
+                    <span>Shift+1~6</span> Quick Menu | 
+                    <span>Type 'help'</span> for commands | 
                     Theme: <a href="#" onclick="event.preventDefault(); window.setTheme('light'); return false;">Light</a>/<a href="#" onclick="event.preventDefault(); window.setTheme('dark'); return false;">Dark</a>/<a href="#" onclick="event.preventDefault(); window.setTheme('system'); return false;">System</a>
                 </div>
                 <div class="copyright">
@@ -99,57 +97,6 @@
         </footer>
     </div>
 
-    <div id="help-modal" class="modal-overlay">
-        <div class="modal-window">
-            <div class="modal-header">
-                <h2 class="modal-title">Terminal Help</h2>
-                <button class="modal-close" aria-label="Close">[X]</button>
-            </div>
-            <div class="modal-content">
-                <h3>Keyboard Navigation</h3>
-                <ul>
-                    <li><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> - Navigate through menu items</li>
-                    <li><kbd>Enter</kbd> - Select current menu item</li>
-                    <li><kbd>ESC</kbd> - Return to Home page</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>G</kbd> - Open this help window</li>
-                </ul>
-                
-                <h3>Theme Controls</h3>
-                <ul>
-                    <li>Click theme names in the bottom bar to switch</li>
-                    <li>Light - Always light mode</li>
-                    <li>Dark - Always dark mode</li>
-                    <li>System - Follows OS preference</li>
-                </ul>
-
-                <h3>Mouse Navigation</h3>
-                <ul>
-                    <li>Click any menu item to select it</li>
-                    <li>Hover over menu items to highlight</li>
-                </ul>
-
-                <h3>Menu Options</h3>
-                <ul>
-                    <li><strong>Home</strong> - Welcome page and quick overview</li>
-                    <li><strong>About</strong> - Personal introduction and background</li>
-                    <li><strong>Career</strong> - Professional experience timeline</li>
-                    <li><strong>Projects</strong> - Featured projects and skills</li>
-                    <li><strong>Tech</strong> - Technologies and tools</li>
-                    <li><strong>Contact</strong> - Ways to get in touch</li>
-                </ul>
-
-                <h3>Tips</h3>
-                <ul>
-                    <li>This terminal follows your system theme preference</li>
-                    <li>All animations can be disabled with reduced motion settings</li>
-                    <li>The interface is fully responsive and mobile-friendly</li>
-                </ul>
-            </div>
-            <div class="modal-footer">
-                Press <kbd>ESC</kbd> or click [X] to close
-            </div>
-        </div>
-    </div>
 
     <script type="module" src="js/main.js"></script>
 </body>

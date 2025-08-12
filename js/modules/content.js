@@ -80,7 +80,7 @@ function loadHomeSection() {
             <p>📝 <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
         </div>
         <br>
-        <p style="color: var(--terminal-dim);">> Use arrow keys to navigate menu or press number for quick select</p>
+        <p style="color: var(--terminal-dim);">> Type 'help' for available commands or use Shift+1~6 for menu navigation</p>
         <p class="cursor">> _</p>
     `;
 }

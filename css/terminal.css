@@ -237,10 +237,21 @@ body {
     border-top: none;
     border-bottom: none;
     min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .content-section {
     padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.section-content {
+    flex-grow: 1;
 }
 
 .content-section h2 {
@@ -338,4 +349,19 @@ body {
     content: '█';
     animation: blink 1s infinite;
     color: var(--terminal-highlight);
+}
+
+.cursor-blink {
+    animation: blink 1s infinite;
+    color: var(--terminal-highlight);
+}
+
+.terminal-input {
+    color: var(--terminal-fg);
+}
+
+.terminal-output {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 20px;
 }
