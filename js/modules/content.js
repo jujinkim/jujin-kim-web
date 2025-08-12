@@ -49,7 +49,7 @@ function animateContent(sectionId) {
     const elements = section.querySelectorAll('p, h2, div');
     elements.forEach((element, index) => {
         element.style.opacity = '0';
-        element.style.animation = `typewriter-lines 0.3s ease-out ${index * 0.05}s forwards`;
+        element.style.animation = `typewriter-lines 0.05s steps(1) ${index * 0.02}s forwards`;
     });
 }
 

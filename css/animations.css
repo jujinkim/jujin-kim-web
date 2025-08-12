@@ -93,11 +93,9 @@
 @keyframes typewriter-lines {
     0% {
         opacity: 0;
-        transform: translateY(10px);
     }
     100% {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
@@ -121,27 +119,27 @@
 
 .typewriter-line {
     opacity: 0;
-    animation: typewriter-lines 0.3s ease-out forwards;
+    animation: typewriter-lines 0.1s steps(1) forwards;
     animation-delay: calc(var(--line-index) * 0.05s);
 }
 
 #terminal-header {
-    animation: typewriter-lines 0.3s ease-out;
+    animation: typewriter-lines 0.1s steps(1);
 }
 
 #terminal-menu {
     opacity: 0;
-    animation: typewriter-lines 0.4s ease-out 0.2s forwards;
+    animation: typewriter-lines 0.1s steps(1) 0.1s forwards;
 }
 
 #terminal-content {
     opacity: 0;
-    animation: typewriter-lines 0.5s ease-out 0.4s forwards;
+    animation: typewriter-lines 0.1s steps(1) 0.2s forwards;
 }
 
 #terminal-footer {
     opacity: 0;
-    animation: typewriter-lines 0.3s ease-out 0.6s forwards;
+    animation: typewriter-lines 0.1s steps(1) 0.3s forwards;
 }
 
 .content-section {
@@ -153,21 +151,15 @@
     animation: typewriter-lines 0.5s ease-out forwards;
 }
 
-@keyframes page-load {
+@keyframes terminal-boot {
     0% {
         opacity: 0;
-        filter: blur(5px);
-    }
-    50% {
-        opacity: 0.5;
-        filter: blur(2px);
     }
     100% {
         opacity: 1;
-        filter: blur(0);
     }
 }
 
 body {
-    animation: page-load 1s ease-out;
+    animation: terminal-boot 0.3s steps(10);
 }

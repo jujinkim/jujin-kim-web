@@ -78,7 +78,8 @@
     align-items: center;
     justify-content: center;
     transition: opacity 0.3s ease;
-    z-index: 2;
+    z-index: 1;
+    opacity: 0;
 }
 
 .original-profile {
@@ -87,9 +88,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0;
+    opacity: 1;
     transition: opacity 0.3s ease;
-    z-index: 1;
+    z-index: 2;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -106,11 +107,11 @@
 }
 
 #profile-picture:hover .ascii-profile {
-    opacity: 0;
+    opacity: 1;
 }
 
 #profile-picture:hover .original-profile {
-    opacity: 1;
+    opacity: 0;
 }
 
 .ascii-art-profile {
