@@ -8,11 +8,9 @@ const ASCII_FONTS = {
         " ╚════╝  ╚═════╝  ╚════╝ ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝"
     ],
     modern: [
-        "   ▐▄▄▄▄• ▄▌▐▄▄▄▪   ▐ ▄     ▄ •▄ ▪  • ▌ ▄ ·. ",
-        "    ·██▐█▪██▌ ·██ ██ •█▌▐█   █▌▄▌▪██ ·██ ▐███▪",
-        "  ▪▄ ██▐█▌▐█▌▪▄ ██▐█·▐█▐▐▌   ▐▀▀▄·▐█·▐█ ▌▐▌▐█·",
-        "  ▐▌▐█▌██ ██▌▐▌▐█▌▐█▌██▐█▌   ▐█.█▌▐█▌██ ██▌▐█▌",
-        "   ▀▀▀•▀▀  █▪ ▀▀▀•▀▀▀▀▀ █▪▀█▄▀█▀ ▀▀▀▀▀  █▪▀▀▀"
+        "╦╦ ╦╦╦╔╗╔ ╦╔═╦╔╦╔",
+        "║║ ║║║║║║ ╠╩╗║║║║",
+        "╚╝╚═╝╚╝╝╚╝•╩ ╩╩╩ ╩"
     ],
     block: [
         "╦╦ ╦╦╦╔╗╔ ╦╔═╦╔╦╔",
@@ -26,6 +24,9 @@ const ASCII_FONTS = {
         "██   ██║██║   ██║██   ██║██║██║╚██╗██║   ██╔═██╗ ██║██║╚██╔╝██║",
         "╚█████╔╝╚██████╔╝╚█████╔╝██║██║ ╚████║██╗██║  ██╗██║██║ ╚═╝ ██║",
         " ╚════╝  ╚═════╝  ╚════╝ ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝"
+    ],
+    tiny: [
+        "jujin.kim"
     ]
 };
 
@@ -36,7 +37,9 @@ export function initASCIITitle() {
     const screenWidth = window.innerWidth;
     
     let selectedFont;
-    if (screenWidth < 480) {
+    if (screenWidth < 360) {
+        selectedFont = ASCII_FONTS.tiny;
+    } else if (screenWidth < 480) {
         selectedFont = ASCII_FONTS.modern;
     } else if (screenWidth < 768) {
         selectedFont = ASCII_FONTS.block;
