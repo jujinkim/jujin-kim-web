@@ -36,6 +36,12 @@
         font-size: 24px;
         line-height: 1.2;
         font-weight: bold;
+        /* Force monospace rendering on mobile */
+        font-family: monospace, 'Courier New', 'Courier';
+        letter-spacing: 0.05em;
+        /* Prevent font boosting on mobile */
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
     }
     
     #terminal-header {
@@ -101,8 +107,12 @@
     #ascii-title {
         font-size: 20px;
         line-height: 1.2;
-        letter-spacing: 2px;
+        letter-spacing: 0.05em;
         font-weight: bold;
+        /* Critical for Android devices */
+        font-family: monospace, 'Courier New', 'Courier';
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
     }
     
     #terminal-header {
