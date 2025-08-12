@@ -78,10 +78,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.5s ease;
     z-index: 2;
     opacity: 1;
-    visibility: visible;
 }
 
 .original-profile {
@@ -91,14 +90,12 @@
     width: 100%;
     height: 100%;
     opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.5s ease;
     z-index: 1;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    pointer-events: none;
     background: var(--terminal-bg);
 }
 
@@ -111,12 +108,10 @@
 
 #profile-picture:hover .ascii-profile {
     opacity: 0;
-    visibility: hidden;
 }
 
 #profile-picture:hover .original-profile {
     opacity: 1;
-    visibility: visible;
 }
 
 .ascii-art-profile {
@@ -226,7 +221,18 @@ body {
 #terminal-content {
     flex: 1;
     overflow-y: auto;
-    margin-bottom: 80px;
+    margin-bottom: 45px; /* Minimal space for footer */
+    position: relative;
+    border-top: 1px solid var(--terminal-border);
+    border-bottom: 1px solid var(--terminal-border);
+}
+
+.content-border {
+    border-left: 1px solid var(--terminal-border);
+    border-right: 1px solid var(--terminal-border);
+    border-top: none;
+    border-bottom: none;
+    min-height: 100%;
 }
 
 .content-section {
