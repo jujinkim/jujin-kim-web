@@ -25,8 +25,8 @@ export function initNavigation() {
     
     document.addEventListener('keydown', handleKeyboardNavigation);
     
-    // Set Home as default active
-    selectMenuItem(0);
+    // Set Home as default active without animation
+    selectMenuItem(0, true);
     
     addScanLine();
     initHelpModal();
@@ -40,7 +40,7 @@ function highlightMenuItem(index) {
     menuItems[index].focus();
 }
 
-function selectMenuItem(index) {
+function selectMenuItem(index, skipAnimation = false) {
     const menuItem = menuItems[index];
     const sectionId = menuItem.dataset.section;
     
@@ -50,12 +50,12 @@ function selectMenuItem(index) {
     
     menuItem.classList.add('active');
     
-    showSection(sectionId);
+    showSection(sectionId, skipAnimation);
     currentSection = sectionId;
     highlightMenuItem(index);
 }
 
-function showSection(sectionId) {
+function showSection(sectionId, skipAnimation = false) {
     const sections = document.querySelectorAll('.content-section');
     
     sections.forEach(section => {
@@ -65,18 +65,30 @@ function showSection(sectionId) {
     const targetSection = document.getElementById(sectionId);
     if (targetSection) {
         targetSection.style.display = 'block';
-        targetSection.classList.add('typewriter');
         
-        // Animate content when switching sections
-        const elements = targetSection.querySelectorAll('p, h2, div');
-        elements.forEach((element, index) => {
-            element.style.opacity = '0';
-            element.style.animation = `typewriter-lines 0.05s steps(1) ${index * 0.02}s forwards`;
-        });
+        // Re-initialize profile picture when showing home section
+        if (sectionId === 'home') {
+            import('./profile-ascii.js').then(module => {
+                setTimeout(() => {
+                    module.initProfilePicture();
+                }, 100);
+            });
+        }
         
-        setTimeout(() => {
-            targetSection.classList.remove('typewriter');
-        }, 300);
+        if (!skipAnimation) {
+            targetSection.classList.add('typewriter');
+            
+            // Animate content when switching sections
+            const elements = targetSection.querySelectorAll('p, h2, div');
+            elements.forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.animation = `typewriter-lines 0.05s steps(1) ${index * 0.02}s forwards`;
+            });
+            
+            setTimeout(() => {
+                targetSection.classList.remove('typewriter');
+            }, 300);
+        }
     }
 }
 

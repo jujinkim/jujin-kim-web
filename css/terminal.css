@@ -79,8 +79,8 @@
     align-items: center;
     justify-content: center;
     transition: opacity 0.5s ease;
-    z-index: 2;
     opacity: 1;
+    pointer-events: none;
 }
 
 .original-profile {
@@ -91,12 +91,12 @@
     height: 100%;
     opacity: 0;
     transition: opacity 0.5s ease;
-    z-index: 1;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--terminal-bg);
+    pointer-events: none;
 }
 
 .original-profile img {
@@ -237,7 +237,6 @@ body {
 
 .content-section {
     padding: 20px;
-    animation: typewriter 0.3s steps(20);
 }
 
 .content-section h2 {

@@ -35,11 +35,6 @@ export function initContent() {
     loadProjectsSection();
     loadTechnologiesSection();
     loadContactSection();
-    
-    // Add typewriter effect to initial content
-    setTimeout(() => {
-        animateContent('home');
-    }, 800);
 }
 
 function animateContent(sectionId) {
