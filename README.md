@@ -3,7 +3,7 @@
 A terminal-style personal portfolio website with a CLI-inspired interface.
 
 ## 🚀 Live Demo
-Visit: [jujinkim.com](https://jujinkim.com)
+Visit: [jujin.kim](https://jujin.kim)
 
 ## ✨ Features
 - **Terminal Aesthetics**: Full CLI-style interface with monospace fonts
@@ -53,25 +53,6 @@ jujin-kim-web/
     └── profile.png
 ```
 
-## 🚀 Getting Started
-
-### Clone the repository
-```bash
-git clone git@github.com:jujinkim/jujin-kim-web.git
-cd jujin-kim-web
-```
-
-### Run locally
-```bash
-# Python
-python -m http.server 8000
-
-# Node.js
-npx http-server
-
-# Or simply open index.html in your browser
-```
-
 ## 👤 Author
 **Jujin Kim**
 - GitHub: [@jujinkim](https://github.com/jujinkim)
@@ -79,4 +60,4 @@ npx http-server
 - Email: jujin@jujin.kim
 
 ## 📄 License
-© 2024 Jujin Kim. All rights reserved.
+© 2025 Jujin Kim. All rights reserved.
