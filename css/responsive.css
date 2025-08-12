@@ -9,6 +9,10 @@
 }
 
 @media screen and (max-width: 768px) {
+    #terminal-content {
+        margin-bottom: 100px;
+    }
+    
     #profile-picture {
         width: 220px;
         height: 130px;
@@ -71,6 +75,10 @@
 }
 
 @media screen and (max-width: 480px) {
+    #terminal-content {
+        margin-bottom: 120px;
+    }
+    
     #profile-picture {
         width: 180px;
         height: 110px;
