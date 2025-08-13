@@ -3,9 +3,6 @@
         padding: 15px;
     }
     
-    #ascii-title {
-        font-size: 12px;
-    }
     
     #terminal-content {
         margin-bottom: 45px;
@@ -32,17 +29,6 @@
         padding: 10px;
     }
     
-    #ascii-title {
-        font-size: 24px;
-        line-height: 1.2;
-        font-weight: bold;
-        /* Force monospace rendering on mobile */
-        font-family: monospace, 'Courier New', 'Courier';
-        letter-spacing: 0.05em;
-        /* Prevent font boosting on mobile */
-        -webkit-text-size-adjust: 100%;
-        text-size-adjust: 100%;
-    }
     
     #terminal-header {
         margin-bottom: 15px;
@@ -104,16 +90,6 @@
         padding: 5px;
     }
     
-    #ascii-title {
-        font-size: 20px;
-        line-height: 1.2;
-        letter-spacing: 0.05em;
-        font-weight: bold;
-        /* Critical for Android devices */
-        font-family: monospace, 'Courier New', 'Courier';
-        -webkit-text-size-adjust: 100%;
-        text-size-adjust: 100%;
-    }
     
     #terminal-header {
         margin-bottom: 10px;
@@ -156,13 +132,6 @@
 }
 
 @media screen and (max-width: 360px) {
-    #ascii-title {
-        font-size: 18px;
-        line-height: 1.2;
-        letter-spacing: 1px;
-        font-weight: bold;
-    }
-    
     #terminal-header {
         margin-bottom: 8px;
         padding-top: 8px;
@@ -179,9 +148,6 @@
         font-size: 16px;
     }
     
-    #ascii-title {
-        font-size: 16px;
-    }
     
     #terminal-header {
         padding-top: 60px;
