@@ -161,7 +161,7 @@ body {
     white-space: pre;
     font-weight: bold;
     text-shadow: 0 0 10px var(--terminal-dim);
-    font-family: 'Courier New', 'Consolas', monospace;
+    font-family: var(--terminal-font);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
