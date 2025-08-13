@@ -11,7 +11,7 @@
 
 @media screen and (max-width: 768px) {
     #terminal-content {
-        margin-bottom: 55px; /* Slightly more for column layout */
+        margin-bottom: 80px; /* Increased for mobile footer */
     }
     
     #profile-picture {
@@ -72,7 +72,7 @@
 
 @media screen and (max-width: 480px) {
     #terminal-content {
-        margin-bottom: 65px; /* Mobile footer space */
+        margin-bottom: 100px; /* Increased mobile footer space */
     }
     
     #profile-picture {
@@ -135,6 +135,10 @@
     #terminal-header {
         margin-bottom: 8px;
         padding-top: 8px;
+    }
+    
+    #terminal-content {
+        margin-bottom: 120px; /* Extra space for smallest screens */
     }
 }
 
