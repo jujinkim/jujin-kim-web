@@ -63,8 +63,9 @@
     cursor: pointer;
     transition: transform 0.3s ease;
     overflow: hidden;
-    display: block;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #profile-picture:hover {
@@ -149,6 +150,9 @@ body {
     text-align: center;
     margin-bottom: 30px;
     padding-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #ascii-title {
@@ -163,17 +167,18 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
+    max-width: 820px;
 }
 
 /* ASCII Title SVG Image */
 .ascii-title-img {
-    max-width: 820px;
     width: 100%;
     height: auto;
     display: block;
-    margin: 0 auto;
 }
 
 /* Apply tint color to SVG */
@@ -275,6 +280,9 @@ body {
 
 .section-content {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .content-section h2 {

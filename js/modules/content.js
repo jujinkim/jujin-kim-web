@@ -52,32 +52,34 @@ function loadHomeSection() {
     const homeSection = document.querySelector('#home .section-content');
     homeSection.innerHTML = `
         <div id="profile-picture"></div>
-        <div style="text-align: left; color: var(--terminal-highlight); margin-bottom: 20px;">
-            <h2 style="font-size: 24px; margin: 0;">JUJIN KIM</h2>
-            <p style="margin: 5px 0;">Software Engineer ${calculateAge()}</p>
-            <div style="border-bottom: 2px solid var(--terminal-border); margin-top: 10px;"></div>
-        </div>
-        <div style="animation: typewriter 0.5s steps(20);">
-            <p>> Initializing system... <span style="color: var(--terminal-highlight)">[OK]</span></p>
-            <p>> Loading profile... <span style="color: var(--terminal-highlight)">[OK]</span></p>
-        </div>
-        <br>
-        <div style="color: var(--terminal-accent); padding: 20px 0;">
-            <p>Software Developer</p>
-            <p>Building digital experiences that matter</p>
+        <div class="home-content" style="width: 100%; max-width: 600px;">
+            <div style="text-align: left; color: var(--terminal-highlight); margin-bottom: 20px;">
+                <h2 style="font-size: 24px; margin: 0;">JUJIN KIM</h2>
+                <p style="margin: 5px 0;">Software Engineer ${calculateAge()}</p>
+                <div style="border-bottom: 2px solid var(--terminal-border); margin-top: 10px;"></div>
+            </div>
+            <div style="animation: typewriter 0.5s steps(20);">
+                <p>> Initializing system... <span style="color: var(--terminal-highlight)">[OK]</span></p>
+                <p>> Loading profile... <span style="color: var(--terminal-highlight)">[OK]</span></p>
+            </div>
             <br>
-            <p>◆ App Developer     ◆ Game Developer</p>
-            <p>◆ AI Enthusiast     ◆ Service Builder</p>
+            <div style="color: var(--terminal-accent); padding: 20px 0;">
+                <p>Software Developer</p>
+                <p>Building digital experiences that matter</p>
+                <br>
+                <p>◆ App Developer     ◆ Game Developer</p>
+                <p>◆ AI Enthusiast     ◆ Service Builder</p>
+                <br>
+                <p>📍 Suwon, South Korea</p>
+            </div>
             <br>
-            <p>📍 Suwon, South Korea</p>
-        </div>
-        <br>
-        <p style="color: var(--terminal-highlight);">> Quick Access:</p>
-        <div style="margin-left: 20px;">
-            <p>📧 <a href="mailto:jujin@jujin.kim">jujin@jujin.kim</a></p>
-            <p>💻 <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
-            <p>💼 <a href="https://linkedin.com/in/jujinkim" target="_blank">linkedin.com/in/jujinkim</a></p>
-            <p>📝 <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
+            <p style="color: var(--terminal-highlight);">> Quick Access:</p>
+            <div style="margin-left: 20px;">
+                <p>📧 <a href="mailto:jujin@jujin.kim">jujin@jujin.kim</a></p>
+                <p>💻 <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
+                <p>💼 <a href="https://linkedin.com/in/jujinkim" target="_blank">linkedin.com/in/jujinkim</a></p>
+                <p>📝 <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
+            </div>
         </div>
         <br>
         <p style="color: var(--terminal-dim);">> Type 'help' for available commands or use Shift+1~6 for menu navigation</p>
