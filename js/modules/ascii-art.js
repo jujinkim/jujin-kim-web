@@ -1,76 +1,49 @@
-const ASCII_FONTS = {
-    large: [
-        "     ██╗██╗   ██╗     ██╗██╗███╗   ██╗   ██╗  ██╗██╗███╗   ███╗",
-        "     ██║██║   ██║     ██║██║████╗  ██║   ██║ ██╔╝██║████╗ ████║",
-        "     ██║██║   ██║     ██║██║██╔██╗ ██║   █████╔╝ ██║██╔████╔██║",
-        "██   ██║██║   ██║██   ██║██║██║╚██╗██║   ██╔═██╗ ██║██║╚██╔╝██║",
-        "╚█████╔╝╚██████╔╝╚█████╔╝██║██║ ╚████║██╗██║  ██╗██║██║ ╚═╝ ██║",
-        " ╚════╝  ╚═════╝  ╚════╝ ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝"
-    ],
-    modern: [
-        "╔╦╗╦░╦╔╦╗╔╦╗╔╗╔░╦╔═╔╦╗╔╦╗",
-        "░║░║░║░║░░║░║║║░╠╩╗░║░║║║",
-        "╚╝░╚═╝╚╝░╚╩╝╝╚╝•╩░╩╚╩╝╩░╩"
-    ],
-    block: [
-        "▀▀█░█░█░▀▀█░███░█▀█░░░█░█░███░█▀█▀█",
-        "░░█░█░█░░░█░░█░░█░█░░░█▀▄░░█░░█░█░█",
-        "▀▀░░▀▀▀░▀▀░░███░▀░▀░▀░▀░▀░███░▀░▀░▀"
-    ],
-    classic: [
-        "     ██╗██╗   ██╗     ██╗██╗███╗   ██╗   ██╗  ██╗██╗███╗   ███╗",
-        "     ██║██║   ██║     ██║██║████╗  ██║   ██║ ██╔╝██║████╗ ████║",
-        "     ██║██║   ██║     ██║██║██╔██╗ ██║   █████╔╝ ██║██╔████╔██║",
-        "██   ██║██║   ██║██   ██║██║██║╚██╗██║   ██╔═██╗ ██║██║╚██╔╝██║",
-        "╚█████╔╝╚██████╔╝╚█████╔╝██║██║ ╚████║██╗██║  ██╗██║██║ ╚═╝ ██║",
-        " ╚════╝  ╚═════╝  ╚════╝ ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝"
-    ],
-    tiny: [
-        "┌─────────────┐",
-        "│ jujin.kim   │",
-        "└─────────────┘"
-    ]
-};
-
 let resizeHandler = null;
 
 export function initASCIITitle() {
     const titleElement = document.getElementById('ascii-title');
-    const screenWidth = window.innerWidth;
     
-    // Always use the large (desktop) version
-    const selectedFont = ASCII_FONTS.large;
+    // Clear any existing content
+    titleElement.innerHTML = '';
     
-    // Use non-breaking spaces for consistent rendering
-    const processedFont = selectedFont.map(line => 
-        line.replace(/ /g, '\u00A0')
-    );
+    // Create an img element for the SVG
+    const img = document.createElement('img');
+    img.src = 'img/ascii-title.svg';
+    img.alt = 'JUJIN.KIM';
+    img.className = 'ascii-title-img';
     
-    titleElement.textContent = processedFont.join('\n');
-    
-    // Adjust font size based on screen width
-    if (screenWidth < 360) {
-        titleElement.style.fontSize = '4px';
-        titleElement.style.lineHeight = '4px';
-    } else if (screenWidth < 480) {
-        titleElement.style.fontSize = '5px';
-        titleElement.style.lineHeight = '5px';
-    } else if (screenWidth < 768) {
-        titleElement.style.fontSize = '7px';
-        titleElement.style.lineHeight = '7px';
-    } else if (screenWidth < 1200) {
-        titleElement.style.fontSize = '10px';
-        titleElement.style.lineHeight = '10px';
-    } else {
-        titleElement.style.fontSize = '14px';
-        titleElement.style.lineHeight = '14px';
-    }
+    // Add to container
+    titleElement.appendChild(img);
     
     if (!resizeHandler) {
         resizeHandler = debounce(() => {
-            initASCIITitle();
+            // Trigger resize adjustments if needed
+            adjustTitleSize();
         }, 250);
         window.addEventListener('resize', resizeHandler);
+    }
+    
+    // Initial size adjustment
+    adjustTitleSize();
+}
+
+function adjustTitleSize() {
+    const titleImg = document.querySelector('.ascii-title-img');
+    if (!titleImg) return;
+    
+    const screenWidth = window.innerWidth;
+    
+    // Adjust the max width based on screen size
+    if (screenWidth < 360) {
+        titleImg.style.maxWidth = '280px';
+    } else if (screenWidth < 480) {
+        titleImg.style.maxWidth = '340px';
+    } else if (screenWidth < 768) {
+        titleImg.style.maxWidth = '500px';
+    } else if (screenWidth < 1200) {
+        titleImg.style.maxWidth = '700px';
+    } else {
+        titleImg.style.maxWidth = '820px';
     }
 }
 

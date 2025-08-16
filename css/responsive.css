@@ -20,9 +20,9 @@
         margin: 10px auto 20px;
     }
     
-    .ascii-art-profile {
-        font-size: 3px;
-        line-height: 3px;
+    
+    .ascii-profile-img {
+        transform: scale(0.8);
     }
     
     #terminal-container {
@@ -81,9 +81,9 @@
         margin: 5px auto 15px;
     }
     
-    .ascii-art-profile {
-        font-size: 2.5px;
-        line-height: 2.5px;
+    
+    .ascii-profile-img {
+        transform: scale(0.7);
     }
     
     #terminal-container {
@@ -139,6 +139,10 @@
     
     #terminal-content {
         margin-bottom: 120px; /* Extra space for smallest screens */
+    }
+    
+    .ascii-profile-img {
+        transform: scale(0.6);
     }
 }
 

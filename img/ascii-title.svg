@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 72" preserveAspectRatio="xMidYMid meet">
+  <style>
+    text {
+      font-family: 'Share Tech Mono', 'Courier New', monospace;
+      font-size: 12px;
+      fill: currentColor;
+      white-space: pre;
+    }
+  </style>
+  <text x="0" y="12">     ██╗██╗   ██╗     ██╗██╗███╗   ██╗   ██╗  ██╗██╗███╗   ███╗</text>
+  <text x="0" y="24">     ██║██║   ██║     ██║██║████╗  ██║   ██║ ██╔╝██║████╗ ████║</text>
+  <text x="0" y="36">     ██║██║   ██║     ██║██║██╔██╗ ██║   █████╔╝ ██║██╔████╔██║</text>
+  <text x="0" y="48">██   ██║██║   ██║██   ██║██║██║╚██╗██║   ██╔═██╗ ██║██║╚██╔╝██║</text>
+  <text x="0" y="60">╚█████╔╝╚██████╔╝╚█████╔╝██║██║ ╚████║██╗██║  ██╗██║██║ ╚═╝ ██║</text>
+  <text x="0" y="72"> ╚════╝  ╚═════╝  ╚════╝ ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝</text>
+</svg>

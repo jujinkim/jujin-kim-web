@@ -9,10 +9,16 @@ export function initProfilePicture() {
     // Clear any existing content
     profileContainer.innerHTML = '';
     
-    // Create ASCII container
+    // Create ASCII SVG container
     const asciiContainer = document.createElement('div');
     asciiContainer.className = 'ascii-profile';
-    asciiContainer.id = 'ascii-profile';
+    
+    // Create SVG image
+    const asciiImg = document.createElement('img');
+    asciiImg.src = 'img/profile-ascii.svg';
+    asciiImg.alt = 'Jujin Kim ASCII Portrait';
+    asciiImg.className = 'ascii-profile-img';
+    asciiContainer.appendChild(asciiImg);
     
     // Create original image container
     const imageContainer = document.createElement('div');
@@ -40,99 +46,7 @@ export function initProfilePicture() {
     profileContainer.appendChild(asciiContainer);
     profileContainer.appendChild(imageContainer);
     
-    // Use ASCII art
-    asciiContainer.innerHTML = getFallbackASCII();
-    
     console.log('Profile picture initialized');
-}
-
-function generateASCII(img, container) {
-    // Create canvas for image processing
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    
-    // Set canvas size (smaller for ASCII conversion)
-    const width = 60;
-    const height = 60;
-    canvas.width = width;
-    canvas.height = height;
-    
-    // Draw and scale image
-    ctx.drawImage(img, 0, 0, width, height);
-    
-    try {
-        // Get image data
-        const imageData = ctx.getImageData(0, 0, width, height);
-        const pixels = imageData.data;
-        
-        // ASCII characters from dark to light
-        const asciiChars = '@%#*+=-:. ';
-        let ascii = '<pre class="ascii-art-profile">';
-        
-        for (let y = 0; y < height; y += 2) {
-            for (let x = 0; x < width; x++) {
-                const offset = (y * width + x) * 4;
-                const r = pixels[offset];
-                const g = pixels[offset + 1];
-                const b = pixels[offset + 2];
-                
-                // Calculate brightness
-                const brightness = (r + g + b) / 3;
-                
-                // Map brightness to ASCII character
-                const charIndex = Math.floor((brightness / 255) * (asciiChars.length - 1));
-                ascii += asciiChars[asciiChars.length - 1 - charIndex];
-            }
-            ascii += '\n';
-        }
-        
-        ascii += '</pre>';
-        container.innerHTML = ascii;
-    } catch (e) {
-        // CORS fallback - use predefined ASCII art
-        container.innerHTML = getFallbackASCII();
-    }
-}
-
-function getFallbackASCII() {
-    // Detailed ASCII art portrait
-    return `<pre class="ascii-art-profile">
-▓▓                          ░▒▓▓▒                    ▓▓▓█▓░░░░░ 
-▒░                    ░▓▒░  ░▒▓▓▒                    ▒▓▒░░ ░▓▓▒░
-▒░░                  ▓███████████                   ░▒▒▒▓████▒░░
-▒░░                ▒▓████████████                   ░██▒ ░░▒▒▒▓▓
-░░░░            ▓█████████████████▓▒                  ▒████▒▒███
-░░░░░░        ▓███████████████████████                   ▒     █
-▒▒▒▒░░░░░░░░▒██████████████████████████▓               ▒██      
-▒▒▒▒▒▒▒░░░░████████████████▓▓████████████                ░      
- ▒▒▒▒▒▒▒▒▒██████████▓▒░         ▒████████▓  ▒▓      ▒░      ░   
-  ▒▒▒▒▒▒▒█████████░               ░███████▓████▒                
-  ░▒▒▒▒▒████████▓░                  ▓████████████              ░
-   ▒▒▒▓▓████████░             ░░░    ░████████████             ░
-   ░▒▓▓████████▒         ░▓▓▓▓░    ░███████████████             
-    ▒▓▓████████▓▒▒▓▓▒    ░░░░░▒█████ █░ ██▒▓████████            
-     ▓▓█████████▓░░▒░░░░░██████████ ▓    ▓▒ ▒███████▒           
-     ▒▓██████▒░   ░▒██████████████░▒▒    ░▓▒ ▓███████           
-      ▒█████▒▒▒▓█████▓▒█░ ░▓█████▓░       ░░░░███████           
-       ▓█████████████░█▓     ░░░               ▒▒░              
-       ▒▓███████████░██░      ░▒▒░░░▒░░                         
-       ░▒▓██████████▒░░░   ░▓█▓▓▒▒▓▒▒▒▒░▒▒▒▓▒░░                 
-       ░▒▒▓██░       ░▒▒██▓▓▓▒░░░▒▓▓▓▒▒▒▒▒▒████████▓▒░░░        
- ▒    ░▒▒▒▒▒▓▓░░░   ░░░░▒▒░░░░░▒▒▓██▒░▒▒▒▒▓█████████████████████
-█▓  ░░▒▒▓▓▓▓▓█▓▒▒░░░░░░░░▒▓▓██████▒░░▒▒▒▒▓▓█████████████████████
-█▓░░▒▒▓▓▓████▒▓▓▒▒▒░░▒▒▓██▓▒█▓▒▒░░  ░▒▒▒▓▓██████████████████████
-█▓▒▒▒▓▓███████▒▓▓▒▒▒▒▒▒▓██▓▒▒▒▓▒░   ░░▒▒▓▓█▓▒▒▒▒████████████████
-██▒▓▓▓███████████▓▓▓▒▒▒▒▒▒▒▒▒▒▒░░░░░░░▒▒▓▓▓▒▒▒▒▒████████████████
-██▓▓███████████████▓▓▓▓▒▒░░▒░░░░░░░░░▒▓▓▓▓▓▒▒▒▓█████████████████
-████████████████▒▒▒████▓▒▒▒▒░░▒▒▒▒▒▓▓▓▓█▓▓▒▒▒▒░     ████████████
-███████████████▒▒▒▒▒▒███▓▓▒▒▒▓▓█████████▓▓▒▒░░░     ░███████████
-██████▒░  ░░▒▒▒▒▒▒▒▒▒▓████████████████▓▓▓▒▒▒░░░      ▓██████████
-█▒░                ░▒▒▓███████████████▓▓▓▒▒▒░░░       ▓█████████
-                        ▓████████████▓▓▓▓▒▒▒░░         █████████
-░                   ░░░▓██████████▓▓▓▓▓▓▒▒▒░░░         █████████
-▒▒▒▒▒░░░░    ░░▒▓▓▓▓▓▓██████████████▓▓▓▓▒▒▒░░          ▒████████
-▓▓▒▓▓▓▒▒▓▓████████▓▓█████████▓▓█████▓▓▓▒▒▒░             ▓███████
-</pre>`;
 }
 
 export function updateProfilePosition() {
