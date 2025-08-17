@@ -33,18 +33,20 @@ function adjustTitleSize() {
     
     const screenWidth = window.innerWidth;
     
-    // Adjust the max width based on screen size
+    // Adjust the width based on screen size
     if (screenWidth < 360) {
-        titleImg.style.maxWidth = '280px';
+        titleImg.style.width = '280px';
     } else if (screenWidth < 480) {
-        titleImg.style.maxWidth = '340px';
+        titleImg.style.width = '340px';
     } else if (screenWidth < 768) {
-        titleImg.style.maxWidth = '500px';
+        titleImg.style.width = '500px';
     } else if (screenWidth < 1200) {
-        titleImg.style.maxWidth = '700px';
+        titleImg.style.width = '700px';
     } else {
-        titleImg.style.maxWidth = '820px';
+        titleImg.style.width = '820px';
     }
+    
+    titleImg.style.height = 'auto';
 }
 
 function debounce(func, wait) {

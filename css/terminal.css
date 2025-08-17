@@ -167,18 +167,16 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: 820px;
+    width: auto;
+    display: inline-block;
 }
 
 /* ASCII Title SVG Image */
 .ascii-title-img {
-    width: 100%;
+    width: auto;
     height: auto;
     display: block;
+    max-width: 100%;
 }
 
 /* Apply tint color to SVG */
