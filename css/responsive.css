@@ -21,9 +21,6 @@
     }
     
     
-    .ascii-profile-img {
-        transform: scale(0.8);
-    }
     
     #terminal-container {
         padding: 10px;
@@ -82,9 +79,6 @@
     }
     
     
-    .ascii-profile-img {
-        transform: scale(0.7);
-    }
     
     #terminal-container {
         padding: 5px;
@@ -141,9 +135,6 @@
         margin-bottom: 120px; /* Extra space for smallest screens */
     }
     
-    .ascii-profile-img {
-        transform: scale(0.6);
-    }
 }
 
 @media screen and (min-width: 1920px) {

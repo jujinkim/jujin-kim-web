@@ -228,10 +228,6 @@ body {
     color: var(--terminal-bg);
 }
 
-.menu-item.focused {
-    outline: 1px dashed var(--terminal-highlight);
-    outline-offset: 2px;
-}
 
 .menu-item.active {
     background-color: var(--terminal-fg);
