@@ -52,7 +52,7 @@ function loadHomeSection() {
     const homeSection = document.querySelector('#home .section-content');
     homeSection.innerHTML = `
         <div id="profile-picture"></div>
-        <div class="home-content" style="width: 100%; max-width: 600px;">
+        <div class="home-content" style="width: 100%;">
             <div style="text-align: left; color: var(--terminal-highlight); margin-bottom: 20px;">
                 <h2 style="font-size: 24px; margin: 0;">JUJIN KIM</h2>
                 <p style="margin: 5px 0;">Software Engineer ${calculateAge()}</p>
