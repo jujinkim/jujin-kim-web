@@ -15,9 +15,9 @@
     }
     
     #profile-picture {
-        width: 220px;
-        height: 130px;
-        margin: 10px auto 20px;
+        width: 180px;
+        height: 180px;
+        margin: 10px 0 20px 0;
     }
     
     
@@ -76,9 +76,9 @@
     }
     
     #profile-picture {
-        width: 180px;
-        height: 110px;
-        margin: 5px auto 15px;
+        width: 150px;
+        height: 150px;
+        margin: 5px 0 15px 0;
     }
     
     
