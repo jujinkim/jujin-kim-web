@@ -82,7 +82,6 @@ function loadHomeSection() {
             </div>
         </div>
         <br>
-        <p style="color: var(--terminal-dim);">> Type 'help' for available commands or use Shift+1~6 for menu navigation</p>
         <p class="cursor"></p>
     `;
 }
