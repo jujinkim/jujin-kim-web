@@ -1,11 +1,15 @@
 let currentSection = 'home';
+let menuItems = [];
 
 export function initNavigation() {
-    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems = document.querySelectorAll('.menu-item');
     
     menuItems.forEach((item, index) => {
         item.addEventListener('click', () => selectMenuItem(item, index));
     });
+    
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', handleKeyboardShortcuts);
     
     // Set Home as default active without animation
     selectMenuItem(menuItems[0], 0, true);
@@ -73,6 +77,28 @@ function showSection(sectionId, skipAnimation = false) {
                 targetSection.classList.remove('typewriter');
             }, 300);
         }
+    }
+}
+
+function handleKeyboardShortcuts(e) {
+    // Shift+number shortcuts for menu navigation
+    const shiftNumberMap = {
+        '!': 0, '@': 1, '#': 2, '$': 3, '%': 4, '^': 5,
+        '1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5
+    };
+    
+    if (e.shiftKey && shiftNumberMap.hasOwnProperty(e.key)) {
+        e.preventDefault();
+        const index = shiftNumberMap[e.key];
+        if (index < menuItems.length) {
+            selectMenuItem(menuItems[index], index);
+        }
+    }
+    
+    // ESC key to return to Home
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        selectMenuItem(menuItems[0], 0);
     }
 }
 
