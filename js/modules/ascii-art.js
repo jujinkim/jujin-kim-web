@@ -15,32 +15,19 @@ export function initASCIITitle() {
     // Clear any existing content
     titleElement.innerHTML = '';
     
-    // Create a container div for the ASCII art
-    const container = document.createElement('div');
-    container.className = 'ascii-title-container';
-    container.style.fontFamily = '"Courier New", Courier, monospace';
-    container.style.lineHeight = '1';
-    container.style.letterSpacing = '0';
-    container.style.whiteSpace = 'nowrap';
+    // Create a pre element for better monospace handling
+    const pre = document.createElement('pre');
+    pre.className = 'ascii-title-text';
+    pre.style.margin = '0';
+    pre.style.padding = '0';
+    pre.style.fontFamily = 'Consolas, "Courier New", monospace';
+    pre.style.lineHeight = '1';
     
-    // Process each line
-    ASCII_TITLE.forEach(line => {
-        const lineDiv = document.createElement('div');
-        lineDiv.className = 'ascii-title-line';
-        lineDiv.style.height = '1em';
-        lineDiv.style.fontFamily = 'inherit';
-        lineDiv.style.whiteSpace = 'pre';
-        
-        // Replace spaces with a visible character that has consistent width
-        // Using figure space (U+2007) which is designed to be the width of digits
-        const processedLine = line.replace(/ /g, '\u2007');
-        lineDiv.textContent = processedLine;
-        
-        container.appendChild(lineDiv);
-    });
+    // Join lines with newlines, keeping original spaces
+    pre.textContent = ASCII_TITLE.join('\n');
     
     // Add to main element
-    titleElement.appendChild(container);
+    titleElement.appendChild(pre);
     
     if (!resizeHandler) {
         resizeHandler = debounce(() => {
@@ -54,22 +41,22 @@ export function initASCIITitle() {
 }
 
 function adjustTitleSize() {
-    const container = document.querySelector('.ascii-title-container');
-    if (!container) return;
+    const pre = document.querySelector('.ascii-title-text');
+    if (!pre) return;
     
     const screenWidth = window.innerWidth;
     
     // Adjust font size based on screen width
     if (screenWidth < 360) {
-        container.style.fontSize = '4px';
+        pre.style.fontSize = '4px';
     } else if (screenWidth < 480) {
-        container.style.fontSize = '5px';
+        pre.style.fontSize = '5px';
     } else if (screenWidth < 768) {
-        container.style.fontSize = '7px';
+        pre.style.fontSize = '7px';
     } else if (screenWidth < 1200) {
-        container.style.fontSize = '10px';
+        pre.style.fontSize = '10px';
     } else {
-        container.style.fontSize = '14px';
+        pre.style.fontSize = '14px';
     }
 }
 
