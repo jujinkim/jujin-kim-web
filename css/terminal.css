@@ -177,7 +177,7 @@ body {
     font-weight: bold;
     text-shadow: 0 0 10px var(--terminal-dim);
     white-space: pre;
-    overflow-x: auto;
+    overflow: hidden;
     font-variant-ligatures: none;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
