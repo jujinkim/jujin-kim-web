@@ -171,14 +171,21 @@ body {
     display: inline-block;
 }
 
-/* ASCII Title Text */
-.ascii-title-text {
+/* ASCII Title Container */
+.ascii-title-container {
     color: var(--terminal-highlight);
     font-weight: bold;
     text-shadow: 0 0 10px var(--terminal-dim);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: auto;
+    text-rendering: optimizeSpeed;
+    font-variant-ligatures: none;
+}
+
+.ascii-title-line {
+    margin: 0;
+    padding: 0;
+    line-height: 1;
 }
 
 /* Apply tint color to SVG */
