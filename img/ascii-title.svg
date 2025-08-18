@@ -1,10 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 72" preserveAspectRatio="xMidYMid meet">
   <style>
     text {
-      font-family: 'Share Tech Mono', 'Courier New', monospace;
+      font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
       font-size: 12px;
       fill: currentColor;
       white-space: pre;
+      letter-spacing: 0;
+      font-variant-ligatures: none;
+      font-feature-settings: "liga" 0;
     }
   </style>
   <text x="0" y="12">     ██╗██╗   ██╗     ██╗██╗███╗   ██╗   ██╗  ██╗██╗███╗   ███╗</text>

@@ -1,3 +1,12 @@
+const ASCII_TITLE = [
+    "     ██╗██╗   ██╗     ██╗██╗███╗   ██╗   ██╗  ██╗██╗███╗   ███╗",
+    "     ██║██║   ██║     ██║██║████╗  ██║   ██║ ██╔╝██║████╗ ████║",
+    "     ██║██║   ██║     ██║██║██╔██╗ ██║   █████╔╝ ██║██╔████╔██║",
+    "██   ██║██║   ██║██   ██║██║██║╚██╗██║   ██╔═██╗ ██║██║╚██╔╝██║",
+    "╚█████╔╝╚██████╔╝╚█████╔╝██║██║ ╚████║██╗██║  ██╗██║██║ ╚═╝ ██║",
+    " ╚════╝  ╚═════╝  ╚════╝ ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝"
+];
+
 let resizeHandler = null;
 
 export function initASCIITitle() {
@@ -6,18 +15,25 @@ export function initASCIITitle() {
     // Clear any existing content
     titleElement.innerHTML = '';
     
-    // Create an img element for the SVG
-    const img = document.createElement('img');
-    img.src = 'img/ascii-title.svg';
-    img.alt = 'JUJIN.KIM';
-    img.className = 'ascii-title-img';
+    // Create a pre element for the ASCII art
+    const pre = document.createElement('pre');
+    pre.className = 'ascii-title-text';
+    pre.style.margin = '0';
+    pre.style.fontFamily = 'monospace';
+    
+    // Process the ASCII art - replace regular spaces with non-breaking spaces
+    const processedLines = ASCII_TITLE.map(line => {
+        // Use Unicode character U+00A0 (non-breaking space)
+        return line.replace(/ /g, '\u00A0');
+    });
+    
+    pre.textContent = processedLines.join('\n');
     
     // Add to container
-    titleElement.appendChild(img);
+    titleElement.appendChild(pre);
     
     if (!resizeHandler) {
         resizeHandler = debounce(() => {
-            // Trigger resize adjustments if needed
             adjustTitleSize();
         }, 250);
         window.addEventListener('resize', resizeHandler);
@@ -28,25 +44,28 @@ export function initASCIITitle() {
 }
 
 function adjustTitleSize() {
-    const titleImg = document.querySelector('.ascii-title-img');
-    if (!titleImg) return;
+    const titlePre = document.querySelector('.ascii-title-text');
+    if (!titlePre) return;
     
     const screenWidth = window.innerWidth;
     
-    // Adjust the width based on screen size
+    // Adjust font size based on screen width
     if (screenWidth < 360) {
-        titleImg.style.width = '280px';
+        titlePre.style.fontSize = '4px';
+        titlePre.style.lineHeight = '4px';
     } else if (screenWidth < 480) {
-        titleImg.style.width = '340px';
+        titlePre.style.fontSize = '5px';
+        titlePre.style.lineHeight = '5px';
     } else if (screenWidth < 768) {
-        titleImg.style.width = '500px';
+        titlePre.style.fontSize = '7px';
+        titlePre.style.lineHeight = '7px';
     } else if (screenWidth < 1200) {
-        titleImg.style.width = '700px';
+        titlePre.style.fontSize = '10px';
+        titlePre.style.lineHeight = '10px';
     } else {
-        titleImg.style.width = '820px';
+        titlePre.style.fontSize = '14px';
+        titlePre.style.lineHeight = '14px';
     }
-    
-    titleImg.style.height = 'auto';
 }
 
 function debounce(func, wait) {

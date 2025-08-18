@@ -171,23 +171,23 @@ body {
     display: inline-block;
 }
 
-/* ASCII Title SVG Image */
-.ascii-title-img {
-    width: auto;
-    height: auto;
-    display: block;
-    max-width: 100%;
+/* ASCII Title Text */
+.ascii-title-text {
+    color: var(--terminal-highlight);
+    font-weight: bold;
+    text-shadow: 0 0 10px var(--terminal-dim);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 /* Apply tint color to SVG */
-.ascii-title-img,
 .ascii-profile-img {
     filter: brightness(0) saturate(100%) invert(69%) sepia(41%) saturate(1048%) hue-rotate(68deg) brightness(103%) contrast(95%) drop-shadow(0 0 10px var(--terminal-dim));
 }
 
 /* Light mode tint adjustment */
 @media (prefers-color-scheme: light) {
-    .ascii-title-img,
     .ascii-profile-img {
         filter: brightness(0) saturate(100%) invert(21%) sepia(89%) saturate(1048%) hue-rotate(99deg) brightness(95%) contrast(102%);
     }
