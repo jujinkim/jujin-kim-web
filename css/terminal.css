@@ -5,7 +5,7 @@
     --terminal-highlight: #6eff6e;
     --terminal-dim: #2a7a2a;
     --terminal-accent: #40c940;
-    --terminal-font: 'Share Tech Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+    --terminal-font: 'Share Tech Mono', 'Noto Sans Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
     --border-char: '═';
 }
 

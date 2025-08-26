@@ -20,7 +20,6 @@ export function initASCIITitle() {
     pre.className = 'ascii-title-text';
     pre.style.margin = '0';
     pre.style.padding = '0';
-    pre.style.fontFamily = 'Consolas, "Courier New", monospace';
     pre.style.lineHeight = '1';
     
     // Join lines with newlines, keeping original spaces
