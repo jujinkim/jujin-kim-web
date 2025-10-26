@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from '../constants.js';
+
 let currentInput = '';
 let commandHistory = [];
 let historyIndex = -1;
@@ -43,7 +45,7 @@ Located in Suwon, South Korea`;
     
     contact: () => {
         return `Contact Information:
-Email: jujin@jujin.kim
+Email: ${CONTACT_EMAIL}
 GitHub: github.com/jujinkim
 LinkedIn: linkedin.com/in/jujinkim`;
     },

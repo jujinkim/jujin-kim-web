@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from '../constants.js';
+
 function calculateAge() {
     const birthDate = new Date(1992, 9, 20); // October 20, 1992 (month is 0-indexed)
     const today = new Date();
@@ -75,7 +77,7 @@ function loadHomeSection() {
             <br>
             <p style="color: var(--terminal-highlight);">> Quick Access:</p>
             <div style="margin-left: 20px;">
-                <p>📧 <a href="mailto:jujin@jujin.kim">jujin@jujin.kim</a></p>
+                <p>📧 <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p>
                 <p>💻 <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
                 <p>💼 <a href="https://linkedin.com/in/jujinkim" target="_blank">linkedin.com/in/jujinkim</a></p>
                 <p>📝 <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
@@ -311,7 +313,7 @@ function loadContactSection() {
     contactSection.innerHTML = `
         <div class="contact-info">
             <h3>>> Professional</h3>
-            <p>> Email:    <a href="mailto:jujin@jujin.kim">jujin@jujin.kim</a></p>
+            <p>> Email:    <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p>
             <p>> LinkedIn: <a href="https://linkedin.com/in/jujinkim" target="_blank">linkedin.com/in/jujinkim</a></p>
             <p>> GitHub:   <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
             <br>
