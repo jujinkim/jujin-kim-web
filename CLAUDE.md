@@ -27,12 +27,16 @@ jujin_kim_web/
 │       ├── animations.js  # Starfield & effects
 │       ├── theme.js       # Dark/light theme
 │       ├── content.js     # Page content loader
+│       ├── terminal-input.js # In-page terminal commands
 │       └── profile-ascii.js # Profile picture ASCII art
+├── js/
+│   └── constants.js       # Shared constants (e.g., CONTACT_EMAIL)
 ├── img/
 │   └── profile.png        # GitHub profile picture
 ├── favicon.ico            # JK favicon
 ├── favicon.svg            # JK favicon (SVG)
 ├── README.md              # Project documentation
+├── AGENTS.md              # Agent coordination guide
 └── CLAUDE.md              # This file
 ```
 
@@ -119,19 +123,14 @@ npx http-server
 ## Contact
 - GitHub: [@jujinkim](https://github.com/jujinkim)
 - Website: [jujinkim.com](https://jujinkim.com)
-- Email: jujin@jujin.kim
+- Email: me@jujin.kim
 
 ## License
 Personal portfolio - All rights reserved
 
 ## Last Updated
-- **Date**: August 2024
+- **Date**: October 2025
 - **Recent Changes**:
-  - Added ASCII art profile picture with hover effect
-  - Implemented GitHub profile image integration
-  - Created favicon with JK initials
-  - Enhanced responsive design for all screen sizes
-  - Integrated real profile data from jujinkim.com
-  - Added matrix rain animation with Korean characters
-  - Implemented custom terminal-style scrollbar
-  - Dynamic age/version calculation system
+  - Centralized contact address via `js/constants.js::CONTACT_EMAIL`
+  - Synced terminal command output with new contact address
+  - Added `AGENTS.md` for multi-agent coordination
