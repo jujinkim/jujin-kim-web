@@ -123,7 +123,7 @@ function loadAboutSection() {
         <p>  • Namseoul University (2011-2016)</p>
         <br>
         <p>> Experience:</p>
-        <p>  • ${calculateExperienceYears()} years in Android development</p>
+        <p>  • ${calculateExperienceYears()}+ years in Android development</p>
         <p>  • Former Mash-up Android team leader</p>
         <p>  • Microsoft Student Partner alumnus</p>
         <br>
