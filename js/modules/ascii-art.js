@@ -5,11 +5,30 @@ export function initASCIITitle() {
     titleElement.innerHTML = '';
     
     const img = document.createElement('img');
-    img.src = 'img/ascii-title.svg';
+    img.src = getTitleSrc();
     img.alt = 'JUJIN KIM ASCII Title';
     img.className = 'ascii-title-img';
     img.decoding = 'async';
     img.loading = 'lazy';
 
     titleElement.appendChild(img);
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => {
+        img.src = getTitleSrc();
+    };
+    mediaQuery.addEventListener('change', handleChange);
+}
+
+function getTitleSrc() {
+    const theme = document.body.dataset.theme;
+    let isDark;
+    if (theme === 'dark') {
+        isDark = true;
+    } else if (theme === 'light') {
+        isDark = false;
+    } else {
+        isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return isDark ? 'img/ascii-title-dark.svg' : 'img/ascii-title-light.svg';
 }
