@@ -345,11 +345,10 @@ function loadContactSection() {
             <br>
             <h3>>> Location</h3>
             <p>> City: Suwon, South Korea 🇰🇷</p>
-            <p>> Timezone: UTC+9 (KST)</p>
-            <p>> Current Time: ${kstTime}</p>
+            <p>> Current Time (KST): ${kstTime}</p>
             <br>
             <div style="padding: 20px 0; color: var(--terminal-accent);">
-                <p style="color: var(--terminal-highlight); font-weight: bold;">“I’ll do it my fudging way” energy — living on my own terms.</p>
+                <p style="color: var(--terminal-highlight); font-weight: bold;">I live by “buck it.”</p>
                 <br>
                 <p>> Philosophy: Building something that makes the world a better place</p>
                 <p>> Currently: Learning how to be cool</p>
