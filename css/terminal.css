@@ -9,8 +9,8 @@
     --terminal-dim: #2f4a3c;
     --terminal-accent: #5edfb0;
     --terminal-amber: #f4c88a;
-    --terminal-font: 'Share Tech Mono', 'Noto Sans Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
-    --terminal-display-font: 'Space Grotesk', 'Share Tech Mono', 'Noto Sans Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+    --terminal-font: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+    --terminal-display-font: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
     --border-char: '═';
 }
 
