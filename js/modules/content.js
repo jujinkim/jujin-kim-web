@@ -348,7 +348,7 @@ function loadContactSection() {
             <p>> Current Time (KST): ${kstTime}</p>
             <br>
             <div style="padding: 20px 0; color: var(--terminal-accent);">
-                <p style="color: var(--terminal-highlight); font-weight: bold;">I live by “buck it.”</p>
+                <p style="color: var(--terminal-highlight); font-weight: bold;">I live by “buck it.” / “내 줏대로 산다”</p>
                 <br>
                 <p>> Philosophy: Building something that makes the world a better place</p>
                 <p>> Currently: Learning how to be cool</p>
