@@ -70,7 +70,7 @@ function loadHomeSection() {
                 <p>Building digital experiences that matter</p>
                 <br>
                 <p>◆ App Developer     ◆ Game Developer</p>
-                <p>◆ AI Enthusiast     ◆ Service Builder</p>
+                <p>◆ Product Engineer  ◆ Service Builder</p>
                 <br>
                 <p>📍 Suwon, South Korea</p>
             </div>

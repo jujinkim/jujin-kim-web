@@ -7,7 +7,9 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(git commit:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(start index.html)",
+      "Bash(powershell:*)"
     ],
     "deny": []
   }
