@@ -9,8 +9,8 @@
     --terminal-dim: #2f4a3c;
     --terminal-accent: #5edfb0;
     --terminal-amber: #f4c88a;
-    --terminal-font: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
-    --terminal-display-font: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+    --terminal-font: 'JetBrains Mono Local', 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+    --terminal-display-font: 'JetBrains Mono Local', 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
     --border-char: '═';
 }
 
@@ -27,6 +27,14 @@
         --terminal-accent: #2f9a64;
         --terminal-amber: #d4a25a;
     }
+}
+
+@font-face {
+    font-family: 'JetBrains Mono Local';
+    src: url('../fonts/JetBrainsMono-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
 }
 
 * {
@@ -180,6 +188,15 @@ body {
     font-variant-ligatures: none;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+}
+
+.ascii-title-img {
+    width: 100%;
+    max-width: 390px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 0 8px var(--terminal-dim));
 }
 
 /* Apply tint color to SVG */
