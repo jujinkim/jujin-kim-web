@@ -30,6 +30,23 @@ function calculateAge() {
     return `v${years}.${decimal}`;
 }
 
+function calculateExperienceYears() {
+    const startDate = new Date(2017, 4, 1); // May 1, 2017
+    const today = new Date();
+    
+    let years = today.getFullYear() - startDate.getFullYear();
+    const hasHadAnniversaryThisYear = (
+        today.getMonth() > startDate.getMonth() ||
+        (today.getMonth() === startDate.getMonth() && today.getDate() >= startDate.getDate())
+    );
+    
+    if (!hasHadAnniversaryThisYear) {
+        years--;
+    }
+    
+    return years;
+}
+
 export function initContent() {
     loadHomeSection();
     loadAboutSection();
@@ -106,7 +123,7 @@ function loadAboutSection() {
         <p>  • Namseoul University (2011-2016)</p>
         <br>
         <p>> Experience:</p>
-        <p>  • 7+ years in Android development</p>
+        <p>  • ${calculateExperienceYears()} years in Android development</p>
         <p>  • Former Mash-up Android team leader</p>
         <p>  • Microsoft Student Partner alumnus</p>
         <br>
