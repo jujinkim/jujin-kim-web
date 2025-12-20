@@ -71,7 +71,7 @@ function loadHomeSection() {
                 <span class="role-tag"><span class="spark">✦</span>Service Builder</span>
             </div>
             <div class="callout" style="margin: 12px 0 18px 0;">
-                <p style="margin: 0; line-height: 1.6;">Hi, I'm <strong>Jujin Kim</strong>, a Product Engineer who prototypes and ships quickly. Curious about something? <a class="ping-link" href="#contact" data-section-link="contact">Ping me</a>.</p>
+                <p style="margin: 0; line-height: 1.6;">Hi, I'm <strong>Jujin Kim</strong>, a Product Engineer who designs, builds, and ships when it matters. Curious about something? <a class="ping-link" href="#contact" data-section-link="contact">Ping me</a>.</p>
             </div>
             <div style="color: var(--terminal-accent); padding: 12px 0;">
                 <p>Building digital experiences that matter</p>
