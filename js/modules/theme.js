@@ -18,19 +18,27 @@ function updateTheme(isDark) {
     const root = document.documentElement;
     
     if (isDark) {
-        root.style.setProperty('--terminal-bg', '#0a0e14');
-        root.style.setProperty('--terminal-fg', '#52d053');
-        root.style.setProperty('--terminal-border', '#3eb73e');
-        root.style.setProperty('--terminal-highlight', '#6eff6e');
-        root.style.setProperty('--terminal-dim', '#2a7a2a');
-        root.style.setProperty('--terminal-accent', '#40c940');
+        root.style.setProperty('--terminal-bg', '#0c0d0f');
+        root.style.setProperty('--terminal-bg-soft', '#111416');
+        root.style.setProperty('--terminal-surface', '#13181b');
+        root.style.setProperty('--terminal-surface-strong', '#161c1f');
+        root.style.setProperty('--terminal-fg', '#e6efe7');
+        root.style.setProperty('--terminal-border', '#3f6b55');
+        root.style.setProperty('--terminal-highlight', '#7ef2ad');
+        root.style.setProperty('--terminal-dim', '#2f4a3c');
+        root.style.setProperty('--terminal-accent', '#5edfb0');
+        root.style.setProperty('--terminal-amber', '#f4c88a');
     } else {
-        root.style.setProperty('--terminal-bg', '#d4d8d4');
-        root.style.setProperty('--terminal-fg', '#0d4d0d');
-        root.style.setProperty('--terminal-border', '#2d7a2d');
-        root.style.setProperty('--terminal-highlight', '#1a6b1a');
-        root.style.setProperty('--terminal-dim', '#5a8a5a');
-        root.style.setProperty('--terminal-accent', '#2a8a2a');
+        root.style.setProperty('--terminal-bg', '#f6f8f6');
+        root.style.setProperty('--terminal-bg-soft', '#edf2ef');
+        root.style.setProperty('--terminal-surface', '#eef4f0');
+        root.style.setProperty('--terminal-surface-strong', '#e8f0eb');
+        root.style.setProperty('--terminal-fg', '#0f241a');
+        root.style.setProperty('--terminal-border', '#c3d6c9');
+        root.style.setProperty('--terminal-highlight', '#2a8a57');
+        root.style.setProperty('--terminal-dim', '#73927f');
+        root.style.setProperty('--terminal-accent', '#2f9a64');
+        root.style.setProperty('--terminal-amber', '#d4a25a');
     }
     
     document.body.dataset.theme = isDark ? 'dark' : 'light';
