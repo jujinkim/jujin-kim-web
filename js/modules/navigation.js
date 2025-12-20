@@ -7,6 +7,8 @@ export function initNavigation() {
     menuItems.forEach((item, index) => {
         item.addEventListener('click', () => selectMenuItem(item, index));
     });
+
+    document.addEventListener('click', handleSectionLink);
     
     // Add keyboard shortcuts
     document.addEventListener('keydown', handleKeyboardShortcuts);
@@ -15,6 +17,18 @@ export function initNavigation() {
     selectMenuItem(menuItems[0], 0, true);
     
     addScanLine();
+}
+
+export function navigateToSection(sectionId) {
+    if (!menuItems.length) {
+        menuItems = document.querySelectorAll('.menu-item');
+    }
+    
+    const items = Array.from(menuItems);
+    const targetItem = items.find(item => item.dataset.section === sectionId);
+    if (targetItem) {
+        selectMenuItem(targetItem, items.indexOf(targetItem));
+    }
 }
 
 function selectMenuItem(menuItem, index, skipAnimation = false) {
@@ -106,4 +120,15 @@ function addScanLine() {
     const scanLine = document.createElement('div');
     scanLine.className = 'scan-line';
     document.body.appendChild(scanLine);
+}
+
+function handleSectionLink(event) {
+    const link = event.target.closest('[data-section-link]');
+    if (!link) return;
+    
+    const sectionId = link.dataset.sectionLink;
+    if (sectionId) {
+        event.preventDefault();
+        navigateToSection(sectionId);
+    }
 }
