@@ -48,6 +48,12 @@ export function setTheme(mode) {
     currentThemeMode = mode;
     localStorage.setItem('theme-mode', mode);
     applyTheme();
+    window.dispatchEvent(new CustomEvent('theme-changed', {
+        detail: {
+            mode,
+            isDark: mode === 'dark' ? true : mode === 'light' ? false : undefined
+        }
+    }));
     showThemeNotification(mode);
 }
 
@@ -61,6 +67,13 @@ function applyTheme() {
     }
     
     updateTheme(isDark);
+    
+    window.dispatchEvent(new CustomEvent('theme-changed', {
+        detail: {
+            mode: currentThemeMode,
+            isDark
+        }
+    }));
 }
 
 function showThemeNotification(mode) {

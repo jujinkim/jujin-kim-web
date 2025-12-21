@@ -18,6 +18,7 @@ export function initASCIITitle() {
         img.src = getTitleSrc();
     };
     mediaQuery.addEventListener('change', handleChange);
+    window.addEventListener('theme-changed', handleChange);
 }
 
 function getTitleSrc() {
