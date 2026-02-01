@@ -2,62 +2,66 @@
 
 A terminal-style personal portfolio website with a CLI-inspired interface.
 
-## 🚀 Live Demo
-Visit: [jujin.kim](https://jujin.kim)
+## Live Demo
+Visit: jujin.kim
 
-## ✨ Features
-- **Terminal Aesthetics**: Full CLI-style interface with monospace fonts
-- **Interactive Navigation**: Keyboard (arrow keys) and mouse navigation
-- **Responsive Design**: Adapts from mobile to 4K displays  
-- **Theme Support**: Dark/light theme that follows system preferences
-- **ASCII Art**: Dynamic ASCII art profile picture with hover effects
-- **Animated Background**: Starfield and matrix rain effects
+## Features
+- Terminal aesthetics with monospace fonts and ASCII art
+- Interactive navigation (Shift+1~6, ESC) plus mouse support
+- Home-only terminal input with command history
+- Responsive layout from mobile to large displays
+- Theme switching (light/dark/system)
+- Animated starfield background and optional matrix rain effect
 
-## 🛠️ Tech Stack
+## Tech Stack
 - Pure HTML5, CSS3, JavaScript (ES6+)
-- No frameworks - vanilla implementation for maximum performance
+- No frameworks or build tooling
 - Modular architecture with ES6 modules
 
-## ⌨️ Keyboard Shortcuts
-- **Arrow Keys**: Navigate menu items
-- **Enter**: Select current menu item
-- **ESC**: Return to Home
-- **Ctrl+G**: Open help modal
+## Keyboard Shortcuts
+- Shift+1~6: Navigate menu items
+- ESC: Return to Home
 
-## 📱 Browser Support
+## Terminal Commands (Home)
+- help, clear, about, skills, contact, date, ls, cat, matrix
+
+## Browser Support
 - Chrome/Edge 90+
 - Firefox 88+
 - Safari 14+
 - Mobile browsers (iOS Safari, Chrome Mobile)
 
-## 🏗️ Project Structure
+## Project Structure
 ```
-jujin-kim-web/
-├── index.html          # Main HTML file
-├── css/               # Styling
+jujin_kim_web/
+├── index.html
+├── css/
 │   ├── reset.css
 │   ├── terminal.css
 │   ├── animations.css
 │   ├── modal.css
 │   └── responsive.css
-├── js/                # JavaScript modules
+├── js/
 │   ├── main.js
+│   ├── constants.js
 │   └── modules/
 │       ├── ascii-art.js
 │       ├── navigation.js
 │       ├── animations.js
 │       ├── theme.js
+│       ├── theme-export.js
 │       ├── content.js
+│       ├── terminal-input.js
 │       └── profile-ascii.js
-└── img/               # Images
+└── img/
     └── profile.png
 ```
 
-## 👤 Author
-**Jujin Kim**
-- GitHub: [@jujinkim](https://github.com/jujinkim)
-- LinkedIn: [jujinkim](https://linkedin.com/in/jujinkim)
-- Email: jujin@jujin.kim
+## Author
+Jujin Kim
+- GitHub: @jujinkim
+- LinkedIn: linkedin.com/in/jujinkim
+- Email: me@jujin.kim
 
-## 📄 License
-© 2025 Jujin Kim. All rights reserved.
+## License
+Personal portfolio - All rights reserved.
