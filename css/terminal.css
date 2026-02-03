@@ -542,6 +542,11 @@ body[data-theme='dark'] .terminal-muted {
     color: var(--terminal-dim);
 }
 
+body[data-theme='dark'] .keyboard-guide,
+body[data-theme='dark'] .copyright {
+    color: #7aa68e;
+}
+
 .copyright a {
     color: var(--terminal-highlight);
     text-decoration: underline;
