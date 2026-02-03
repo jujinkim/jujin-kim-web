@@ -386,6 +386,97 @@ body {
     border-color: var(--terminal-highlight);
 }
 
+#terminal-toggle {
+    position: fixed;
+    right: 20px;
+    bottom: 60px;
+    z-index: 200;
+    padding: 8px 12px;
+    border: 1px solid var(--terminal-border);
+    background: var(--terminal-bg);
+    color: var(--terminal-fg);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+body.terminal-open #terminal-toggle {
+    background: var(--terminal-highlight);
+    color: var(--terminal-bg);
+    border-color: var(--terminal-highlight);
+}
+
+#terminal-panel {
+    position: fixed;
+    right: 20px;
+    bottom: 110px;
+    width: 360px;
+    max-width: calc(100vw - 40px);
+    height: 220px;
+    background: var(--terminal-bg);
+    border: 1px solid var(--terminal-border);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    z-index: 210;
+    display: none;
+    flex-direction: column;
+}
+
+#terminal-panel.is-open {
+    display: flex;
+}
+
+.terminal-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--terminal-border);
+    background: var(--terminal-bg-soft);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.terminal-panel-close {
+    border: 1px solid var(--terminal-border);
+    background: var(--terminal-bg);
+    color: var(--terminal-fg);
+    padding: 4px 8px;
+    font-size: 11px;
+}
+
+.terminal-panel-body {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 8px;
+    height: 100%;
+}
+
+.terminal-panel-body .terminal-output {
+    flex: 1;
+    margin: 0;
+    padding-right: 6px;
+    min-height: 120px;
+}
+
+.terminal-input-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 20px;
+}
+
+.terminal-prompt {
+    color: var(--terminal-highlight);
+}
+
+.terminal-placeholder {
+    color: var(--terminal-dim);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+}
+
 #terminal-footer {
     position: fixed;
     bottom: 0;

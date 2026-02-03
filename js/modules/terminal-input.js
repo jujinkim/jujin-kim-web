@@ -4,6 +4,13 @@ let currentInput = '';
 let commandHistory = [];
 let historyIndex = -1;
 let isActive = false;
+let isOpen = false;
+let panel = null;
+let toggleButton = null;
+let closeButton = null;
+let outputDiv = null;
+let inputSpan = null;
+let placeholderSpan = null;
 
 const commands = {
     help: () => {
@@ -18,7 +25,8 @@ const commands = {
   cat      - Show section content
   matrix   - Toggle matrix rain effect
   
-Use Shift+1~6 to navigate menu`;
+Use Shift+1~6 to navigate menu
+Press / or the Terminal button to toggle`;
     },
     
     clear: () => {
@@ -77,65 +85,75 @@ LinkedIn: linkedin.com/in/jujinkim`;
 };
 
 export function initTerminalInput() {
-    // Only activate on home section
-    if (!document.getElementById('home')) return;
-    
-    // Create output div if it doesn't exist
-    const homeContent = document.querySelector('#home .section-content');
-    if (!homeContent) return;
-    
-    // Find or create terminal output area
-    let outputDiv = homeContent.querySelector('.terminal-output');
-    if (!outputDiv) {
-        outputDiv = document.createElement('div');
-        outputDiv.className = 'terminal-output no-animation';
-        outputDiv.style.cssText = 'margin-top: 20px; color: var(--terminal-fg); min-height: 100px; opacity: 1;';
-        
-        // Insert before the cursor line
-        const cursorLine = homeContent.querySelector('.cursor');
-        if (cursorLine && cursorLine.parentNode) {
-            cursorLine.parentNode.insertBefore(outputDiv, cursorLine);
-        }
-    }
-    
-    // Update cursor line to show input
-    const cursorLine = homeContent.querySelector('.cursor');
-    if (cursorLine) {
-        cursorLine.innerHTML = `> <span class="terminal-input"></span>`;
-    }
-    
+    panel = document.getElementById('terminal-panel');
+    toggleButton = document.getElementById('terminal-toggle');
+    if (!panel || !toggleButton) return;
+
+    closeButton = panel.querySelector('.terminal-panel-close');
+    outputDiv = panel.querySelector('.terminal-output');
+    inputSpan = panel.querySelector('.terminal-input');
+    placeholderSpan = panel.querySelector('.terminal-placeholder');
+    if (!outputDiv || !inputSpan) return;
+
     isActive = true;
-    
-    // Add keyboard listener
+
+    toggleButton.addEventListener('click', () => toggleTerminal());
+    if (closeButton) {
+        closeButton.addEventListener('click', () => toggleTerminal(false));
+    }
+
+    document.addEventListener('keydown', handleToggleShortcut);
     document.addEventListener('keydown', handleTerminalInput);
 }
 
 export function deactivateTerminalInput() {
     isActive = false;
+    document.removeEventListener('keydown', handleToggleShortcut);
     document.removeEventListener('keydown', handleTerminalInput);
 }
 
+function handleToggleShortcut(e) {
+    if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+    const activeElement = document.activeElement;
+    if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.isContentEditable)) {
+        return;
+    }
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    toggleTerminal();
+}
+
+function toggleTerminal(forceState) {
+    if (!panel || !toggleButton) return;
+    isOpen = typeof forceState === 'boolean' ? forceState : !isOpen;
+    panel.classList.toggle('is-open', isOpen);
+    panel.setAttribute('aria-hidden', (!isOpen).toString());
+    toggleButton.setAttribute('aria-expanded', isOpen.toString());
+    document.body.classList.toggle('terminal-open', isOpen);
+    if (isOpen) {
+        outputDiv.scrollTop = outputDiv.scrollHeight;
+    }
+    updatePlaceholder();
+}
+
 function handleTerminalInput(e) {
-    if (!isActive) return;
+    if (!isActive || !isOpen) return;
     
     // Skip if modal is open or shift/ctrl is pressed
     if (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
-    
-    const inputSpan = document.querySelector('.terminal-input');
-    const outputDiv = document.querySelector('.terminal-output');
-    
-    if (!inputSpan || !outputDiv) return;
     
     switch(e.key) {
         case 'Enter':
             e.preventDefault();
             processCommand();
+            updatePlaceholder();
             break;
             
         case 'Backspace':
             e.preventDefault();
             currentInput = currentInput.slice(0, -1);
             inputSpan.textContent = currentInput;
+            updatePlaceholder();
             break;
             
         case 'ArrowUp':
@@ -144,6 +162,7 @@ function handleTerminalInput(e) {
                 historyIndex++;
                 currentInput = commandHistory[commandHistory.length - 1 - historyIndex];
                 inputSpan.textContent = currentInput;
+                updatePlaceholder();
             }
             break;
             
@@ -153,10 +172,12 @@ function handleTerminalInput(e) {
                 historyIndex--;
                 currentInput = commandHistory[commandHistory.length - 1 - historyIndex];
                 inputSpan.textContent = currentInput;
+                updatePlaceholder();
             } else if (historyIndex === 0) {
                 historyIndex = -1;
                 currentInput = '';
                 inputSpan.textContent = '';
+                updatePlaceholder();
             }
             break;
             
@@ -166,15 +187,15 @@ function handleTerminalInput(e) {
                 e.preventDefault();
                 currentInput += e.key;
                 inputSpan.textContent = currentInput;
+                updatePlaceholder();
             }
             break;
     }
 }
 
 function processCommand() {
-    const inputSpan = document.querySelector('.terminal-input');
-    const outputDiv = document.querySelector('.terminal-output');
-    
+    if (!inputSpan || !outputDiv) return;
+
     if (!currentInput.trim()) {
         currentInput = '';
         inputSpan.textContent = '';
@@ -221,4 +242,11 @@ function processCommand() {
     // Clear input
     currentInput = '';
     inputSpan.textContent = '';
+    updatePlaceholder();
+}
+
+function updatePlaceholder() {
+    if (!placeholderSpan) return;
+    const shouldShow = isOpen && currentInput.length === 0;
+    placeholderSpan.style.display = shouldShow ? 'inline' : 'none';
 }

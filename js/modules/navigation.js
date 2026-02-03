@@ -47,13 +47,6 @@ function selectMenuItem(menuItem, index, skipAnimation = false) {
 function showSection(sectionId, skipAnimation = false) {
     const sections = document.querySelectorAll('.content-section');
     
-    // Deactivate terminal input when leaving home
-    if (currentSection === 'home' && sectionId !== 'home') {
-        import('./terminal-input.js').then(module => {
-            module.deactivateTerminalInput();
-        });
-    }
-    
     sections.forEach(section => {
         section.style.display = 'none';
     });
@@ -62,18 +55,12 @@ function showSection(sectionId, skipAnimation = false) {
     if (targetSection) {
         targetSection.style.display = 'block';
         
-        // Re-initialize profile picture and terminal input when showing home section
+        // Re-initialize profile picture when showing home section
         if (sectionId === 'home') {
             import('./profile-ascii.js').then(module => {
                 setTimeout(() => {
                     module.initProfilePicture();
                 }, 100);
-            });
-            
-            import('./terminal-input.js').then(module => {
-                setTimeout(() => {
-                    module.initTerminalInput();
-                }, 200);
             });
         }
         

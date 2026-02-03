@@ -65,6 +65,22 @@
     body {
         font-size: 12px;
     }
+
+    #terminal-toggle {
+        right: 12px;
+        bottom: 70px;
+    }
+
+    #terminal-panel {
+        left: 0;
+        right: 0;
+        bottom: 70px;
+        width: 100%;
+        max-width: 100%;
+        height: 240px;
+        border-left: 0;
+        border-right: 0;
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -122,6 +138,18 @@
     
     #terminal-footer {
         padding: 8px 10px;
+    }
+
+    #terminal-toggle {
+        right: 10px;
+        bottom: 60px;
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+
+    #terminal-panel {
+        bottom: 60px;
+        height: 260px;
     }
 }
 

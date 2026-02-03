@@ -102,8 +102,6 @@ function loadHomeSection() {
                 <p>📝 <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
             </div>
         </div>
-        <br>
-        <p class="cursor"></p>
     `;
 }
 

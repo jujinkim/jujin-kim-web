@@ -15,16 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initAnimations();
     initContent();
+    initTerminalInput();
     
     // Initialize profile picture after content is loaded
     setTimeout(() => {
         initProfilePicture();
     }, 100);
-    
-    // Initialize terminal input for home page
-    setTimeout(() => {
-        initTerminalInput();
-    }, 200);
     
     console.log('%c Welcome to Jujin Kim\'s Terminal ', 
         'background: #00ff00; color: #000; font-size: 20px; padding: 10px;');
