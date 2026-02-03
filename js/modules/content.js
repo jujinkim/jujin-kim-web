@@ -268,48 +268,48 @@ function loadTechnologiesSection() {
             <div class="tech-category">
                 <h3>>> Primary Skills</h3>
                 <p>• <strong>Android Development</strong></p>
-                <p style="color: var(--terminal-dim);">  7+ years building native Android apps</p>
+                <p class="terminal-muted">  7+ years building native Android apps</p>
                 <p>• <strong>Kotlin</strong></p>
-                <p style="color: var(--terminal-dim);">  Primary language for Android development</p>
+                <p class="terminal-muted">  Primary language for Android development</p>
                 <p>• <strong>Java</strong></p>
-                <p style="color: var(--terminal-dim);">  Strong foundation in OOP and Android legacy code</p>
+                <p class="terminal-muted">  Strong foundation in OOP and Android legacy code</p>
             </div>
             <br>
             <div class="tech-category">
                 <h3>>> Additional Skills</h3>
                 <p>• <strong>Unity C#</strong></p>
-                <p style="color: var(--terminal-dim);">  VR/AR projects and game development</p>
+                <p class="terminal-muted">  VR/AR projects and game development</p>
                 <p>• <strong>JavaScript</strong></p>
-                <p style="color: var(--terminal-dim);">  Web development and interactive UIs</p>
+                <p class="terminal-muted">  Web development and interactive UIs</p>
                 <p>• <strong>Python</strong></p>
-                <p style="color: var(--terminal-dim);">  Automation scripts and AI projects</p>
+                <p class="terminal-muted">  Automation scripts and AI projects</p>
             </div>
             <br>
             <div class="tech-category">
                 <h3>>> Experience Areas</h3>
                 <p>• <strong>VR/AR Development</strong></p>
-                <p style="color: var(--terminal-dim);">  Kinect, Unity, educational experiences</p>
+                <p class="terminal-muted">  Kinect, Unity, educational experiences</p>
                 <p>• <strong>Game Development</strong></p>
-                <p style="color: var(--terminal-dim);">  Unity, multiplayer, AI game agents</p>
+                <p class="terminal-muted">  Unity, multiplayer, AI game agents</p>
                 <p>• <strong>Mobile Applications</strong></p>
-                <p style="color: var(--terminal-dim);">  Consumer apps with millions of users</p>
+                <p class="terminal-muted">  Consumer apps with millions of users</p>
                 <p>• <strong>Computer Vision</strong></p>
-                <p style="color: var(--terminal-dim);">  OpenCV, real-time visual effects</p>
+                <p class="terminal-muted">  OpenCV, real-time visual effects</p>
             </div>
             <br>
             <div class="tech-category">
                 <h3>>> Achievements & Communities</h3>
                 <p>• <strong>2021: Startup Pivoting Hackathon</strong></p>
-                <p style="color: var(--terminal-dim);">  2nd place winner at KITA</p>
+                <p class="terminal-muted">  2nd place winner at KITA</p>
                 <p>• <strong>2018-2020: Mash-up</strong></p>
-                <p style="color: var(--terminal-dim);">  7th Android Team Leader</p>
+                <p class="terminal-muted">  7th Android Team Leader</p>
                 <p>  <a href="https://mash-up.kr" target="_blank">→ mash-up.kr</a></p>
                 <p>• <strong>2015: Nexon NOS 7th</strong></p>
-                <p style="color: var(--terminal-dim);">  3rd place in game programming competition</p>
+                <p class="terminal-muted">  3rd place in game programming competition</p>
                 <p>• <strong>2015-2016: Microsoft Student Partners</strong></p>
-                <p style="color: var(--terminal-dim);">  9th Generation participant</p>
+                <p class="terminal-muted">  9th Generation participant</p>
                 <p>• <strong>GitHub Arctic Code Vault</strong></p>
-                <p style="color: var(--terminal-dim);">  Code preserved in Arctic vault for 1000 years</p>
+                <p class="terminal-muted">  Code preserved in Arctic vault for 1000 years</p>
                 <p>  <a href="https://github.com/jujinkim" target="_blank">→ View GitHub Profile</a></p>
             </div>
         </div>

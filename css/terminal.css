@@ -471,6 +471,14 @@ body.terminal-open #terminal-toggle {
     color: var(--terminal-highlight);
 }
 
+.terminal-muted {
+    color: var(--terminal-dim);
+}
+
+body[data-theme='dark'] .terminal-muted {
+    color: #7aa68e;
+}
+
 .terminal-placeholder {
     color: var(--terminal-dim);
     font-size: 11px;
