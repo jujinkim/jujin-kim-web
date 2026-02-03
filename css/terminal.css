@@ -279,7 +279,7 @@ body {
 #terminal-content {
     flex: 1;
     overflow-y: auto;
-    margin-bottom: 45px; /* Minimal space for footer */
+    margin-bottom: 32px; /* Minimal space for footer */
     position: relative;
     border-top: 1px solid rgba(63, 163, 115, 0.35);
     border-bottom: 1px solid rgba(63, 163, 115, 0.35);
