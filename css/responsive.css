@@ -50,12 +50,19 @@
     .footer-content {
         flex-direction: column;
         gap: 10px;
-        align-items: center;
+        align-items: stretch;
         text-align: center;
     }
     
     .keyboard-guide {
         order: 2;
+    }
+
+    .footer-actions {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
     }
     
     .content-section {
@@ -64,11 +71,6 @@
     
     body {
         font-size: 12px;
-    }
-
-    #terminal-toggle {
-        right: 12px;
-        bottom: 70px;
     }
 
     #terminal-panel {
@@ -138,13 +140,6 @@
     
     #terminal-footer {
         padding: 8px 10px;
-    }
-
-    #terminal-toggle {
-        right: 10px;
-        bottom: 60px;
-        padding: 6px 10px;
-        font-size: 11px;
     }
 
     #terminal-panel {

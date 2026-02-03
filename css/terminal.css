@@ -387,17 +387,15 @@ body {
 }
 
 #terminal-toggle {
-    position: fixed;
-    right: 20px;
-    bottom: 60px;
     z-index: 200;
-    padding: 8px 12px;
+    padding: 4px 8px;
     border: 1px solid var(--terminal-border);
     background: var(--terminal-bg);
     color: var(--terminal-fg);
     font-size: 12px;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+    line-height: 1;
 }
 
 body.terminal-open #terminal-toggle {
@@ -492,7 +490,7 @@ body[data-theme='dark'] .terminal-muted {
     right: 0;
     background: var(--terminal-bg);
     border-top: 1px solid rgba(63, 163, 115, 0.35);
-    padding: 10px 20px;
+    padding: 10px 18px;
     z-index: 100;
 }
 
@@ -500,9 +498,12 @@ body[data-theme='dark'] .terminal-muted {
     max-width: 960px;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     font-size: 12px;
+    line-height: 1.4;
+    position: relative;
+    padding-right: 52px;
 }
 
 .keyboard-guide {
@@ -555,6 +556,15 @@ body[data-theme='dark'] .copyright {
 .copyright a:hover {
     background-color: var(--terminal-highlight);
     color: var(--terminal-bg);
+}
+
+.footer-actions {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
 }
 
 @keyframes typewriter {
