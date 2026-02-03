@@ -502,7 +502,6 @@ body[data-theme='dark'] .terminal-muted {
     align-items: center;
     font-size: 12px;
     line-height: 1.4;
-    position: relative;
     padding-right: 52px;
 }
 
@@ -541,6 +540,7 @@ body[data-theme='dark'] .terminal-muted {
 
 .copyright {
     color: var(--terminal-dim);
+    margin-left: 16px;
 }
 
 body[data-theme='dark'] .keyboard-guide,
@@ -560,7 +560,7 @@ body[data-theme='dark'] .copyright {
 
 .footer-actions {
     position: absolute;
-    right: 0;
+    right: 18px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;

@@ -58,9 +58,13 @@
         order: 2;
     }
 
+    .copyright {
+        margin-left: 0;
+    }
+
     .footer-actions {
         position: absolute;
-        right: 0;
+        right: 12px;
         top: 50%;
         transform: translateY(-50%);
     }
