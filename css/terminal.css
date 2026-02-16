@@ -282,7 +282,6 @@ body {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
     margin-bottom: 45px; /* Minimal space for footer */
     position: relative;
     border-top: 1px solid rgba(63, 163, 115, 0.35);
