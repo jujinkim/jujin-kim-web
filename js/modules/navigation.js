@@ -1,5 +1,12 @@
 let currentSection = 'home';
 let menuItems = [];
+const MOBILE_SHORTCUT_BREAKPOINT = 768;
+
+function isMobileInputContext() {
+    const isSmallViewport = window.innerWidth <= MOBILE_SHORTCUT_BREAKPOINT;
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    return isSmallViewport || isCoarsePointer;
+}
 
 export function initNavigation() {
     menuItems = document.querySelectorAll('.menu-item');
@@ -11,7 +18,9 @@ export function initNavigation() {
     document.addEventListener('click', handleSectionLink);
     
     // Add keyboard shortcuts
-    document.addEventListener('keydown', handleKeyboardShortcuts);
+    if (!isMobileInputContext()) {
+        document.addEventListener('keydown', handleKeyboardShortcuts);
+    }
     
     // Set Home as default active without animation
     selectMenuItem(menuItems[0], 0, true);
@@ -82,6 +91,8 @@ function showSection(sectionId, skipAnimation = false) {
 }
 
 function handleKeyboardShortcuts(e) {
+    if (isMobileInputContext()) return;
+
     // Shift+number shortcuts for menu navigation
     const shiftNumberMap = {
         '!': 0, '@': 1, '#': 2, '$': 3, '%': 4, '^': 5,

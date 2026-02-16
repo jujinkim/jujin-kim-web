@@ -12,6 +12,35 @@ let outputDiv = null;
 let inputSpan = null;
 let placeholderSpan = null;
 
+const MOBILE_BREAKPOINT = 768;
+
+function shouldDisableTerminalInput() {
+    const isSmallViewport = window.innerWidth <= MOBILE_BREAKPOINT;
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    return isSmallViewport || isCoarsePointer;
+}
+
+function disableMobileTerminalUI() {
+    if (toggleButton) {
+        toggleButton.style.display = 'none';
+        toggleButton.setAttribute('disabled', 'true');
+        toggleButton.setAttribute('aria-expanded', 'false');
+    }
+
+    if (panel) {
+        panel.classList.remove('is-open');
+        panel.setAttribute('aria-hidden', 'true');
+        panel.style.display = 'none';
+    }
+
+    document.body.classList.add('terminal-mobile-disabled');
+    isActive = false;
+    isOpen = false;
+    document.body.classList.remove('terminal-open');
+    document.removeEventListener('keydown', handleToggleShortcut);
+    document.removeEventListener('keydown', handleTerminalInput);
+}
+
 const commands = {
     help: () => {
         return `Available commands:
@@ -95,6 +124,14 @@ export function initTerminalInput() {
     placeholderSpan = panel.querySelector('.terminal-placeholder');
     if (!outputDiv || !inputSpan) return;
 
+    if (shouldDisableTerminalInput()) {
+        disableMobileTerminalUI();
+        return;
+    }
+
+    panel.style.display = '';
+    toggleButton.removeAttribute('disabled');
+    document.body.classList.remove('terminal-mobile-disabled');
     isActive = true;
 
     toggleButton.addEventListener('click', () => toggleTerminal());
@@ -137,7 +174,7 @@ function toggleTerminal(forceState) {
 }
 
 function handleTerminalInput(e) {
-    if (!isActive || !isOpen) return;
+    if (!isActive || !isOpen || shouldDisableTerminalInput()) return;
     
     // Skip if modal is open or shift/ctrl is pressed
     if (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
