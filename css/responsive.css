@@ -6,6 +6,10 @@
     #terminal-menu {
         padding: 0 15px;
     }
+
+    #terminal-content {
+        margin-top: 16px;
+    }
 }
 
 @media screen and (max-width: 768px) {
@@ -23,6 +27,10 @@
 
     #terminal-menu {
         padding: 0 10px;
+    }
+
+    #terminal-content {
+        margin-top: 12px;
     }
     
     
@@ -106,6 +114,10 @@
     #terminal-menu {
         padding: 0 5px;
     }
+
+    #terminal-content {
+        margin-top: 10px;
+    }
     
     
     #terminal-header {
@@ -155,6 +167,10 @@
 @media screen and (max-width: 360px) {
     #terminal-header {
         padding-top: 8px;
+    }
+
+    #terminal-content {
+        margin-top: 8px;
     }
     
 }

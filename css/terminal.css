@@ -16,6 +16,7 @@
     --terminal-fixed-menu-height: 0px;
     --terminal-fixed-topbar-height: 0px;
     --terminal-fixed-footer-height: 0px;
+    --terminal-fixed-content-gap: 20px;
 }
 
 @media (prefers-color-scheme: light) {
@@ -299,6 +300,7 @@ body {
 #terminal-content {
     min-height: 0;
     margin-bottom: 0;
+    margin-top: var(--terminal-fixed-content-gap);
     box-sizing: border-box;
     padding-bottom: 0;
     position: relative;
