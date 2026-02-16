@@ -9,6 +9,21 @@ import { initTerminalInput } from './modules/terminal-input.js';
 // Make functions globally available
 window.setTheme = setTheme;
 
+function updateFixedChromeOffsets() {
+    const header = document.getElementById('terminal-header');
+    const footer = document.getElementById('terminal-footer');
+    
+    const headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
+    const footerHeight = footer ? Math.ceil(footer.getBoundingClientRect().height) : 0;
+    
+    document.documentElement.style.setProperty('--terminal-fixed-header-height', `${headerHeight}px`);
+    document.documentElement.style.setProperty('--terminal-fixed-footer-height', `${footerHeight}px`);
+}
+
+function scheduleFixedChromeOffsetUpdate() {
+    requestAnimationFrame(updateFixedChromeOffsets);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initASCIITitle();
@@ -20,7 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize profile picture after content is loaded
     setTimeout(() => {
         initProfilePicture();
+        scheduleFixedChromeOffsetUpdate();
     }, 100);
+    
+    scheduleFixedChromeOffsetUpdate();
+    window.addEventListener('resize', scheduleFixedChromeOffsetUpdate);
+    window.addEventListener('orientationchange', scheduleFixedChromeOffsetUpdate);
     
     console.log('%c Welcome to Jujin Kim\'s Terminal ', 
         'background: #00ff00; color: #000; font-size: 20px; padding: 10px;');

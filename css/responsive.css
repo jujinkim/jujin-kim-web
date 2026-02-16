@@ -2,20 +2,9 @@
     #terminal-container {
         padding: 15px;
     }
-    
-    
-    #terminal-content {
-        margin-bottom: 0;
-        padding-bottom: 120px;
-    }
 }
 
 @media screen and (max-width: 768px) {
-    #terminal-content {
-        margin-bottom: 0;
-        padding-bottom: 130px; /* Increased for mobile footer */
-    }
-    
     #profile-picture {
         width: 180px;
         height: 180px;
@@ -30,7 +19,6 @@
     
     
     #terminal-header {
-        margin-bottom: 15px;
         padding-top: 20px;
     }
     
@@ -95,11 +83,6 @@
 }
 
 @media screen and (max-width: 480px) {
-    #terminal-content {
-        margin-bottom: 0;
-        padding-bottom: 140px; /* Increased mobile footer space */
-    }
-    
     #profile-picture {
         width: 150px;
         height: 150px;
@@ -114,7 +97,6 @@
     
     
     #terminal-header {
-        margin-bottom: 10px;
         padding-top: 10px;
     }
     
@@ -160,13 +142,7 @@
 
 @media screen and (max-width: 360px) {
     #terminal-header {
-        margin-bottom: 8px;
         padding-top: 8px;
-    }
-    
-    #terminal-content {
-        margin-bottom: 0;
-        padding-bottom: 150px; /* Extra space for smallest screens */
     }
     
 }

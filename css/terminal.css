@@ -12,6 +12,8 @@
     --terminal-font: 'JetBrains Mono Local', 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
     --terminal-display-font: 'JetBrains Mono Local', 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
     --border-char: '═';
+    --terminal-fixed-header-height: 0px;
+    --terminal-fixed-footer-height: 0px;
 }
 
 @media (prefers-color-scheme: light) {
@@ -135,17 +137,16 @@ body {
     line-height: 1.5;
     position: relative;
     overflow-x: hidden;
+    padding-top: var(--terminal-fixed-header-height);
+    padding-bottom: var(--terminal-fixed-footer-height);
 }
 
 #terminal-container {
     width: 100%;
     max-width: 960px;
     margin: 0 auto;
-    min-height: 100vh;
-    min-height: 100dvh;
-    height: auto;
-    display: flex;
-    flex-direction: column;
+    min-height: auto;
+    display: block;
     padding: 24px;
     position: relative;
     z-index: 1;
@@ -156,12 +157,19 @@ body {
 }
 
 #terminal-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     text-align: center;
-    margin-bottom: 32px;
-    padding-top: 32px;
+    margin: 0;
+    padding: 24px 0 16px 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: var(--terminal-bg);
+    z-index: 140;
 }
 
 #ascii-title {
@@ -279,12 +287,10 @@ body {
 }
 
 #terminal-content {
-    flex: 1;
     min-height: 0;
-    overflow-y: auto;
     margin-bottom: 0;
     box-sizing: border-box;
-    padding-bottom: 120px;
+    padding-bottom: 0;
     position: relative;
     border-top: 1px solid rgba(63, 163, 115, 0.35);
     border-bottom: 1px solid rgba(63, 163, 115, 0.35);
