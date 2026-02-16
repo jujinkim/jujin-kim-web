@@ -5,13 +5,15 @@
     
     
     #terminal-content {
-        margin-bottom: 32px;
+        margin-bottom: 0;
+        padding-bottom: 120px;
     }
 }
 
 @media screen and (max-width: 768px) {
     #terminal-content {
-        margin-bottom: 64px; /* Increased for mobile footer */
+        margin-bottom: 0;
+        padding-bottom: 130px; /* Increased for mobile footer */
     }
     
     #profile-picture {
@@ -94,7 +96,8 @@
 
 @media screen and (max-width: 480px) {
     #terminal-content {
-        margin-bottom: 78px; /* Increased mobile footer space */
+        margin-bottom: 0;
+        padding-bottom: 140px; /* Increased mobile footer space */
     }
     
     #profile-picture {
@@ -162,7 +165,8 @@
     }
     
     #terminal-content {
-        margin-bottom: 90px; /* Extra space for smallest screens */
+        margin-bottom: 0;
+        padding-bottom: 150px; /* Extra space for smallest screens */
     }
     
 }

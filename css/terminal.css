@@ -282,7 +282,9 @@ body {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    margin-bottom: 45px; /* Minimal space for footer */
+    margin-bottom: 0;
+    box-sizing: border-box;
+    padding-bottom: 120px;
     position: relative;
     border-top: 1px solid rgba(63, 163, 115, 0.35);
     border-bottom: 1px solid rgba(63, 163, 115, 0.35);
