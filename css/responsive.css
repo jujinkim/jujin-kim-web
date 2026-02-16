@@ -2,6 +2,10 @@
     #terminal-container {
         padding: 15px;
     }
+
+    #terminal-menu {
+        padding: 0 15px;
+    }
 }
 
 @media screen and (max-width: 768px) {
@@ -15,6 +19,10 @@
     
     #terminal-container {
         padding: 10px;
+    }
+
+    #terminal-menu {
+        padding: 0 10px;
     }
     
     
@@ -93,6 +101,10 @@
     
     #terminal-container {
         padding: 5px;
+    }
+
+    #terminal-menu {
+        padding: 0 5px;
     }
     
     

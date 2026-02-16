@@ -13,6 +13,8 @@
     --terminal-display-font: 'JetBrains Mono Local', 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
     --border-char: '═';
     --terminal-fixed-header-height: 0px;
+    --terminal-fixed-menu-height: 0px;
+    --terminal-fixed-topbar-height: 0px;
     --terminal-fixed-footer-height: 0px;
 }
 
@@ -137,7 +139,7 @@ body {
     line-height: 1.5;
     position: relative;
     overflow-x: hidden;
-    padding-top: var(--terminal-fixed-header-height);
+    padding-top: var(--terminal-fixed-topbar-height);
     padding-bottom: var(--terminal-fixed-footer-height);
 }
 
@@ -231,6 +233,14 @@ body {
 }
 
 #terminal-menu {
+    position: fixed;
+    top: var(--terminal-fixed-header-height);
+    left: 0;
+    right: 0;
+    z-index: 130;
+    padding: 0 24px;
+    box-sizing: border-box;
+    background: var(--terminal-bg);
     margin-bottom: 20px;
 }
 

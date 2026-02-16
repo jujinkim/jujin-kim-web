@@ -11,12 +11,17 @@ window.setTheme = setTheme;
 
 function updateFixedChromeOffsets() {
     const header = document.getElementById('terminal-header');
+    const menu = document.getElementById('terminal-menu');
     const footer = document.getElementById('terminal-footer');
     
     const headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
+    const menuHeight = menu ? Math.ceil(menu.getBoundingClientRect().height) : 0;
     const footerHeight = footer ? Math.ceil(footer.getBoundingClientRect().height) : 0;
+    const topbarHeight = headerHeight + menuHeight;
     
     document.documentElement.style.setProperty('--terminal-fixed-header-height', `${headerHeight}px`);
+    document.documentElement.style.setProperty('--terminal-fixed-menu-height', `${menuHeight}px`);
+    document.documentElement.style.setProperty('--terminal-fixed-topbar-height', `${topbarHeight}px`);
     document.documentElement.style.setProperty('--terminal-fixed-footer-height', `${footerHeight}px`);
 }
 
