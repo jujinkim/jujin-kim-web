@@ -50,11 +50,9 @@ const commands = {
   skills   - List technical skills
   contact  - Show contact information
   date     - Show current date and time
-  ls       - List available sections
-  cat      - Show section content
   matrix   - Toggle matrix rain effect
   
-Use Shift+1~6 to navigate menu
+Use 1~6 to navigate menu
 Press / or the Terminal button to toggle`;
     },
     
@@ -89,18 +87,6 @@ LinkedIn: linkedin.com/in/jujinkim`;
     
     date: () => {
         return new Date().toString();
-    },
-    
-    ls: () => {
-        return 'home  about  career  projects  technologies  contact';
-    },
-    
-    cat: (args) => {
-        const sections = ['home', 'about', 'career', 'projects', 'technologies', 'contact'];
-        if (args && sections.includes(args[0])) {
-            return `Use Shift+${sections.indexOf(args[0]) + 1} to view ${args[0]} section`;
-        }
-        return 'Usage: cat [section_name]';
     },
     
     matrix: () => {
@@ -267,7 +253,7 @@ function processCommand() {
     if (result) {
         const resultDiv = document.createElement('div');
         resultDiv.style.whiteSpace = 'pre-wrap';
-        resultDiv.style.marginBottom = '10px';
+        resultDiv.style.marginBottom = '0';
         resultDiv.style.opacity = '1';  // Ensure immediate visibility
         resultDiv.textContent = result;
         outputDiv.appendChild(resultDiv);

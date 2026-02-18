@@ -495,37 +495,39 @@ body.terminal-open #terminal-toggle {
 }
 
 .terminal-panel-body {
-    display: grid;
-    grid-template-rows: 1fr auto;
+    display: flex;
+    flex-direction: column;
     padding: 10px;
-    gap: 0;
     flex: 1;
     min-height: 0;
     overflow: hidden;
 }
 
 .terminal-panel-body .terminal-output {
-    grid-row: 1 / 2;
+    flex: 1;
     min-height: 0;
     margin: 0;
     padding-right: 6px;
     overflow: auto;
 }
 
-.terminal-panel .terminal-output {
+#terminal-panel .terminal-output {
     max-height: none !important;
     margin-bottom: 0 !important;
 }
 
+#terminal-panel .terminal-output > * {
+    margin: 0;
+}
+
 .terminal-input-line {
-    grid-row: 2 / 3;
     display: flex;
     align-items: center;
     gap: 6px;
     flex: 0 0 auto;
     min-height: 20px;
     padding: 0;
-    margin: 0;
+    margin: 10px 0 0 0;
 }
 
 .terminal-prompt {
