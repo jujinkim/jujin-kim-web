@@ -1,14 +1,23 @@
 @media screen and (max-width: 1200px) {
     #terminal-container {
-        padding: 15px;
-    }
-
-    #terminal-menu {
-        padding: 0 15px;
+        padding: 0;
     }
 
     #terminal-content {
         margin-top: 0;
+    }
+}
+
+@media screen and (min-width: 1201px) {
+    #terminal-menu {
+        padding-left: var(--terminal-shell-padding);
+        padding-right: var(--terminal-shell-padding);
+        box-sizing: border-box;
+    }
+
+    #terminal-menu .menu-list {
+        width: min(100%, calc(var(--terminal-shell-width) - (var(--terminal-shell-padding) * 2)));
+        margin: 0 auto;
     }
 }
 
@@ -22,11 +31,7 @@
     
     
     #terminal-container {
-        padding: 10px;
-    }
-
-    #terminal-menu {
-        padding: 0 10px;
+        padding: 0;
     }
 
     #terminal-content {
@@ -35,7 +40,7 @@
     
     
     #terminal-header {
-        padding-top: 20px;
+        padding-top: 8px;
     }
     
     .menu-list {
@@ -108,11 +113,7 @@
     
     
     #terminal-container {
-        padding: 5px;
-    }
-
-    #terminal-menu {
-        padding: 0 5px;
+        padding: 0;
     }
 
     #terminal-content {
@@ -121,7 +122,7 @@
     
     
     #terminal-header {
-        padding-top: 10px;
+        padding-top: 6px;
     }
     
     .menu-list {
@@ -166,7 +167,7 @@
 
 @media screen and (max-width: 360px) {
     #terminal-header {
-        padding-top: 8px;
+        padding-top: 4px;
     }
 
     #terminal-content {
@@ -177,7 +178,8 @@
 
 @media screen and (min-width: 1920px) {
     #terminal-container {
-        max-width: 1600px;
+        --terminal-shell-width: 1600px;
+        max-width: var(--terminal-shell-width);
         margin: 0 auto;
     }
     
@@ -187,7 +189,7 @@
     
     
     #terminal-header {
-        padding-top: 60px;
+        padding-top: 12px;
     }
 }
 

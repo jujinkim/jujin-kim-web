@@ -10,15 +10,11 @@ import { initTerminalInput } from './modules/terminal-input.js';
 window.setTheme = setTheme;
 
 function updateFixedChromeOffsets() {
-    const header = document.getElementById('terminal-header');
     const footer = document.getElementById('terminal-footer');
     
-    const headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
     const footerHeight = footer ? Math.ceil(footer.getBoundingClientRect().height) : 0;
     
-    document.documentElement.style.setProperty('--terminal-fixed-header-height', `${headerHeight}px`);
     document.documentElement.style.setProperty('--terminal-fixed-menu-height', '0px');
-    document.documentElement.style.setProperty('--terminal-fixed-topbar-height', `${headerHeight}px`);
     document.documentElement.style.setProperty('--terminal-fixed-footer-height', `${footerHeight}px`);
 }
 

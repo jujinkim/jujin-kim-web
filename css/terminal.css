@@ -12,11 +12,19 @@
     --terminal-font: 'JetBrains Mono Local', 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
     --terminal-display-font: 'JetBrains Mono Local', 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
     --border-char: '═';
-    --terminal-fixed-header-height: 0px;
+    --terminal-fixed-header-height: 150px;
     --terminal-fixed-menu-height: 0px;
-    --terminal-fixed-topbar-height: 0px;
+    --terminal-fixed-topbar-height: var(--terminal-fixed-header-height);
     --terminal-fixed-footer-height: 0px;
-    --terminal-fixed-content-gap: 0px;
+    --terminal-fixed-content-gap: var(--terminal-fixed-topbar-height);
+    --terminal-shell-width: 960px;
+    --terminal-shell-padding: 24px;
+}
+
+html {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: auto;
 }
 
 @media (prefers-color-scheme: light) {
@@ -139,6 +147,7 @@ body {
     font-size: 14px;
     line-height: 1.5;
     position: relative;
+    overflow-y: auto;
     overflow-x: hidden;
     padding-top: var(--terminal-fixed-topbar-height);
     padding-bottom: var(--terminal-fixed-footer-height);
@@ -146,11 +155,11 @@ body {
 
 #terminal-container {
     width: 100%;
-    max-width: 960px;
+    max-width: var(--terminal-shell-width);
     margin: 0 auto;
     min-height: auto;
     display: block;
-    padding: 24px;
+    padding: 0;
     position: relative;
     z-index: 1;
     background: var(--terminal-bg);
@@ -167,13 +176,15 @@ body {
     width: 100%;
     text-align: center;
     margin: 0;
-    padding: 24px 0 16px 0;
+    padding: 8px 0 6px 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: stretch;
     background: var(--terminal-bg);
+    border-bottom: 1px solid rgba(63, 163, 115, 0.35);
     z-index: 140;
+    min-height: var(--terminal-fixed-header-height);
 }
 
 #ascii-title {
@@ -227,7 +238,7 @@ body {
 
 .menu-border, .content-border {
     border: 1px solid rgba(63, 163, 115, 0.4);
-    padding: 16px;
+    padding: 12px;
     position: relative;
     background: var(--terminal-bg-soft);
     box-shadow: none;
@@ -236,11 +247,15 @@ body {
 
 #terminal-menu {
     position: static;
-    margin-top: 12px;
+    margin-top: 4px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: var(--terminal-shell-width);
     z-index: 130;
-    padding: 0 24px;
+    padding: 0;
     box-sizing: border-box;
-    background: var(--terminal-bg);
+    background: transparent;
     margin-bottom: 0;
 }
 
@@ -304,12 +319,11 @@ body {
 #terminal-content {
     min-height: 0;
     margin-bottom: 0;
-    margin-top: var(--terminal-fixed-content-gap);
+    margin-top: 0;
+    padding-top: 0;
     box-sizing: border-box;
     padding-bottom: 0;
     position: relative;
-    border-top: 1px solid rgba(63, 163, 115, 0.35);
-    border-bottom: 1px solid rgba(63, 163, 115, 0.35);
 }
 
 .content-border {
