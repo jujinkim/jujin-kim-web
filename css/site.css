@@ -22,9 +22,9 @@
 }
 
 html {
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
-    height: auto;
+    height: 100%;
 }
 
 @media (prefers-color-scheme: light) {
@@ -147,7 +147,7 @@ body {
     font-size: 14px;
     line-height: 1.5;
     position: relative;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
     padding-top: var(--terminal-fixed-topbar-height);
     padding-bottom: var(--terminal-fixed-footer-height);
@@ -157,6 +157,8 @@ body {
     width: 100%;
     max-width: var(--terminal-shell-width);
     margin: 0 auto;
+    height: calc(100vh - var(--terminal-fixed-topbar-height) - var(--terminal-fixed-footer-height));
+    overflow: hidden;
     min-height: auto;
     display: block;
     padding: 0;
@@ -251,7 +253,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     width: 100%;
-    max-width: var(--terminal-shell-width);
+    max-width: none;
     z-index: 130;
     padding: 0;
     box-sizing: border-box;
@@ -260,6 +262,7 @@ body {
 }
 
 #terminal-menu .menu-border {
+    width: 100%;
     border-left: 0;
     border-right: 0;
 }
@@ -323,15 +326,19 @@ body {
     padding-top: 0;
     box-sizing: border-box;
     padding-bottom: 0;
+    background: var(--terminal-bg-soft);
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
     position: relative;
 }
 
 .content-border {
+    min-height: 100%;
     border-left: 1px solid rgba(63, 163, 115, 0.35);
     border-right: 1px solid rgba(63, 163, 115, 0.35);
     border-top: none;
     border-bottom: none;
-    min-height: 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -448,13 +455,15 @@ body.terminal-open #terminal-toggle {
 #terminal-panel {
     position: fixed;
     right: 20px;
-    bottom: 110px;
-    width: 360px;
+    bottom: var(--terminal-fixed-footer-height);
+    width: 720px;
     max-width: calc(100vw - 40px);
-    height: 220px;
+    height: 330px;
     background: var(--terminal-bg);
     border: 1px solid var(--terminal-border);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    min-height: 0;
     z-index: 210;
     display: none;
     flex-direction: column;
@@ -469,6 +478,7 @@ body.terminal-open #terminal-toggle {
     justify-content: space-between;
     align-items: center;
     padding: 8px 10px;
+    flex: 0 0 auto;
     border-bottom: 1px solid var(--terminal-border);
     background: var(--terminal-bg-soft);
     font-size: 12px;
@@ -485,25 +495,37 @@ body.terminal-open #terminal-toggle {
 }
 
 .terminal-panel-body {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: 1fr auto;
     padding: 10px;
-    gap: 8px;
-    height: 100%;
+    gap: 0;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .terminal-panel-body .terminal-output {
-    flex: 1;
+    grid-row: 1 / 2;
+    min-height: 0;
     margin: 0;
     padding-right: 6px;
-    min-height: 120px;
+    overflow: auto;
+}
+
+.terminal-panel .terminal-output {
+    max-height: none !important;
+    margin-bottom: 0 !important;
 }
 
 .terminal-input-line {
+    grid-row: 2 / 3;
     display: flex;
     align-items: center;
     gap: 6px;
+    flex: 0 0 auto;
     min-height: 20px;
+    padding: 0;
+    margin: 0;
 }
 
 .terminal-prompt {

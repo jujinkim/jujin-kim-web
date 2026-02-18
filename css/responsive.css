@@ -10,13 +10,11 @@
 
 @media screen and (min-width: 1201px) {
     #terminal-menu {
-        padding-left: var(--terminal-shell-padding);
-        padding-right: var(--terminal-shell-padding);
         box-sizing: border-box;
     }
 
     #terminal-menu .menu-list {
-        width: min(100%, calc(var(--terminal-shell-width) - (var(--terminal-shell-padding) * 2)));
+        width: min(100%, var(--terminal-shell-width));
         margin: 0 auto;
     }
 }
@@ -94,7 +92,7 @@
         display: none;
         left: 0;
         right: 0;
-        bottom: 70px;
+        bottom: var(--terminal-fixed-footer-height);
         width: 100%;
         max-width: 100%;
         height: 240px;
@@ -160,7 +158,7 @@
     }
 
     #terminal-panel {
-        bottom: 60px;
+        bottom: var(--terminal-fixed-footer-height);
         height: 260px;
     }
 }
