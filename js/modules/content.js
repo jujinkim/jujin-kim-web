@@ -113,7 +113,7 @@ function loadAboutSection() {
         <p>> Based in Suwon, Republic of Korea</p>
         <br>
         <p>> Currently working at Samsung Electronics</p>
-        <p>> Developing Weather Client for Samsung devices</p>
+        <p>> Developing the Weather Client for Samsung devices</p>
         <p>> Previously worked on Galaxy Store development</p>
         <br>
         <p>> Education:</p>
@@ -195,7 +195,7 @@ function loadProjectsSection() {
         <h3>>> Personal Projects</h3>
         <div class="project">
             <p>[2021] <strong>Frequaw</strong></p>
-            <p>      Android app providing frequently used apps list</p>
+            <p>      Android app that provides a list of frequently used apps</p>
             <p style="color: var(--terminal-dim);">      Widget for quick access to your favorite apps</p>
             <p>      <a href="https://play.google.com/store/apps/details?id=com.jujinkim.frequaw" target="_blank">→ View on Play Store</a></p>
         </div>
@@ -218,7 +218,7 @@ function loadProjectsSection() {
         <div class="project">
             <p>[2016] <strong>Seoul Luci Festival Project</strong></p>
             <p>      Media facade projection using Kinect</p>
-            <p>      Dance capture displayed on library building</p>
+            <p>      Dance movements captured and displayed on a library building</p>
             <p style="color: var(--terminal-dim);">      Interactive art installation for public event</p>
             <p>      Tech: KinectV2, Unity3D</p>
         </div>
@@ -240,7 +240,7 @@ function loadProjectsSection() {
         <br>
         <div class="project">
             <p>[2015] <strong>Billiards Visual Effect Project</strong></p>
-            <p>      OpenCV-based visual effects for mini pocket ball</p>
+            <p>      OpenCV-based visual effects for pocket billiards</p>
             <p style="color: var(--terminal-dim);">      Real-time computer vision for game enhancement</p>
             <p>      <a href="https://youtu.be/DUXIdIJ6ylM" target="_blank">→ Watch on YouTube</a></p>
             <p>      Tech: C++, OpenCV</p>
@@ -303,7 +303,7 @@ function loadTechnologiesSection() {
                 <p>• <strong>2021: Startup Pivoting Hackathon</strong></p>
                 <p class="terminal-muted">  2nd place winner at KITA</p>
                 <p>• <strong>2018-2020: Mash-up</strong></p>
-                <p class="terminal-muted">  7th Android Team Leader</p>
+                <p class="terminal-muted">  Android Team Leader of the 7th batch</p>
                 <p>  <a href="https://mash-up.kr" target="_blank">→ mash-up.kr</a></p>
                 <p>• <strong>2015: Nexon NOS 7th</strong></p>
                 <p class="terminal-muted">  3rd place in game programming competition</p>
