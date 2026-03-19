@@ -193,6 +193,8 @@ function loadProjectsSection() {
         </div>
         <br>
         <h3>>> Personal Projects</h3>
+        <p class="terminal-muted">  ✨ means built with Vibe-coding</p>
+        <br>
         <div class="project">
             <p>[2026] <strong>✨ Goksorry.com</strong></p>
             <p>      AI-powered stock sentiment aggregator</p>
