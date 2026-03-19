@@ -179,7 +179,7 @@ function loadProjectsSection() {
         <div class="project">
             <p>[2017-2020] <strong>Samsung Galaxy Store</strong></p>
             <p>    App marketplace for Samsung devices</p>
-            <p>    Tech: Kotlin, Android</p>
+            <p>    Tech: Java, Android</p>
         </div>
         <br>
         <h3>>> Personal Projects</h3>
