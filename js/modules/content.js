@@ -135,7 +135,6 @@ function loadCareerSection() {
     careerSection.innerHTML = `
         <div class="career-entry">
             <p>> [2017-Present] Samsung Electronics</p>
-            <p>  └─ Staff Engineer</p>
             <p>  └─ Android application development</p>
             <p>  └─ Tech: Kotlin, Java, Android</p>
         </div>
