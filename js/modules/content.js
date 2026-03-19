@@ -121,7 +121,8 @@ function loadAboutSection() {
         <p>  • Namseoul University (2011-2016)</p>
         <br>
         <p>> Experience:</p>
-        <p>  • ${calculateExperienceYears()}+ years in Android development</p>
+        <p>  • ${calculateExperienceYears()}+ years of Android development</p>
+        <p>  • Staff Engineer at Samsung Electronics</p>
         <p>  • Former Mash-up Android team leader</p>
         <p>  • Microsoft Student Partner alumnus</p>
         <br>
@@ -268,7 +269,7 @@ function loadTechnologiesSection() {
             <div class="tech-category">
                 <h3>>> Primary Skills</h3>
                 <p>• <strong>Android Development</strong></p>
-                <p class="terminal-muted">  7+ years building native Android apps</p>
+                <p class="terminal-muted">  9+ years building native Android apps</p>
                 <p>• <strong>Kotlin</strong></p>
                 <p class="terminal-muted">  Primary language for Android development</p>
                 <p>• <strong>Java</strong></p>
