@@ -134,15 +134,8 @@ function loadCareerSection() {
     const careerSection = document.querySelector('#career .section-content');
     careerSection.innerHTML = `
         <div class="career-entry">
-            <p>> [2020-Present] Samsung Electronics</p>
-            <p>  └─ Weather Client App Developer</p>
-            <p>  └─ Android application development</p>
-            <p>  └─ Tech: Kotlin, Android</p>
-        </div>
-        <br>
-        <div class="career-entry">
-            <p>> [2017-2020] Samsung Electronics</p>
-            <p>  └─ Galaxy Store Client App Developer</p>
+            <p>> [2017-Present] Samsung Electronics</p>
+            <p>  └─ Staff Engineer</p>
             <p>  └─ Android application development</p>
             <p>  └─ Tech: Kotlin, Java, Android</p>
         </div>
@@ -178,18 +171,16 @@ function loadProjectsSection() {
     projectsSection.innerHTML = `
         <h3>>> Professional Projects</h3>
         <div class="project">
-            <p>[*] <strong>Samsung Weather Client</strong></p>
+            <p>[2020-Present] <strong>Samsung Weather Client</strong></p>
             <p>    Weather application for Samsung devices</p>
             <p>    Used by millions of users</p>
             <p>    Tech: Kotlin, Android</p>
-            <p>    Status: <span style="color: var(--terminal-highlight)">ACTIVE</span></p>
         </div>
         <br>
         <div class="project">
-            <p>[*] <strong>Samsung Galaxy Store</strong></p>
+            <p>[2017-2020] <strong>Samsung Galaxy Store</strong></p>
             <p>    App marketplace for Samsung devices</p>
             <p>    Tech: Kotlin, Android</p>
-            <p>    Status: <span style="color: var(--terminal-highlight)">COMPLETED</span></p>
         </div>
         <br>
         <h3>>> Personal Projects</h3>
