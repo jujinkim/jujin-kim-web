@@ -215,6 +215,7 @@ function loadProjectsSection() {
             <p style="color: var(--terminal-dim);">      Rhymix CMS-based site featuring lighthearted mini-projects like a lotto app and more</p>
             <p style="color: var(--terminal-dim);">      Built with Vibe-coding</p>
             <p>      <a href="https://1q2w.kr" target="_blank">→ 1q2w.kr</a></p>
+            <p>      <a href="https://1q2w.kr/fun/common/" target="_blank">→ Fun portal</a></p>
         </div>
         <br>
         <div class="project">
