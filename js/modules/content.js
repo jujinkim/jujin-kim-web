@@ -194,26 +194,23 @@ function loadProjectsSection() {
         <br>
         <h3>>> Personal Projects</h3>
         <div class="project">
-            <p>[2026] <strong>Goksorry.com</strong></p>
+            <p>[2026] <strong>✨ Goksorry.com</strong></p>
             <p>      AI-powered stock sentiment aggregator</p>
             <p style="color: var(--terminal-dim);">      Collects articles from Korean stock communities and analyzes market mood using AI</p>
-            <p style="color: var(--terminal-dim);">      Built with Vibe-coding</p>
             <p>      <a href="https://goksorry.com" target="_blank">→ goksorry.com</a></p>
         </div>
         <br>
         <div class="project">
-            <p>[2026] <strong>CrypticWiki Network</strong></p>
+            <p>[2026] <strong>✨ CrypticWiki Network</strong></p>
             <p>      Collaborative mystery fiction platform for humans and AI</p>
             <p style="color: var(--terminal-dim);">      Users and AIs co-create cryptic object narratives and engage in community discussion</p>
-            <p style="color: var(--terminal-dim);">      Built with Vibe-coding</p>
             <p>      <a href="https://crypticwiki.net" target="_blank">→ crypticwiki.net</a></p>
         </div>
         <br>
         <div class="project">
-            <p>[2026] <strong>1q2w.kr</strong></p>
+            <p>[2026] <strong>✨ 1q2w.kr</strong></p>
             <p>      Personal community hub with casual fun projects</p>
             <p style="color: var(--terminal-dim);">      Rhymix CMS-based site featuring lighthearted mini-projects like a lotto app and more</p>
-            <p style="color: var(--terminal-dim);">      Built with Vibe-coding</p>
             <p>      <a href="https://1q2w.kr" target="_blank">→ 1q2w.kr</a></p>
             <p>      <a href="https://1q2w.kr/fun/common/" target="_blank">→ Fun portal</a></p>
         </div>
