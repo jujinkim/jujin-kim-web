@@ -339,20 +339,10 @@ function loadContactSection() {
             <p>> Blog:     <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
             <p>> Instagram: <a href="https://instagram.com/jujin__kim" target="_blank">@jujin__kim</a></p>
             <p>> Facebook:  <a href="https://facebook.com/jujinjujinjujin" target="_blank">facebook.com/jujinjujinjujin</a></p>
-            <p>> Steam:     <a href="https://steamcommunity.com/id/buchakim" target="_blank">steamcommunity.com/id/buchakim</a></p>
             <br>
             <h3>>> Location</h3>
             <p>> City: Suwon, South Korea 🇰🇷</p>
             <p>> Current Time (KST): ${kstTime}</p>
-            <br>
-            <div style="padding: 20px 0; color: var(--terminal-accent);">
-                <p style="color: var(--terminal-highlight); font-weight: bold;">I live by “buck it.” / “내 줏대로 산다”</p>
-                <br>
-                <p>> Philosophy: Building something that makes the world a better place</p>
-                <p>> Currently: Learning how to be cool</p>
-                <p>> Open to: Meaningful collaborations</p>
-            </div>
-            <br>
             <p>> Waiting for connection...</p>
         </div>
     `;
