@@ -56,15 +56,22 @@ export function initContent() {
     loadContactSection();
 }
 
-function animateContent(sectionId) {
-    const section = document.querySelector(`#${sectionId} .section-content`);
-    if (!section) return;
-    
-    const elements = section.querySelectorAll('p, h2, div');
-    elements.forEach((element, index) => {
-        element.style.opacity = '0';
-        element.style.animation = `typewriter-lines 0.05s steps(1) ${index * 0.02}s forwards`;
-    });
+function getKstTime() {
+    try {
+        return new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Seoul',
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit'
+        }).format(new Date());
+    } catch (error) {
+        const now = new Date();
+        const utcTime = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
+        const kstTime = new Date(utcTime + (9 * 60 * 60 * 1000));
+        const hours = String(kstTime.getHours()).padStart(2, '0');
+        const minutes = String(kstTime.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
+    }
 }
 
 function loadHomeSection() {
@@ -333,14 +340,7 @@ function loadTechnologiesSection() {
 
 function loadContactSection() {
     const contactSection = document.querySelector('#contact .section-content');
-    
-    // Get current KST time
-    const kstTime = new Date().toLocaleString('en-US', {
-        timeZone: 'Asia/Seoul',
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    const kstTime = getKstTime();
     
     contactSection.innerHTML = `
         <div class="contact-info">

@@ -5,7 +5,8 @@ export function initTheme() {
     currentThemeMode = savedTheme;
     applyTheme();
     
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    addMediaQueryChangeListener(colorSchemeQuery, () => {
         if (currentThemeMode === 'system') {
             applyTheme();
         }
@@ -99,4 +100,15 @@ function showThemeNotification(mode) {
     setTimeout(() => {
         notification.remove();
     }, 1500);
+}
+
+function addMediaQueryChangeListener(mediaQueryList, listener) {
+    if (typeof mediaQueryList.addEventListener === 'function') {
+        mediaQueryList.addEventListener('change', listener);
+        return;
+    }
+
+    if (typeof mediaQueryList.addListener === 'function') {
+        mediaQueryList.addListener(listener);
+    }
 }

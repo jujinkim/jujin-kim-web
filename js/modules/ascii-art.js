@@ -17,7 +17,7 @@ export function initASCIITitle() {
     const handleChange = () => {
         img.src = getTitleSrc();
     };
-    mediaQuery.addEventListener('change', handleChange);
+    addMediaQueryChangeListener(mediaQuery, handleChange);
     window.addEventListener('theme-changed', handleChange);
 }
 
@@ -32,4 +32,15 @@ function getTitleSrc() {
         isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
     return isDark ? 'img/ascii-title-dark.svg' : 'img/ascii-title-light.svg';
+}
+
+function addMediaQueryChangeListener(mediaQueryList, listener) {
+    if (typeof mediaQueryList.addEventListener === 'function') {
+        mediaQueryList.addEventListener('change', listener);
+        return;
+    }
+
+    if (typeof mediaQueryList.addListener === 'function') {
+        mediaQueryList.addListener(listener);
+    }
 }

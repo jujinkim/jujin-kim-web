@@ -10,21 +10,21 @@ function isMobileInputContext() {
 
 export function initNavigation() {
     menuItems = document.querySelectorAll('.menu-item');
-    
+
     menuItems.forEach((item, index) => {
         item.addEventListener('click', () => selectMenuItem(item, index));
     });
 
     document.addEventListener('click', handleSectionLink);
-    
+
     // Add keyboard shortcuts
     if (!isMobileInputContext()) {
         document.addEventListener('keydown', handleKeyboardShortcuts);
     }
-    
+
     // Set Home as default active without animation
     selectMenuItem(menuItems[0], 0, true);
-    
+
     addScanLine();
 }
 
@@ -32,7 +32,7 @@ export function navigateToSection(sectionId) {
     if (!menuItems.length) {
         menuItems = document.querySelectorAll('.menu-item');
     }
-    
+
     const items = Array.from(menuItems);
     const targetItem = items.find(item => item.dataset.section === sectionId);
     if (targetItem) {
@@ -42,28 +42,28 @@ export function navigateToSection(sectionId) {
 
 function selectMenuItem(menuItem, index, skipAnimation = false) {
     const sectionId = menuItem.dataset.section;
-    
+
     // Update active state
     document.querySelectorAll('.menu-item').forEach(item => {
         item.classList.remove('active');
     });
     menuItem.classList.add('active');
-    
+
     showSection(sectionId, skipAnimation);
     currentSection = sectionId;
 }
 
 function showSection(sectionId, skipAnimation = false) {
     const sections = document.querySelectorAll('.content-section');
-    
+
     sections.forEach(section => {
         section.style.display = 'none';
     });
-    
+
     const targetSection = document.getElementById(sectionId);
     if (targetSection) {
-        targetSection.style.display = 'block';
-        
+        targetSection.style.display = '';
+
         // Re-initialize profile picture when showing home section
         if (sectionId === 'home') {
             import('./profile-ascii.js').then(module => {
@@ -72,20 +72,29 @@ function showSection(sectionId, skipAnimation = false) {
                 }, 100);
             });
         }
-        
+
+        const animationTargets = getSectionAnimationTargets(targetSection);
+        resetSectionAnimation(animationTargets);
+
         if (!skipAnimation) {
             targetSection.classList.add('typewriter');
-            
-            // Animate content when switching sections
-            const elements = targetSection.querySelectorAll('p, h2, div');
-            elements.forEach((element, index) => {
-                element.style.opacity = '0';
-                element.style.animation = `typewriter-lines 0.05s steps(1) ${index * 0.02}s forwards`;
+
+            requestAnimationFrame(() => {
+                // Ensure Safari flushes the display change before animations begin.
+                void targetSection.offsetHeight;
+
+                animationTargets.forEach((element, index) => {
+                    element.style.opacity = '0';
+                    element.style.animation = `typewriter-lines 0.08s steps(1, end) ${index * 0.03}s forwards`;
+                });
             });
-            
+
             setTimeout(() => {
+                animationTargets.forEach(element => {
+                    element.style.opacity = '1';
+                });
                 targetSection.classList.remove('typewriter');
-            }, 300);
+            }, Math.max(320, animationTargets.length * 30 + 140));
         }
     }
 }
@@ -102,7 +111,7 @@ function handleKeyboardShortcuts(e) {
         Digit5: 4,
         Digit6: 5
     };
-    
+
     const index = numberCodeMap[e.code];
     if (typeof index === 'number') {
         e.preventDefault();
@@ -127,10 +136,36 @@ function addScanLine() {
 function handleSectionLink(event) {
     const link = event.target.closest('[data-section-link]');
     if (!link) return;
-    
+
     const sectionId = link.dataset.sectionLink;
     if (sectionId) {
         event.preventDefault();
         navigateToSection(sectionId);
     }
+}
+
+function getSectionAnimationTargets(section) {
+    const targets = [];
+    const heading = section.querySelector('h2');
+    if (heading) {
+        targets.push(heading);
+    }
+
+    const sectionContent = section.querySelector('.section-content');
+    if (!sectionContent) return targets;
+
+    Array.from(sectionContent.children).forEach(child => {
+        if (child.tagName !== 'BR') {
+            targets.push(child);
+        }
+    });
+
+    return targets;
+}
+
+function resetSectionAnimation(elements) {
+    elements.forEach(element => {
+        element.style.opacity = '1';
+        element.style.animation = 'none';
+    });
 }

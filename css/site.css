@@ -25,6 +25,7 @@ html {
     overflow-y: hidden;
     overflow-x: hidden;
     height: 100%;
+    min-height: -webkit-fill-available;
 }
 
 @media (prefers-color-scheme: light) {
@@ -149,6 +150,9 @@ body {
     position: relative;
     overflow-y: hidden;
     overflow-x: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
     padding-top: var(--terminal-fixed-topbar-height);
     padding-bottom: var(--terminal-fixed-footer-height);
 }
@@ -158,6 +162,7 @@ body {
     max-width: var(--terminal-shell-width);
     margin: 0 auto;
     height: calc(100vh - var(--terminal-fixed-topbar-height) - var(--terminal-fixed-footer-height));
+    height: calc(100dvh - var(--terminal-fixed-topbar-height) - var(--terminal-fixed-footer-height));
     overflow: hidden;
     min-height: auto;
     display: block;
@@ -330,6 +335,8 @@ body {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     position: relative;
 }
 
