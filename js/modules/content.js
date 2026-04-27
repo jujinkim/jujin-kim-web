@@ -84,7 +84,7 @@ function loadHomeSection() {
                 <p style="margin: 5px 0; letter-spacing: 0.04em; font-family: var(--terminal-display-font);">Software Engineer ${calculateAge()}</p>
                 <div style="border-bottom: 2px solid var(--terminal-border); margin-top: 10px; opacity: 0.6;"></div>
             </div>
-            <div style="animation: typewriter 0.5s steps(20);">
+            <div>
                 <p>> Initializing system... <span style="color: var(--terminal-highlight)">[OK]</span></p>
                 <p>> Loading profile... <span style="color: var(--terminal-highlight)">[OK]</span></p>
             </div>

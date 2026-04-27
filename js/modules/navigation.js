@@ -1,4 +1,3 @@
-let currentSection = 'home';
 let menuItems = [];
 const MOBILE_SHORTCUT_BREAKPOINT = 768;
 
@@ -11,8 +10,8 @@ function isMobileInputContext() {
 export function initNavigation() {
     menuItems = document.querySelectorAll('.menu-item');
 
-    menuItems.forEach((item, index) => {
-        item.addEventListener('click', () => selectMenuItem(item, index));
+    menuItems.forEach(item => {
+        item.addEventListener('click', () => selectMenuItem(item));
     });
 
     document.addEventListener('click', handleSectionLink);
@@ -22,8 +21,7 @@ export function initNavigation() {
         document.addEventListener('keydown', handleKeyboardShortcuts);
     }
 
-    // Set Home as default active without animation
-    selectMenuItem(menuItems[0], 0, true);
+    selectMenuItem(menuItems[0]);
 
     addScanLine();
 }
@@ -36,11 +34,11 @@ export function navigateToSection(sectionId) {
     const items = Array.from(menuItems);
     const targetItem = items.find(item => item.dataset.section === sectionId);
     if (targetItem) {
-        selectMenuItem(targetItem, items.indexOf(targetItem));
+        selectMenuItem(targetItem);
     }
 }
 
-function selectMenuItem(menuItem, index, skipAnimation = false) {
+function selectMenuItem(menuItem) {
     const sectionId = menuItem.dataset.section;
 
     // Update active state
@@ -49,53 +47,23 @@ function selectMenuItem(menuItem, index, skipAnimation = false) {
     });
     menuItem.classList.add('active');
 
-    showSection(sectionId, skipAnimation);
-    currentSection = sectionId;
+    showSection(sectionId);
 }
 
-function showSection(sectionId, skipAnimation = false) {
+function showSection(sectionId) {
     const sections = document.querySelectorAll('.content-section');
 
     sections.forEach(section => {
-        section.style.display = 'none';
+        section.style.display = section.id === sectionId ? '' : 'none';
     });
 
     const targetSection = document.getElementById(sectionId);
-    if (targetSection) {
-        targetSection.style.display = '';
-
-        // Re-initialize profile picture when showing home section
-        if (sectionId === 'home') {
-            import('./profile-ascii.js').then(module => {
-                setTimeout(() => {
-                    module.initProfilePicture();
-                }, 100);
-            });
-        }
-
-        const animationTargets = getSectionAnimationTargets(targetSection);
-        resetSectionAnimation(animationTargets);
-
-        if (!skipAnimation) {
-            targetSection.classList.add('typewriter');
-
-            requestAnimationFrame(() => {
-                // Ensure Safari flushes the display change before animations begin.
-                void targetSection.offsetHeight;
-
-                animationTargets.forEach((element, index) => {
-                    element.style.opacity = '0';
-                    element.style.animation = `typewriter-lines 0.08s steps(1, end) ${index * 0.03}s forwards`;
-                });
-            });
-
+    if (targetSection && sectionId === 'home') {
+        import('./profile-ascii.js').then(module => {
             setTimeout(() => {
-                animationTargets.forEach(element => {
-                    element.style.opacity = '1';
-                });
-                targetSection.classList.remove('typewriter');
-            }, Math.max(320, animationTargets.length * 30 + 140));
-        }
+                module.initProfilePicture();
+            }, 100);
+        });
     }
 }
 
@@ -116,14 +84,14 @@ function handleKeyboardShortcuts(e) {
     if (typeof index === 'number') {
         e.preventDefault();
         if (index < menuItems.length) {
-            selectMenuItem(menuItems[index], index);
+            selectMenuItem(menuItems[index]);
         }
     }
 
     // ESC key to return to Home
     if (e.key === 'Escape') {
         e.preventDefault();
-        selectMenuItem(menuItems[0], 0);
+        selectMenuItem(menuItems[0]);
     }
 }
 
@@ -142,30 +110,4 @@ function handleSectionLink(event) {
         event.preventDefault();
         navigateToSection(sectionId);
     }
-}
-
-function getSectionAnimationTargets(section) {
-    const targets = [];
-    const heading = section.querySelector('h2');
-    if (heading) {
-        targets.push(heading);
-    }
-
-    const sectionContent = section.querySelector('.section-content');
-    if (!sectionContent) return targets;
-
-    Array.from(sectionContent.children).forEach(child => {
-        if (child.tagName !== 'BR') {
-            targets.push(child);
-        }
-    });
-
-    return targets;
-}
-
-function resetSectionAnimation(elements) {
-    elements.forEach(element => {
-        element.style.opacity = '1';
-        element.style.animation = 'none';
-    });
 }

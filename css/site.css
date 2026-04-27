@@ -639,11 +639,6 @@ body[data-theme='dark'] .copyright {
     align-items: center;
 }
 
-@keyframes typewriter {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
 @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
