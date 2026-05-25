@@ -107,15 +107,6 @@ html {
     transform: scale(1.05);
 }
 
-.ascii-profile {
-    display: none;
-}
-
-.ascii-profile-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
 
 .original-profile {
     position: absolute;
@@ -231,17 +222,6 @@ body {
     filter: drop-shadow(0 0 8px var(--terminal-dim));
 }
 
-/* Apply tint color to SVG */
-.ascii-profile-img {
-    filter: brightness(0) saturate(100%) invert(69%) sepia(41%) saturate(1048%) hue-rotate(68deg) brightness(103%) contrast(95%) drop-shadow(0 0 10px var(--terminal-dim));
-}
-
-/* Light mode tint adjustment */
-@media (prefers-color-scheme: light) {
-    .ascii-profile-img {
-        filter: brightness(0) saturate(100%) invert(21%) sepia(89%) saturate(1048%) hue-rotate(99deg) brightness(95%) contrast(102%);
-    }
-}
 
 .menu-border, .content-border {
     border: 1px solid rgba(63, 163, 115, 0.4);

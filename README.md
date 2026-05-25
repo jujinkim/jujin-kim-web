@@ -54,7 +54,7 @@ jujin_kim_web/
 │       ├── terminal-input.js
 │       └── profile-ascii.js
 └── img/
-    └── profile.png
+    └── profile.jpg
 ```
 
 ## Author

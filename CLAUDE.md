@@ -35,8 +35,7 @@ jujin_kim_web/
 │   ├── ascii-title.svg
 │   ├── ascii-title-light.svg
 │   ├── ascii-title-dark.svg
-│   ├── profile-ascii.svg
-│   └── profile.png
+│   └── profile.jpg
 ├── fonts/
 │   └── JetBrainsMono-Regular.woff2
 ├── favicon.ico

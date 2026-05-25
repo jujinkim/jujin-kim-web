@@ -13,7 +13,7 @@ export function initProfilePicture() {
     imageContainer.className = 'original-profile';
     
     const img = document.createElement('img');
-    img.src = 'img/profile.png';
+    img.src = 'img/profile.jpg';
     img.alt = 'Jujin Kim';
     
     img.onload = function() {
