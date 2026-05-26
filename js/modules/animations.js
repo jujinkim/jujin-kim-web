@@ -99,8 +99,6 @@ function createMatrixRain(canvas) {
                 y: Math.random() * canvas.height - canvas.height,
                 char: chars[Math.floor(Math.random() * chars.length)],
                 speedY: speedY,
-                vx: 0,
-                vy: speedY,
                 fontSize: Math.random() * 6 + 10,
                 opacity: Math.random() * 0.5 + 0.3,
                 scale: 1.0,
@@ -140,38 +138,27 @@ function animate(canvas, ctx) {
             const dy = mouse.y - char.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             
-            // Damping (air resistance)
-            const damping = 0.92;
-            
             if (char.state === 'falling') {
                 if (mouse.active && dist < 25) {
                     char.state = 'shrinking';
                 } else {
-                    let fx = 0;
-                    let fy = 0;
+                    let pullX = 0;
+                    let pullY = 0;
                     
                     if (mouse.active && dist < 450) {
                         const intensity = (1 - dist / 450);
-                        const pullForce = 2.8 * intensity; // attraction acceleration
+                        const pullForce = 3.2 * intensity; // Direct pull speed
                         
-                        fx = (dx / dist) * pullForce;
-                        fy = (dy / dist) * pullForce;
+                        pullX = (dx / dist) * pullForce;
+                        // Only pull vertically if the character is above the cursor
+                        if (dy > 0) {
+                            pullY = (dy / dist) * pullForce;
+                        }
                     }
                     
-                    // Gravity acceleration calculated to maintain char.speedY terminal velocity
-                    const gravity = char.speedY * (1 - damping) / damping;
-                    
-                    // Update velocities
-                    char.vx += fx;
-                    char.vy += gravity + fy;
-                    
-                    // Apply damping
-                    char.vx *= damping;
-                    char.vy *= damping;
-                    
-                    // Update positions
-                    char.x += char.vx;
-                    char.y += char.vy;
+                    // Directly apply pull vector and falling speed
+                    char.x += pullX;
+                    char.y += pullY + char.speedY;
                 }
             } else if (char.state === 'shrinking') {
                 char.scale -= 0.08;
@@ -179,17 +166,13 @@ function animate(canvas, ctx) {
                 
                 const dirX = dx / (dist || 1);
                 const dirY = dy / (dist || 1);
-                char.vx = dirX * 3.5;
-                char.vy = dirY * 3.5;
                 
-                char.x += char.vx;
-                char.y += char.vy;
+                char.x += dirX * 3.5;
+                char.y += dirY * 3.5;
                 
                 if (char.scale <= 0 || char.opacity <= 0) {
                     char.x = Math.random() * canvas.width;
                     char.y = -Math.random() * 100 - 20;
-                    char.vx = 0;
-                    char.vy = char.speedY;
                     char.scale = 1.0;
                     char.opacity = Math.random() * 0.5 + 0.3;
                     char.state = 'falling';
@@ -201,8 +184,6 @@ function animate(canvas, ctx) {
             if (char.x < -20 || char.x > canvas.width + 20 || char.y > canvas.height + 20) {
                 char.x = Math.random() * canvas.width;
                 char.y = -Math.random() * 100 - 20;
-                char.vx = 0;
-                char.vy = char.speedY;
                 char.scale = 1.0;
                 char.opacity = Math.random() * 0.5 + 0.3;
                 char.state = 'falling';
