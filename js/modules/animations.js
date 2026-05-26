@@ -93,16 +93,18 @@ function createMatrixRain(canvas) {
     for (let i = 0; i < columns; i++) {
         const count = Math.random() * 2 + 1;
         for (let j = 0; j < count; j++) {
+            const speedY = Math.random() * 2 + 1.2;
             matrixChars.push({
                 x: i * 20 + Math.random() * 6 - 3,
                 y: Math.random() * canvas.height - canvas.height,
                 char: chars[Math.floor(Math.random() * chars.length)],
-                speedY: Math.random() * 2 + 1.2,
+                speedY: speedY,
+                vx: 0,
+                vy: speedY,
                 fontSize: Math.random() * 6 + 10,
                 opacity: Math.random() * 0.5 + 0.3,
                 scale: 1.0,
                 state: 'falling',
-                swirlDirection: Math.random() < 0.5 ? 1 : -1,
                 colorType: Math.random() < 0.2 ? 'highlight' : 'dim'
             });
         }
@@ -138,24 +140,38 @@ function animate(canvas, ctx) {
             const dy = mouse.y - char.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             
+            // Damping (air resistance)
+            const damping = 0.92;
+            
             if (char.state === 'falling') {
                 if (mouse.active && dist < 25) {
                     char.state = 'shrinking';
-                } else if (mouse.active && dist < 450) {
-                    const intensity = (1 - dist / 450);
-                    const pullForce = 2.2 * intensity;
-                    const swirlForce = 4.2 * intensity;
-                    
-                    const dirX = dx / dist;
-                    const dirY = dy / dist;
-                    
-                    const perpX = -dirY * char.swirlDirection;
-                    const perpY = dirX * char.swirlDirection;
-                    
-                    char.x += dirX * pullForce + perpX * swirlForce;
-                    char.y += dirY * (pullForce * 0.3) + perpY * swirlForce + char.speedY;
                 } else {
-                    char.y += char.speedY;
+                    let fx = 0;
+                    let fy = 0;
+                    
+                    if (mouse.active && dist < 450) {
+                        const intensity = (1 - dist / 450);
+                        const pullForce = 2.8 * intensity; // attraction acceleration
+                        
+                        fx = (dx / dist) * pullForce;
+                        fy = (dy / dist) * pullForce;
+                    }
+                    
+                    // Gravity acceleration calculated to maintain char.speedY terminal velocity
+                    const gravity = char.speedY * (1 - damping) / damping;
+                    
+                    // Update velocities
+                    char.vx += fx;
+                    char.vy += gravity + fy;
+                    
+                    // Apply damping
+                    char.vx *= damping;
+                    char.vy *= damping;
+                    
+                    // Update positions
+                    char.x += char.vx;
+                    char.y += char.vy;
                 }
             } else if (char.state === 'shrinking') {
                 char.scale -= 0.08;
@@ -163,12 +179,17 @@ function animate(canvas, ctx) {
                 
                 const dirX = dx / (dist || 1);
                 const dirY = dy / (dist || 1);
-                char.x += dirX * 3.5;
-                char.y += dirY * 3.5;
+                char.vx = dirX * 3.5;
+                char.vy = dirY * 3.5;
+                
+                char.x += char.vx;
+                char.y += char.vy;
                 
                 if (char.scale <= 0 || char.opacity <= 0) {
                     char.x = Math.random() * canvas.width;
                     char.y = -Math.random() * 100 - 20;
+                    char.vx = 0;
+                    char.vy = char.speedY;
                     char.scale = 1.0;
                     char.opacity = Math.random() * 0.5 + 0.3;
                     char.state = 'falling';
@@ -180,6 +201,8 @@ function animate(canvas, ctx) {
             if (char.x < -20 || char.x > canvas.width + 20 || char.y > canvas.height + 20) {
                 char.x = Math.random() * canvas.width;
                 char.y = -Math.random() * 100 - 20;
+                char.vx = 0;
+                char.vy = char.speedY;
                 char.scale = 1.0;
                 char.opacity = Math.random() * 0.5 + 0.3;
                 char.state = 'falling';
