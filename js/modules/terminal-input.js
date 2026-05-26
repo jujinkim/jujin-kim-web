@@ -74,7 +74,7 @@ Located in Suwon, South Korea`;
         return `Technical Skills:
 • App Development
 • Game Development  
-• Product Engineering
+• Software Engineering
 • Service Builder`;
     },
     

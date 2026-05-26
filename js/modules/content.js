@@ -77,25 +77,22 @@ function getKstTime() {
 function loadHomeSection() {
     const homeSection = document.querySelector('#home .section-content');
     homeSection.innerHTML = `
-        <div id="profile-picture"></div>
+        <div class="profile-header-container">
+            <div id="profile-picture"></div>
+            <div class="profile-meta">
+                <h2>JUJIN KIM</h2>
+                <p class="subtitle">Software Engineer ${calculateAge()}</p>
+                <div class="role-tags">
+                    <span class="role-tag"><span class="spark">✦</span>App Developer</span>
+                    <span class="role-tag"><span class="spark">✦</span>Game Developer</span>
+                    <span class="role-tag"><span class="spark">✦</span>Software Engineer</span>
+                    <span class="role-tag"><span class="spark">✦</span>Service Builder</span>
+                </div>
+            </div>
+        </div>
         <div class="home-content" style="width: 100%;">
-            <div style="text-align: left; color: var(--terminal-highlight); margin-bottom: 20px;">
-                <h2 style="font-size: 24px; margin: 0; letter-spacing: 0.08em;">JUJIN KIM</h2>
-                <p style="margin: 5px 0; letter-spacing: 0.04em; font-family: var(--terminal-display-font);">Software Engineer ${calculateAge()}</p>
-                <div style="border-bottom: 2px solid var(--terminal-border); margin-top: 10px; opacity: 0.6;"></div>
-            </div>
-            <div>
-                <p>> Initializing system... <span style="color: var(--terminal-highlight)">[OK]</span></p>
-                <p>> Loading profile... <span style="color: var(--terminal-highlight)">[OK]</span></p>
-            </div>
-            <div class="role-tags">
-                <span class="role-tag"><span class="spark">✦</span>App Developer</span>
-                <span class="role-tag"><span class="spark">✦</span>Game Developer</span>
-                <span class="role-tag"><span class="spark">✦</span>Product Engineer</span>
-                <span class="role-tag"><span class="spark">✦</span>Service Builder</span>
-            </div>
             <div class="callout" style="margin: 12px 0 18px 0;">
-                <p style="margin: 0; line-height: 1.6;">Hi, I'm <strong>Jujin Kim</strong>, a Product Engineer who designs and builds intentionally—at the right moment. Curious about something? <a class="ping-link" href="#contact" data-section-link="contact">Ping me</a>.</p>
+                <p style="margin: 0; line-height: 1.6;">Hi, I'm <strong>Jujin Kim</strong>, a Software Engineer who designs and builds intentionally—at the right moment. Curious about something? <a class="ping-link" href="#contact" data-section-link="contact">Ping me</a>.</p>
             </div>
             <div style="color: var(--terminal-accent); padding: 12px 0;">
                 <p>Building digital experiences that matter</p>

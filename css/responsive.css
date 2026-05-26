@@ -99,6 +99,31 @@
         border-left: 0;
         border-right: 0;
     }
+
+    .profile-header-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        text-align: center;
+        margin-bottom: 16px;
+    }
+    
+    .profile-meta {
+        align-items: center;
+    }
+
+    .profile-meta h2 {
+        font-size: 22px !important;
+    }
+
+    .profile-meta .subtitle {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .profile-meta .role-tags {
+        justify-content: center;
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -170,24 +195,6 @@
 
     #terminal-content {
         margin-top: 0;
-    }
-    
-}
-
-@media screen and (min-width: 1920px) {
-    #terminal-container {
-        --terminal-shell-width: 1600px;
-        max-width: var(--terminal-shell-width);
-        margin: 0 auto;
-    }
-    
-    body {
-        font-size: 16px;
-    }
-    
-    
-    #terminal-header {
-        padding-top: 12px;
     }
 }
 

@@ -107,6 +107,49 @@ html {
     transform: scale(1.05);
 }
 
+/* Profile Header Container (Side-by-Side) */
+.profile-header-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 24px;
+}
+
+.profile-header-container #profile-picture {
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.profile-meta {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.profile-meta h2 {
+    font-size: 26px !important;
+    margin: 0 0 6px 0 !important;
+    letter-spacing: 0.08em;
+    color: var(--terminal-highlight);
+    text-transform: uppercase;
+}
+
+.profile-meta .subtitle {
+    margin: 0 0 14px 0;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    font-family: var(--terminal-display-font);
+    color: var(--terminal-highlight);
+}
+
+.profile-meta .role-tags {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
 
 .original-profile {
     position: absolute;
