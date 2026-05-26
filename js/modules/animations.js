@@ -1,19 +1,67 @@
 let animationFrame;
 let stars = [];
+let matrixChars = [];
+const chars = '01가나다라마바사아자차카타파하김주진서울코딩개발프로그래머안녕하세요반갑습니다';
+
+let mouse = { x: null, y: null, active: false };
+let matrixRainEnabled = true;
+
+function handleMouseMove(e) {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    mouse.active = true;
+}
+
+function handleTouchMove(e) {
+    if (e.touches && e.touches[0]) {
+        mouse.x = e.touches[0].clientX;
+        mouse.y = e.touches[0].clientY;
+        mouse.active = true;
+    }
+}
+
+function handleMouseLeave() {
+    mouse.active = false;
+}
+
+export function toggleMatrixRain() {
+    matrixRainEnabled = !matrixRainEnabled;
+    return matrixRainEnabled;
+}
 
 export function initAnimations() {
     const canvas = document.getElementById('starfield');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
     resizeCanvas(canvas);
-    window.addEventListener('resize', () => resizeCanvas(canvas));
+    
+    // Setup resize listener
+    window.addEventListener('resize', () => {
+        resizeCanvas(canvas);
+        if (window.innerWidth > 768) {
+            if (matrixChars.length === 0) {
+                createMatrixRain(canvas);
+            }
+        } else {
+            matrixChars = [];
+        }
+    });
+    
+    // Setup mouse/touch listeners
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('mouseleave', handleMouseLeave);
     
     createStars(canvas, ctx);
-    animateStars(canvas, ctx);
     
     if (window.innerWidth > 768) {
-        createMatrixRain();
+        createMatrixRain(canvas);
+    } else {
+        matrixChars = [];
     }
+    
+    animate(canvas, ctx);
 }
 
 function resizeCanvas(canvas) {
@@ -38,61 +86,127 @@ function createStars(canvas, ctx) {
     }
 }
 
-function animateStars(canvas, ctx) {
+function createMatrixRain(canvas) {
+    matrixChars = [];
+    const columns = Math.floor(canvas.width / 20);
+    
+    for (let i = 0; i < columns; i++) {
+        const count = Math.random() * 2 + 1;
+        for (let j = 0; j < count; j++) {
+            matrixChars.push({
+                x: i * 20 + Math.random() * 6 - 3,
+                y: Math.random() * canvas.height - canvas.height,
+                char: chars[Math.floor(Math.random() * chars.length)],
+                speedY: Math.random() * 2 + 1.2,
+                fontSize: Math.random() * 6 + 10,
+                opacity: Math.random() * 0.5 + 0.3,
+                scale: 1.0,
+                state: 'falling',
+                swirlDirection: Math.random() < 0.5 ? 1 : -1,
+                colorType: Math.random() < 0.2 ? 'highlight' : 'dim'
+            });
+        }
+    }
+}
+
+function animate(canvas, ctx) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     const style = getComputedStyle(document.body);
-    const color = style.getPropertyValue('--terminal-fg');
+    const colorHighlight = style.getPropertyValue('--terminal-highlight').trim() || '#7ef2ad';
+    const colorDim = style.getPropertyValue('--terminal-dim').trim() || '#2f4a3c';
+    const colorFg = style.getPropertyValue('--terminal-fg').trim() || '#e6efe7';
     
+    // Draw Stars
     ctx.font = '10px monospace';
-    
     stars.forEach(star => {
         star.opacity += star.twinkleSpeed;
         if (star.opacity > 1 || star.opacity < 0) {
             star.twinkleSpeed = -star.twinkleSpeed;
         }
         
-        ctx.globalAlpha = Math.max(0, Math.min(1, star.opacity)) * 0.5;
-        ctx.fillStyle = color;
+        ctx.globalAlpha = Math.max(0, Math.min(1, star.opacity)) * 0.15;
+        ctx.fillStyle = colorFg;
+        ctx.shadowBlur = 0;
         ctx.fillText(star.char, star.x, star.y);
     });
     
-    animationFrame = requestAnimationFrame(() => animateStars(canvas, ctx));
-}
-
-function createMatrixRain() {
-    const matrixContainer = document.createElement('div');
-    matrixContainer.id = 'matrix-rain';
-    matrixContainer.style.position = 'fixed';
-    matrixContainer.style.top = '0';
-    matrixContainer.style.left = '0';
-    matrixContainer.style.width = '100%';
-    matrixContainer.style.height = '100%';
-    matrixContainer.style.pointerEvents = 'none';
-    matrixContainer.style.zIndex = '0';
-    
-    const chars = '01가나다라마바사아자차카타파하김주진서울코딩개발프로그래머안녕하세요반갑습니다';
-    const columns = Math.floor(window.innerWidth / 20);
-    
-    for (let i = 0; i < columns; i++) {
-        // Create multiple characters per column for more density
-        for (let j = 0; j < 3; j++) {
-            const span = document.createElement('span');
-            span.className = 'matrix-char';
-            span.textContent = chars[Math.floor(Math.random() * chars.length)];
-            span.style.left = `${i * 20}px`;
-            span.style.setProperty('--duration', `${Math.random() * 15 + 10}s`);
-            span.style.setProperty('--delay', `${Math.random() * -20}s`);
-            span.style.fontSize = `${Math.random() * 6 + 10}px`;
-            matrixContainer.appendChild(span);
-        }
+    // Draw Matrix Rain
+    if (matrixRainEnabled) {
+        matrixChars.forEach(char => {
+            const dx = mouse.x - char.x;
+            const dy = mouse.y - char.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            if (char.state === 'falling') {
+                if (mouse.active && dist < 25) {
+                    char.state = 'shrinking';
+                } else if (mouse.active && dist < 450) {
+                    const intensity = (1 - dist / 450);
+                    const pullForce = 2.2 * intensity;
+                    const swirlForce = 4.2 * intensity;
+                    
+                    const dirX = dx / dist;
+                    const dirY = dy / dist;
+                    
+                    const perpX = -dirY * char.swirlDirection;
+                    const perpY = dirX * char.swirlDirection;
+                    
+                    char.x += dirX * pullForce + perpX * swirlForce;
+                    char.y += dirY * (pullForce * 0.3) + perpY * swirlForce + char.speedY;
+                } else {
+                    char.y += char.speedY;
+                }
+            } else if (char.state === 'shrinking') {
+                char.scale -= 0.08;
+                char.opacity -= 0.08;
+                
+                const dirX = dx / (dist || 1);
+                const dirY = dy / (dist || 1);
+                char.x += dirX * 3.5;
+                char.y += dirY * 3.5;
+                
+                if (char.scale <= 0 || char.opacity <= 0) {
+                    char.x = Math.random() * canvas.width;
+                    char.y = -Math.random() * 100 - 20;
+                    char.scale = 1.0;
+                    char.opacity = Math.random() * 0.5 + 0.3;
+                    char.state = 'falling';
+                    char.speedY = Math.random() * 2 + 1.2;
+                    char.char = chars[Math.floor(Math.random() * chars.length)];
+                }
+            }
+            
+            if (char.x < -20 || char.x > canvas.width + 20 || char.y > canvas.height + 20) {
+                char.x = Math.random() * canvas.width;
+                char.y = -Math.random() * 100 - 20;
+                char.scale = 1.0;
+                char.opacity = Math.random() * 0.5 + 0.3;
+                char.state = 'falling';
+                char.speedY = Math.random() * 2 + 1.2;
+            }
+            
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, Math.min(1, char.opacity)) * 0.35;
+            ctx.font = `${char.fontSize * char.scale}px monospace`;
+            ctx.fillStyle = char.colorType === 'highlight' ? colorHighlight : colorDim;
+            
+            ctx.shadowColor = char.colorType === 'highlight' ? colorHighlight : colorDim;
+            ctx.shadowBlur = 4;
+            
+            ctx.fillText(char.char, char.x, char.y);
+            ctx.restore();
+        });
     }
     
-    document.body.appendChild(matrixContainer);
+    animationFrame = requestAnimationFrame(() => animate(canvas, ctx));
 }
 
 export function cleanup() {
     if (animationFrame) {
         cancelAnimationFrame(animationFrame);
     }
+    window.removeEventListener('mousemove', handleMouseMove);
+    window.removeEventListener('touchmove', handleTouchMove);
+    window.removeEventListener('mouseleave', handleMouseLeave);
 }

@@ -1,4 +1,5 @@
 import { CONTACT_EMAIL } from '../constants.js';
+import { toggleMatrixRain } from './animations.js';
 
 let currentInput = '';
 let commandHistory = [];
@@ -90,12 +91,8 @@ LinkedIn: linkedin.com/in/jujinkim`;
     },
     
     matrix: () => {
-        const matrixRain = document.getElementById('matrix-rain');
-        if (matrixRain) {
-            matrixRain.style.display = matrixRain.style.display === 'none' ? 'block' : 'none';
-            return `Matrix rain ${matrixRain.style.display === 'none' ? 'disabled' : 'enabled'}`;
-        }
-        return 'Matrix rain not available';
+        const enabled = toggleMatrixRain();
+        return `Matrix rain ${enabled ? 'enabled' : 'disabled'}`;
     }
 };
 
