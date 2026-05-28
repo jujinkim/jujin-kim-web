@@ -349,7 +349,6 @@ function loadContactSection() {
             <h3>>> Personal</h3>
             <p>> Website:  <a href="https://jujin.kim" target="_blank">jujin.kim</a></p>
             <p>> Blog:     <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
-            <p>> Instagram: <a href="https://instagram.com/jujin__kim" target="_blank">@jujin__kim</a></p>
             <p>> Facebook:  <a href="https://facebook.com/jujinjujinjujin" target="_blank">facebook.com/jujinjujinjujin</a></p>
             <br>
             <h3>>> Location</h3>
