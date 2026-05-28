@@ -81,7 +81,7 @@ function loadHomeSection() {
             <div id="profile-picture"></div>
             <div class="profile-meta">
                 <h2>JUJIN KIM</h2>
-                <p class="subtitle">Software Engineer ${calculateAge()}</p>
+                <p class="subtitle">Product Engineer ${calculateAge()}</p>
                 <div class="role-tags">
                     <span class="role-tag"><span class="spark">✦</span>App Developer</span>
                     <span class="role-tag"><span class="spark">✦</span>Game Developer</span>
@@ -92,7 +92,7 @@ function loadHomeSection() {
         </div>
         <div class="home-content" style="width: 100%;">
             <div class="callout" style="margin: 12px 0 18px 0;">
-                <p style="margin: 0; line-height: 1.6;">Hi, I'm <strong>Jujin Kim</strong>, a Software Engineer who designs and builds intentionally—at the right moment. Curious about something? <a class="ping-link" href="#contact" data-section-link="contact">Ping me</a>.</p>
+                <p style="margin: 0; line-height: 1.6;">Hi, I'm <strong>Jujin Kim</strong>, a product engineer grounded in software development and system design. Curious about something? <a class="ping-link" href="#contact" data-section-link="contact">Ping me</a>.</p>
             </div>
             <div style="color: var(--terminal-accent); padding: 12px 0;">
                 <p>Building digital experiences that matter</p>
