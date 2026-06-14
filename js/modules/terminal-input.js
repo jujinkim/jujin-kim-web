@@ -53,7 +53,7 @@ const commands = {
   date     - Show current date and time
   matrix   - Toggle matrix rain effect
   
-Use 1~6 to navigate menu
+Use 1~5 to navigate menu
 Press / or the Terminal button to toggle`;
     },
     

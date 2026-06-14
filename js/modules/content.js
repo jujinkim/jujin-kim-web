@@ -53,7 +53,6 @@ export function initContent() {
     loadCareerSection();
     loadProjectsSection();
     loadTechnologiesSection();
-    loadContactSection();
 }
 
 function getKstTime() {
@@ -74,6 +73,29 @@ function getKstTime() {
     }
 }
 
+function getContactInfoMarkup() {
+    const kstTime = getKstTime();
+
+    return `
+        <div id="home-contact" class="contact-info home-contact">
+            <h3>>> Professional</h3>
+            <p>> Email:    <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p>
+            <p>> LinkedIn: <a href="https://linkedin.com/in/jujinkim" target="_blank">linkedin.com/in/jujinkim</a></p>
+            <p>> GitHub:   <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
+            <br>
+            <h3>>> Personal</h3>
+            <p>> Website:  <a href="https://jujin.kim" target="_blank">jujin.kim</a></p>
+            <p>> Blog:     <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
+            <p>> Facebook:  <a href="https://facebook.com/jujinjujinjujin" target="_blank">facebook.com/jujinjujinjujin</a></p>
+            <br>
+            <h3>>> Location</h3>
+            <p>> City: Suwon, South Korea 🇰🇷</p>
+            <p>> Current Time (KST): ${kstTime}</p>
+            <p>> Waiting for connection...</p>
+        </div>
+    `;
+}
+
 function loadHomeSection() {
     const homeSection = document.querySelector('#home .section-content');
     homeSection.innerHTML = `
@@ -92,19 +114,12 @@ function loadHomeSection() {
         </div>
         <div class="home-content" style="width: 100%;">
             <div class="callout" style="margin: 12px 0 18px 0;">
-                <p style="margin: 0; line-height: 1.6;">Hi, I'm <strong>Jujin Kim</strong>, a product engineer grounded in software development and system design. Curious about something? <a class="ping-link" href="#contact" data-section-link="contact">Ping me</a>.</p>
+                <p style="margin: 0; line-height: 1.6;">Hi, I'm <strong>Jujin Kim</strong>, a product engineer grounded in software development and system design. Curious about something? <a class="ping-link" href="mailto:${CONTACT_EMAIL}">Ping me</a>.</p>
             </div>
             <div style="color: var(--terminal-accent); padding: 12px 0;">
                 <p>Building digital experiences that matter</p>
-                <p style="margin-top: 8px;">📍 Suwon, South Korea</p>
             </div>
-            <p style="color: var(--terminal-highlight); margin-top: 10px;">> Quick Access:</p>
-            <div style="margin-left: 20px;">
-                <p>📧 <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p>
-                <p>💻 <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
-                <p>💼 <a href="https://linkedin.com/in/jujinkim" target="_blank">linkedin.com/in/jujinkim</a></p>
-                <p>📝 <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
-            </div>
+            ${getContactInfoMarkup()}
         </div>
     `;
 }
@@ -331,30 +346,6 @@ function loadTechnologiesSection() {
                 <p class="terminal-muted">  Code preserved in Arctic vault for 1000 years</p>
                 <p>  <a href="https://github.com/jujinkim" target="_blank">→ View GitHub Profile</a></p>
             </div>
-        </div>
-    `;
-}
-
-function loadContactSection() {
-    const contactSection = document.querySelector('#contact .section-content');
-    const kstTime = getKstTime();
-    
-    contactSection.innerHTML = `
-        <div class="contact-info">
-            <h3>>> Professional</h3>
-            <p>> Email:    <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p>
-            <p>> LinkedIn: <a href="https://linkedin.com/in/jujinkim" target="_blank">linkedin.com/in/jujinkim</a></p>
-            <p>> GitHub:   <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
-            <br>
-            <h3>>> Personal</h3>
-            <p>> Website:  <a href="https://jujin.kim" target="_blank">jujin.kim</a></p>
-            <p>> Blog:     <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
-            <p>> Facebook:  <a href="https://facebook.com/jujinjujinjujin" target="_blank">facebook.com/jujinjujinjujin</a></p>
-            <br>
-            <h3>>> Location</h3>
-            <p>> City: Suwon, South Korea 🇰🇷</p>
-            <p>> Current Time (KST): ${kstTime}</p>
-            <p>> Waiting for connection...</p>
         </div>
     `;
 }

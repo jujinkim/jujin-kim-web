@@ -70,14 +70,13 @@ function showSection(sectionId) {
 function handleKeyboardShortcuts(e) {
     if (isMobileInputContext()) return;
 
-    // Number shortcuts for menu navigation (1~6), key code based for layout consistency
+    // Number shortcuts for menu navigation (1~5), key code based for layout consistency
     const numberCodeMap = {
         Digit1: 0,
         Digit2: 1,
         Digit3: 2,
         Digit4: 3,
-        Digit5: 4,
-        Digit6: 5
+        Digit5: 4
     };
 
     const index = numberCodeMap[e.code];

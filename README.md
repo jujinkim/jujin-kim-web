@@ -7,7 +7,7 @@ Visit: jujin.kim
 
 ## Features
 - Terminal aesthetics with monospace fonts and ASCII art
-- Interactive navigation (Shift+1~6, ESC) plus mouse support
+- Interactive navigation (Shift+1~5, ESC) plus mouse support
 - Home-only terminal input with command history
 - Responsive layout from mobile to large displays
 - Theme switching (light/dark/system)
@@ -19,7 +19,7 @@ Visit: jujin.kim
 - Modular architecture with ES6 modules
 
 ## Keyboard Shortcuts
-- Shift+1~6: Navigate menu items
+- Shift+1~5: Navigate menu items
 - ESC: Return to Home
 
 ## Terminal Commands (Home)

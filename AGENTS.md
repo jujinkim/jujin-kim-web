@@ -54,7 +54,7 @@ jujin_kim_web/
 
 ### 2. Navigation & Commands
 - **Keyboard Navigation**:
-  - `Shift+1~6`: Instantly switch between corresponding sections.
+  - `Shift+1~5`: Instantly switch between corresponding sections.
   - `ESC`: Return directly to the Home section.
 - **Terminal Input (Home section only)**:
   - Command handling resides in `js/modules/terminal-input.js`.
@@ -63,6 +63,7 @@ jujin_kim_web/
 ### 3. Content & Shared Values
 - **Content Rendering**: All section contents (HTML templates) are rendered dynamically via `load*Section` helpers in `js/modules/content.js`.
 - **Authoritative Constants**: Keep key contact details (like email address) authoritative by consuming `CONTACT_EMAIL` from `js/constants.js`.
+- **Contact Links**: Contact details are integrated into the Home section; there is no separate Contact page.
 
 ---
 
