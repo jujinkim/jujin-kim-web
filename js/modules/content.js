@@ -78,12 +78,10 @@ function getContactInfoMarkup() {
 
     return `
         <div id="home-contact" class="contact-info home-contact">
-            <h3>>> Professional</h3>
+            <h3>>> Contact</h3>
             <p>> Email:    <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p>
             <p>> LinkedIn: <a href="https://linkedin.com/in/jujinkim" target="_blank">linkedin.com/in/jujinkim</a></p>
             <p>> GitHub:   <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
-            <br>
-            <h3>>> Personal</h3>
             <p>> Website:  <a href="https://jujin.kim" target="_blank">jujin.kim</a></p>
             <p>> Blog:     <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
             <p>> Facebook:  <a href="https://facebook.com/jujinjujinjujin" target="_blank">facebook.com/jujinjujinjujin</a></p>
