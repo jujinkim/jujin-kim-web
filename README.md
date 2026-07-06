@@ -61,7 +61,7 @@ jujin_kim_web/
 Jujin Kim
 - GitHub: @jujinkim
 - LinkedIn: linkedin.com/in/jujinkim
-- Email: me@jujin.kim
+- Email: jk@jujin.kim
 
 ## License
 Personal portfolio - All rights reserved.

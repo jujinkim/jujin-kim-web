@@ -97,4 +97,4 @@ jujin_kim_web/
 ## Key Contacts & Links
 - **GitHub**: [@jujinkim](https://github.com/jujinkim)
 - **Website**: [jujin.kim](https://jujin.kim)
-- **Email**: [me@jujin.kim](mailto:me@jujin.kim)
+- **Email**: [jk@jujin.kim](mailto:jk@jujin.kim)
