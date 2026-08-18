@@ -50,7 +50,6 @@ function calculateExperienceYears() {
 export function initContent() {
     loadHomeSection();
     loadAboutSection();
-    loadCareerSection();
     loadProjectsSection();
     loadTechnologiesSection();
 }
@@ -123,6 +122,7 @@ function loadHomeSection() {
 function loadAboutSection() {
     const aboutSection = document.querySelector('#about .section-content');
     aboutSection.innerHTML = `
+        <h3>>> About</h3>
         <p>> Hello, World! I'm Jujin Kim.</p>
         <p>> Software Engineer | Application Developer</p>
         <p>> Based in Suwon, Republic of Korea</p>
@@ -134,12 +134,8 @@ function loadAboutSection() {
         <p>  • Namseoul University (2011-2016)</p>
         <br>
         <p>> Building elegant mobile solutions</p>
-    `;
-}
-
-function loadCareerSection() {
-    const careerSection = document.querySelector('#career .section-content');
-    careerSection.innerHTML = `
+        <br>
+        <h3>>> Career</h3>
         <div class="career-entry">
             <p>> [2017-Present] Samsung Electronics</p>
             <p>  └─ Android application development</p>
@@ -162,12 +158,6 @@ function loadCareerSection() {
             <p>> [2014-2016] Freelance Developer</p>
             <p>  └─ Web and application development</p>
             <p>  └─ Tech: HTML, JavaScript, PHP, C#</p>
-        </div>
-        <br>
-        <div class="career-entry">
-            <p>> Education:</p>
-            <p>  └─ B.S. Computer Science</p>
-            <p>  └─ Namseoul University (2011-2016)</p>
         </div>
     `;
 }

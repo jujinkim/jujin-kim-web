@@ -54,7 +54,7 @@ jujin_kim_web/
 
 ### 2. Navigation & Commands
 - **Keyboard Navigation**:
-  - `Shift+1~5`: Instantly switch between corresponding sections.
+  - `Shift+1~4`: Instantly switch between corresponding sections.
   - `ESC`: Return directly to the Home section.
 - **Terminal Input (Home section only)**:
   - Command handling resides in `js/modules/terminal-input.js`.
