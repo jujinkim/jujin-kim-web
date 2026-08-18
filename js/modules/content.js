@@ -127,19 +127,11 @@ function loadAboutSection() {
         <p>> Software Engineer | Application Developer</p>
         <p>> Based in Suwon, Republic of Korea</p>
         <br>
-        <p>> Currently working at Samsung Electronics</p>
-        <p>> Developing the Weather Client for Samsung devices</p>
-        <p>> Previously worked on Galaxy Store development</p>
-        <br>
-        <p>> Education:</p>
-        <p>  • Bachelor of Computer Science</p>
-        <p>  • Namseoul University (2011-2016)</p>
-        <br>
-        <p>> Experience:</p>
         <p>  • ${calculateExperienceYears()}+ years of Android development</p>
-        <p>  • Staff Engineer at Samsung Electronics</p>
         <p>  • Former Mash-up Android team leader</p>
         <p>  • Microsoft Student Partner alumnus</p>
+        <p>  • B.S. in Computer Science &amp; VR/AR Convergence</p>
+        <p>  • Namseoul University (2011-2016)</p>
         <br>
         <p>> Building elegant mobile solutions</p>
     `;
