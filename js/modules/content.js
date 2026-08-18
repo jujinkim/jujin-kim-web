@@ -215,18 +215,11 @@ function loadProjectsSection() {
         </div>
         <br>
         <div class="project">
-            <p>[2026] <strong>✨ 1q2w.kr</strong></p>
-            <p>      Personal community hub with casual fun projects</p>
-            <p style="color: var(--terminal-dim);">      Rhymix CMS-based site featuring lighthearted mini-projects like a lotto app and more</p>
-            <p>      <a href="https://1q2w.kr" target="_blank">→ 1q2w.kr</a></p>
-            <p>      <a href="https://1q2w.kr/fun/common/" target="_blank">→ Fun portal</a></p>
-        </div>
-        <br>
-        <div class="project">
             <p>[2021] <strong>Frequaw</strong></p>
             <p>      Android app that provides a list of frequently used apps</p>
             <p style="color: var(--terminal-dim);">      Widget for quick access to your favorite apps</p>
-            <p>      <a href="https://play.google.com/store/apps/details?id=com.jujinkim.frequaw" target="_blank">→ View on Play Store</a></p>
+            <p>      <a href="https://play.google.com/store/apps/details?id=kim.jujin.frequaw" target="_blank">→ View on Play Store (kim.jujin.frequaw)</a></p>
+            <p>      <a href="https://play.google.com/store/apps/details?id=com.jujinkim.frequaw" target="_blank">→ View on Play Store (Legacy)</a></p>
         </div>
         <br>
         <div class="project">
