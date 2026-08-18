@@ -130,7 +130,7 @@ function loadAboutSection() {
         <p>  • ${calculateExperienceYears()}+ years of Android development</p>
         <p>  • Former Mash-up Android team leader</p>
         <p>  • Microsoft Student Partner alumnus</p>
-        <p>  • B.S. in Computer Science &amp; VR/AR Convergence</p>
+        <p>  • B.S. in Computer Science &amp; VR/AR Media Convergence</p>
         <p>  • Namseoul University (2011-2016)</p>
         <br>
         <p>> Building elegant mobile solutions</p>
