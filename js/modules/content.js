@@ -103,10 +103,8 @@ function loadHomeSection() {
                 <h2>JUJIN KIM</h2>
                 <p class="subtitle">Product Engineer ${calculateAge()}</p>
                 <div class="role-tags">
-                    <span class="role-tag"><span class="spark">✦</span>App Developer</span>
-                    <span class="role-tag"><span class="spark">✦</span>Game Developer</span>
                     <span class="role-tag"><span class="spark">✦</span>Software Engineer</span>
-                    <span class="role-tag"><span class="spark">✦</span>Service Builder</span>
+                    <span class="role-tag"><span class="spark">✦</span>Developer</span>
                 </div>
             </div>
         </div>
