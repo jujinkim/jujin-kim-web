@@ -300,12 +300,10 @@ function loadTechnologiesSection() {
             <br>
             <div class="tech-category">
                 <h3>>> Additional Skills</h3>
-                <p>• <strong>Unity C#</strong></p>
-                <p class="terminal-muted">  VR/AR projects and game development</p>
-                <p>• <strong>JavaScript</strong></p>
-                <p class="terminal-muted">  Web development and interactive UIs</p>
-                <p>• <strong>Python</strong></p>
-                <p class="terminal-muted">  Automation scripts and AI projects</p>
+                <p>• <strong>AI-Assisted Development</strong></p>
+                <p class="terminal-muted">  Uses vibe-coding tools to prototype and build personal projects</p>
+                <p>• <strong>Machine Learning, Neural Networks &amp; Deep Learning</strong></p>
+                <p class="terminal-muted">  Growing practical familiarity through hands-on learning and experimentation</p>
             </div>
             <br>
             <div class="tech-category">
