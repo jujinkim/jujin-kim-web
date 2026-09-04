@@ -199,7 +199,7 @@ function loadProjectsSection() {
             <p>[2021] <strong>Frequaw</strong></p>
             <p>      Android app that provides a list of frequently used apps</p>
             <p style="color: var(--terminal-dim);">      Widget for quick access to your favorite apps</p>
-            <p>      <a href="https://play.google.com/store/apps/details?id=kim.jujin.frequaw" target="_blank">→ View on Play Store</a></p>
+            <p>      <a href="https://play.google.com/store/apps/details?id=kim.jujin.frequaw" target="_blank">→ View on Play Store ✨</a></p>
             <p>      <a href="https://play.google.com/store/apps/details?id=com.jujinkim.frequaw" target="_blank">→ View on Play Store (Legacy)</a></p>
         </div>
         <br>
