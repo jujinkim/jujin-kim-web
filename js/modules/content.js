@@ -83,7 +83,6 @@ function getContactInfoMarkup() {
             <p>> GitHub:   <a href="https://github.com/jujinkim" target="_blank">github.com/jujinkim</a></p>
             <p>> Website:  <a href="https://jujin.kim" target="_blank">jujin.kim</a></p>
             <p>> Blog:     <a href="https://jujin.dev" target="_blank">jujin.dev</a></p>
-            <p>> Facebook:  <a href="https://facebook.com/jujinjujinjujin" target="_blank">facebook.com/jujinjujinjujin</a></p>
             <br>
             <h3>>> Location</h3>
             <p>> City: Suwon, South Korea 🇰🇷</p>
