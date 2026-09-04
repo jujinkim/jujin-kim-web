@@ -399,6 +399,10 @@ body {
     color: var(--terminal-fg);
 }
 
+.section-content h3 {
+    color: var(--terminal-amber);
+}
+
 .section-content p {
     margin-bottom: 10px;
 }
