@@ -262,6 +262,24 @@ function loadProjectsSection() {
             <p style="color: var(--terminal-dim);">      Screen RGB value reading for automated gameplay</p>
             <p>      Tech: Game Automation</p>
         </div>
+        <br>
+        <div class="tech-category">
+            <h3>>> Primary Skills</h3>
+            <p>• <strong>Android Development</strong></p>
+            <p class="terminal-muted">  ${calculateExperienceYears()}+ years building native Android apps</p>
+            <p>• <strong>Kotlin</strong></p>
+            <p class="terminal-muted">  Primary language for Android development</p>
+            <p>• <strong>Java</strong></p>
+            <p class="terminal-muted">  Strong foundation in OOP and Android legacy code</p>
+        </div>
+        <br>
+        <div class="tech-category">
+            <h3>>> Additional Skills</h3>
+            <p>• <strong>AI-Assisted Development</strong></p>
+            <p class="terminal-muted">  Uses vibe-coding tools to prototype and build personal projects</p>
+            <p>• <strong>Machine Learning, Neural Networks &amp; Deep Learning</strong></p>
+            <p class="terminal-muted">  Growing practical familiarity through hands-on learning and experimentation</p>
+        </div>
     `;
 }
 
@@ -269,24 +287,6 @@ function loadTechnologiesSection() {
     const techSection = document.querySelector('#technologies .section-content');
     techSection.innerHTML = `
         <div class="tech-grid">
-            <div class="tech-category">
-                <h3>>> Primary Skills</h3>
-                <p>• <strong>Android Development</strong></p>
-                <p class="terminal-muted">  ${calculateExperienceYears()}+ years building native Android apps</p>
-                <p>• <strong>Kotlin</strong></p>
-                <p class="terminal-muted">  Primary language for Android development</p>
-                <p>• <strong>Java</strong></p>
-                <p class="terminal-muted">  Strong foundation in OOP and Android legacy code</p>
-            </div>
-            <br>
-            <div class="tech-category">
-                <h3>>> Additional Skills</h3>
-                <p>• <strong>AI-Assisted Development</strong></p>
-                <p class="terminal-muted">  Uses vibe-coding tools to prototype and build personal projects</p>
-                <p>• <strong>Machine Learning, Neural Networks &amp; Deep Learning</strong></p>
-                <p class="terminal-muted">  Growing practical familiarity through hands-on learning and experimentation</p>
-            </div>
-            <br>
             <div class="tech-category">
                 <h3>>> Experience Areas</h3>
                 <p>• <strong>VR/AR Development</strong></p>
