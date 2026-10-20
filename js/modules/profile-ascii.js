@@ -1,3 +1,5 @@
+import { PROFILE_IMAGE_URL } from '../constants.js';
+
 // Profile picture loader (photo only)
 export function initProfilePicture() {
     const profileContainer = document.getElementById('profile-picture');
@@ -13,7 +15,6 @@ export function initProfilePicture() {
     imageContainer.className = 'original-profile';
     
     const img = document.createElement('img');
-    img.src = 'img/profile.jpg';
     img.alt = 'Jujin Kim';
     
     img.onload = function() {
@@ -22,8 +23,11 @@ export function initProfilePicture() {
     
     img.onerror = function() {
         console.error('Failed to load profile image from:', img.src);
-        this.src = 'https://avatars.githubusercontent.com/u/8042462?v=4';
+        this.onerror = null;
+        this.src = 'img/profile.jpg';
     };
+
+    img.src = PROFILE_IMAGE_URL;
     
     imageContainer.appendChild(img);
     profileContainer.appendChild(imageContainer);
