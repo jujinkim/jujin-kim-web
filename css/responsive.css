@@ -42,12 +42,14 @@
     }
     
     .menu-list {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        overflow-x: auto;
         gap: 5px;
         font-size: 11px;
     }
     
     .menu-item {
+        flex: 0 0 auto;
         padding: 5px 8px;
         font-size: 12px;
     }

@@ -289,14 +289,12 @@ function loadTechnologiesSection() {
         <div class="tech-grid">
             <div class="tech-category">
                 <h3>>> Experience Areas</h3>
-                <p>• <strong>VR/AR Development</strong></p>
-                <p class="terminal-muted">  Kinect, Unity, educational experiences</p>
-                <p>• <strong>Game Development</strong></p>
-                <p class="terminal-muted">  Unity, multiplayer, AI game agents</p>
                 <p>• <strong>Mobile Applications</strong></p>
                 <p class="terminal-muted">  Consumer apps with millions of users</p>
-                <p>• <strong>Computer Vision</strong></p>
-                <p class="terminal-muted">  OpenCV, real-time visual effects</p>
+                <p>• <strong>Game Development</strong></p>
+                <p class="terminal-muted">  Unity, multiplayer, AI game agents</p>
+                <p>• <strong>AI &amp; Agentic Workflows</strong></p>
+                <p class="terminal-muted">  MLPs, genetic algorithms, small models, and agentic development workflows</p>
             </div>
             <br>
             <div class="tech-category">
