@@ -13,6 +13,8 @@ Visit: jujin.kim
 - Theme switching (light/dark/system)
 - Animated starfield background and optional matrix rain effect
 - CRT screen curvature, glass, scanlines, grain, and a slow sweep, with visible matrix rain in the desktop margins
+- Smooth screen curvature uses bilinear sampling independently of the CRT texture
+- Dim matrix glyphs fall one 22px cell at a time, leaving two fading cells behind
 - Reduced-motion support for CRT grain and background animation
 
 ## CRT Preview

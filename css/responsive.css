@@ -29,6 +29,10 @@
     #terminal-footer {
         min-height: 0;
     }
+
+    .keyboard-guide a {
+        min-height: 28px;
+    }
     #crt-screen > div {
         opacity: 0.65;
     }

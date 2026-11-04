@@ -1,34 +1,20 @@
-import { getCurvedPoint } from './crt-effects.js';
+import { getCurvedPoint } from './screen-curvature.js';
 
+const CELL_SIZE = 22;
+const TRAIL_LENGTH = 2;
+const FRAME_INTERVAL = 50;
+const chars = '01가나다라마바사아자차카타파하김주진서울코딩개발프로그래머안녕하세요반갑습니다';
 let animationFrame;
+let lastFrameTime = 0;
 let stars = [];
 let matrixChars = [];
-const chars = '01가나다라마바사아자차카타파하김주진서울코딩개발프로그래머안녕하세요반갑습니다';
-
-let mouse = { x: null, y: null, active: false };
 let matrixRainEnabled = true;
 let reducedMotion;
 let refreshAnimation;
 let disposeListeners;
 let colors = {};
 
-function handleMouseMove(e) {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-    mouse.active = true;
-}
-
-function handleTouchMove(e) {
-    if (e.touches && e.touches[0]) {
-        mouse.x = e.touches[0].clientX;
-        mouse.y = e.touches[0].clientY;
-        mouse.active = true;
-    }
-}
-
-function handleMouseLeave() {
-    mouse.active = false;
-}
+const randomCharacter = () => chars[Math.floor(Math.random() * chars.length)];
 
 export function toggleMatrixRain() {
     matrixRainEnabled = !matrixRainEnabled;
@@ -43,28 +29,27 @@ export function initAnimations() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    
-    resizeCanvas(canvas);
-    
+
     refreshAnimation = () => {
         cancelAnimationFrame(animationFrame);
-        animate(canvas, ctx);
+        lastFrameTime = -Infinity;
+        const now = performance.now();
+        matrixChars.forEach(stream => { stream.nextStepAt = now + stream.interval; });
+        animate(canvas, ctx, now);
     };
     const updateColors = () => {
         const style = getComputedStyle(document.body);
         colors.fg = style.getPropertyValue('--terminal-fg').trim();
-        colors.matrix = document.body.dataset.theme === 'light' ? '#38674d' : '#6fa984';
-        colors.matrixOpacity = document.body.dataset.theme === 'light' ? 0.4 : 0.65;
+        const isLight = document.body.dataset.theme === 'light';
+        colors.matrix = isLight ? '#38674d' : '#6fa984';
+        colors.matrixOpacity = isLight ? 0.16 : 0.24;
         refreshAnimation();
     };
     const handleResize = () => {
-        resizeCanvas(canvas);
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
         createStars(canvas);
-        if (window.innerWidth > 768) {
-            createMatrixRain(canvas);
-        } else {
-            matrixChars = [];
-        }
+        createMatrixRain(canvas);
         refreshAnimation();
     };
     window.addEventListener('resize', handleResize);
@@ -87,176 +72,91 @@ export function initAnimations() {
             reducedMotion.removeListener(refreshAnimation);
         }
     };
-    
-    // Setup mouse/touch listeners
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
-    window.addEventListener('mouseleave', handleMouseLeave);
-    
-    createStars(canvas);
-    
-    if (window.innerWidth > 768) {
-        createMatrixRain(canvas);
-    } else {
-        matrixChars = [];
-    }
-    
     updateColors();
-}
-
-function resizeCanvas(canvas) {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    handleResize();
 }
 
 function createStars(canvas) {
-    const starCount = Math.floor((canvas.width * canvas.height) / 10000);
-    stars = [];
-    
     const starChars = ['*', '+', '.', '°', '·'];
-    
-    for (let i = 0; i < starCount; i++) {
-        stars.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            char: starChars[Math.floor(Math.random() * starChars.length)],
-            opacity: Math.random(),
-            twinkleSpeed: Math.random() * 0.02 + 0.005
-        });
-    }
+    stars = Array.from({ length: Math.floor(canvas.width * canvas.height / 10000) }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        char: starChars[Math.floor(Math.random() * starChars.length)],
+        opacity: Math.random(),
+        twinkleSpeed: Math.random() * 0.02 + 0.005
+    }));
 }
 
 function createMatrixRain(canvas) {
     matrixChars = [];
-    const columns = Math.floor(canvas.width / 32);
-    
-    for (let i = 0; i < columns; i++) {
-        const count = Math.random() * 2 + 1;
-        for (let j = 0; j < count; j++) {
-            const speedY = Math.random() * 2 + 1.2;
-            matrixChars.push({
-                x: i * 32 + Math.random() * 6 + 6,
-                y: Math.random() * canvas.height,
-                char: chars[Math.floor(Math.random() * chars.length)],
-                speedY: speedY,
-                fontSize: Math.random() * 6 + 10,
-                opacity: Math.random() * 0.5 + 0.3,
-                scale: 1.0,
-                state: 'falling'
-            });
-        }
+    if (canvas.width <= 768) return;
+    const rows = Math.ceil(canvas.height / CELL_SIZE);
+    for (let column = 0; column < Math.floor(canvas.width / CELL_SIZE); column += 2) {
+        const interval = 160 + Math.floor(Math.random() * 3) * 40;
+        matrixChars.push({
+            column,
+            row: Math.floor(Math.random() * rows),
+            glyphs: Array.from({ length: TRAIL_LENGTH + 1 }, randomCharacter),
+            opacity: 0.7 + Math.random() * 0.3,
+            interval,
+            nextStepAt: performance.now() + interval
+        });
     }
 }
 
-function animate(canvas, ctx) {
+function animate(canvas, ctx, now = performance.now()) {
     const moving = !reducedMotion.matches && !document.hidden && window.innerWidth > 768;
+    const scheduleFrame = () => requestAnimationFrame(time => animate(canvas, ctx, time));
+    if (moving && now - lastFrameTime < FRAME_INTERVAL) {
+        animationFrame = scheduleFrame();
+        return;
+    }
+    lastFrameTime = now;
     const curved = document.body.classList.contains('crt-curvature-enabled');
     const drawCharacter = (char, x, y) => {
         const point = curved ? getCurvedPoint(x, y, canvas.width, canvas.height) : [x, y];
         ctx.fillText(char, point[0], point[1]);
     };
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw Stars
+    ctx.shadowBlur = 0;
+    ctx.textAlign = 'left';
     ctx.font = '10px monospace';
     stars.forEach(star => {
         if (moving) star.opacity += star.twinkleSpeed;
-        if (moving && (star.opacity > 1 || star.opacity < 0)) {
-            star.twinkleSpeed = -star.twinkleSpeed;
-        }
-        
-        ctx.globalAlpha = Math.max(0, Math.min(1, star.opacity)) * 0.05;
+        if (moving && (star.opacity > 1 || star.opacity < 0)) star.twinkleSpeed *= -1;
+        ctx.globalAlpha = Math.max(0, Math.min(1, star.opacity)) * 0.035;
         ctx.fillStyle = colors.fg;
-        ctx.shadowBlur = 0;
         drawCharacter(star.char, star.x, star.y);
     });
-    
-    // Draw Matrix Rain
+
     if (matrixRainEnabled) {
-        matrixChars.forEach(char => {
-            const dx = mouse.x - char.x;
-            const dy = mouse.y - char.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            
-            if (moving && char.state === 'falling') {
-                if (mouse.active && dist < 25) {
-                    char.state = 'shrinking';
-                } else {
-                    let pullX = 0;
-                    let pullY = 0;
-                    
-                    if (mouse.active && dist < 450) {
-                        const intensity = (1 - dist / 450);
-                        const pullForce = 3.2 * intensity; // Direct pull speed
-                        
-                        pullX = (dx / dist) * pullForce;
-                        // Only pull vertically if the character is above the cursor
-                        if (dy > 0) {
-                            pullY = (dy / dist) * pullForce;
-                        }
-                    }
-                    
-                    // Directly apply pull vector and falling speed
-                    char.x += pullX;
-                    char.y += pullY + char.speedY;
-                }
-            } else if (moving && char.state === 'shrinking') {
-                char.scale -= 0.08;
-                char.opacity -= 0.08;
-                
-                const dirX = dx / (dist || 1);
-                const dirY = dy / (dist || 1);
-                
-                char.x += dirX * 3.5;
-                char.y += dirY * 3.5;
-                
-                if (char.scale <= 0 || char.opacity <= 0) {
-                    char.x = Math.random() * canvas.width;
-                    char.y = -Math.random() * 100 - 20;
-                    char.scale = 1.0;
-                    char.opacity = Math.random() * 0.5 + 0.3;
-                    char.state = 'falling';
-                    char.speedY = Math.random() * 2 + 1.2;
-                    char.char = chars[Math.floor(Math.random() * chars.length)];
-                }
+        const rows = Math.ceil(canvas.height / CELL_SIZE);
+        ctx.font = '14px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = colors.matrix;
+        matrixChars.forEach(stream => {
+            if (moving && now >= stream.nextStepAt) {
+                stream.row = (stream.row + 1) % (rows + TRAIL_LENGTH);
+                stream.glyphs.unshift(randomCharacter());
+                stream.glyphs.pop();
+                stream.nextStepAt = now + stream.interval;
             }
-            
-            if (moving && (char.x < -20 || char.x > canvas.width + 20 || char.y > canvas.height + 20)) {
-                char.x = Math.random() * canvas.width;
-                char.y = -Math.random() * 100 - 20;
-                char.scale = 1.0;
-                char.opacity = Math.random() * 0.5 + 0.3;
-                char.state = 'falling';
-                char.speedY = Math.random() * 2 + 1.2;
-            }
-            
-            ctx.save();
-            ctx.globalAlpha = Math.max(0, Math.min(1, char.opacity)) * colors.matrixOpacity;
-            ctx.font = `${char.fontSize * char.scale}px monospace`;
-            ctx.fillStyle = colors.matrix;
-            ctx.shadowBlur = 0;
-            
-            drawCharacter(char.char, char.x, char.y);
-            for (let trail = 1; trail <= 3; trail++) {
-                ctx.globalAlpha *= 0.55;
-                drawCharacter(char.char, char.x, char.y - trail * 18);
-            }
-            ctx.restore();
+            // Each glyph stays in its cell; only its age changes as the head advances.
+            stream.glyphs.forEach((char, age) => {
+                const row = stream.row - age;
+                if (row < 0 || row >= rows) return;
+                ctx.globalAlpha = colors.matrixOpacity * stream.opacity * Math.pow(0.35, age);
+                drawCharacter(char, (stream.column + 0.5) * CELL_SIZE, (row + 0.75) * CELL_SIZE);
+            });
         });
     }
-    
-    animationFrame = moving ? requestAnimationFrame(() => animate(canvas, ctx)) : null;
+    animationFrame = moving ? scheduleFrame() : null;
 }
 
 export function cleanup() {
-    if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-    }
+    cancelAnimationFrame(animationFrame);
     if (disposeListeners) disposeListeners();
     animationFrame = null;
     disposeListeners = null;
     refreshAnimation = null;
-    window.removeEventListener('mousemove', handleMouseMove);
-    window.removeEventListener('touchmove', handleTouchMove);
-    window.removeEventListener('mouseleave', handleMouseLeave);
 }

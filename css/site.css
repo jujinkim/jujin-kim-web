@@ -479,8 +479,8 @@ body {
     letter-spacing: 0.04em;
     text-transform: uppercase;
     line-height: 1;
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 56px;
+    min-height: 56px;
 }
 
 body.terminal-open #terminal-toggle {
@@ -594,7 +594,7 @@ body[data-theme='dark'] .terminal-muted {
     border-top: 1px solid rgba(63, 163, 115, 0.35);
     padding: 10px 18px;
     z-index: 100;
-    min-height: 60px;
+    min-height: 72px;
 }
 
 .footer-content {
@@ -623,6 +623,9 @@ body[data-theme='dark'] .terminal-muted {
     color: var(--terminal-fg);
     text-decoration: none;
     transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
 }
 
 .keyboard-guide a:hover {
