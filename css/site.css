@@ -637,24 +637,8 @@ body[data-theme='dark'] .terminal-muted {
     background-color: var(--terminal-highlight);
 }
 
-.copyright {
-    color: var(--terminal-dim);
-    margin-left: 16px;
-}
-
-body[data-theme='dark'] .keyboard-guide,
-body[data-theme='dark'] .copyright {
+body[data-theme='dark'] .keyboard-guide {
     color: #7aa68e;
-}
-
-.copyright a {
-    color: var(--terminal-highlight);
-    text-decoration: underline;
-}
-
-.copyright a:hover {
-    background-color: var(--terminal-highlight);
-    color: var(--terminal-bg);
 }
 
 .footer-actions {
