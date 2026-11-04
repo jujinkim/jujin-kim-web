@@ -22,8 +22,6 @@ export function initNavigation() {
     }
 
     selectMenuItem(menuItems[0]);
-
-    addScanLine();
 }
 
 export function navigateToSection(sectionId) {
@@ -91,12 +89,6 @@ function handleKeyboardShortcuts(e) {
         e.preventDefault();
         selectMenuItem(menuItems[0]);
     }
-}
-
-function addScanLine() {
-    const scanLine = document.createElement('div');
-    scanLine.className = 'scan-line';
-    document.body.appendChild(scanLine);
 }
 
 function handleSectionLink(event) {

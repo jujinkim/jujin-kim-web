@@ -17,8 +17,8 @@
     <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
+    <canvas id="starfield" class="background-animation" aria-hidden="true"></canvas>
         <div id="terminal-container">
-            <canvas id="starfield" class="background-animation"></canvas>
         
         <header id="terminal-header">
             <pre id="ascii-title"></pre>
@@ -97,6 +97,12 @@
         </div>
     </div>
 
+    <div id="crt-screen" aria-hidden="true">
+        <div class="crt-glass"></div>
+        <div class="crt-scanlines"></div>
+        <div class="crt-noise"></div>
+        <div class="crt-sweep"></div>
+    </div>
     <script type="module" src="js/main.js"></script>
 </body>
 </html>

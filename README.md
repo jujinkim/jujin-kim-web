@@ -12,6 +12,14 @@ Visit: jujin.kim
 - Responsive layout from mobile to large displays
 - Theme switching (light/dark/system)
 - Animated starfield background and optional matrix rain effect
+- Subtle CRT glass, scanlines, and grain across the screen, with quieter background animation in the margins
+- Reduced-motion support for CRT grain and background animation
+
+## CRT Preview
+
+Open `/?crt-preview=1` to compare CRT effects, curved glass, and Static / Subtle motion / Retro noise.
+The panel is only shown at this URL, and selections are not saved. Normal visits use curved glass and subtle motion.
+System Reduce Motion settings pause animation in every mode. Collapse the preview panel to inspect the full page.
 
 ## Tech Stack
 - Pure HTML5, CSS3, JavaScript (ES6+)

@@ -5,6 +5,10 @@ const chars = '01가나다라마바사아자차카타파하김주진서울코딩
 
 let mouse = { x: null, y: null, active: false };
 let matrixRainEnabled = true;
+let reducedMotion;
+let refreshAnimation;
+let disposeListeners;
+let colors = {};
 
 function handleMouseMove(e) {
     mouse.x = e.clientX;
@@ -26,34 +30,66 @@ function handleMouseLeave() {
 
 export function toggleMatrixRain() {
     matrixRainEnabled = !matrixRainEnabled;
+    if (refreshAnimation) refreshAnimation();
     return matrixRainEnabled;
 }
 
 export function initAnimations() {
+    cleanup();
     const canvas = document.getElementById('starfield');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     
     resizeCanvas(canvas);
     
-    // Setup resize listener
-    window.addEventListener('resize', () => {
+    refreshAnimation = () => {
+        cancelAnimationFrame(animationFrame);
+        animate(canvas, ctx);
+    };
+    const updateColors = () => {
+        const style = getComputedStyle(document.body);
+        colors.dim = style.getPropertyValue('--terminal-dim').trim();
+        colors.fg = style.getPropertyValue('--terminal-fg').trim();
+        colors.matrixOpacity = document.body.dataset.theme === 'light' ? 0.06 : 0.11;
+        refreshAnimation();
+    };
+    const handleResize = () => {
         resizeCanvas(canvas);
+        createStars(canvas);
         if (window.innerWidth > 768) {
-            if (matrixChars.length === 0) {
-                createMatrixRain(canvas);
-            }
+            createMatrixRain(canvas);
         } else {
             matrixChars = [];
         }
-    });
+        refreshAnimation();
+    };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('theme-changed', updateColors);
+    document.addEventListener('visibilitychange', refreshAnimation);
+    if (reducedMotion.addEventListener) {
+        reducedMotion.addEventListener('change', refreshAnimation);
+    } else {
+        reducedMotion.addListener(refreshAnimation);
+    }
+    disposeListeners = () => {
+        window.removeEventListener('resize', handleResize);
+        window.removeEventListener('theme-changed', updateColors);
+        document.removeEventListener('visibilitychange', refreshAnimation);
+        if (reducedMotion.removeEventListener) {
+            reducedMotion.removeEventListener('change', refreshAnimation);
+        } else {
+            reducedMotion.removeListener(refreshAnimation);
+        }
+    };
     
     // Setup mouse/touch listeners
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('touchmove', handleTouchMove, { passive: true });
     window.addEventListener('mouseleave', handleMouseLeave);
     
-    createStars(canvas, ctx);
+    createStars(canvas);
     
     if (window.innerWidth > 768) {
         createMatrixRain(canvas);
@@ -61,7 +97,7 @@ export function initAnimations() {
         matrixChars = [];
     }
     
-    animate(canvas, ctx);
+    updateColors();
 }
 
 function resizeCanvas(canvas) {
@@ -69,7 +105,7 @@ function resizeCanvas(canvas) {
     canvas.height = window.innerHeight;
 }
 
-function createStars(canvas, ctx) {
+function createStars(canvas) {
     const starCount = Math.floor((canvas.width * canvas.height) / 10000);
     stars = [];
     
@@ -88,45 +124,40 @@ function createStars(canvas, ctx) {
 
 function createMatrixRain(canvas) {
     matrixChars = [];
-    const columns = Math.floor(canvas.width / 20);
+    const columns = Math.floor(canvas.width / 40);
     
     for (let i = 0; i < columns; i++) {
         const count = Math.random() * 2 + 1;
         for (let j = 0; j < count; j++) {
             const speedY = Math.random() * 2 + 1.2;
             matrixChars.push({
-                x: i * 20 + Math.random() * 6 - 3,
-                y: Math.random() * canvas.height - canvas.height,
+                x: i * 40 + Math.random() * 6 - 3,
+                y: Math.random() * canvas.height,
                 char: chars[Math.floor(Math.random() * chars.length)],
                 speedY: speedY,
                 fontSize: Math.random() * 6 + 10,
                 opacity: Math.random() * 0.5 + 0.3,
                 scale: 1.0,
-                state: 'falling',
-                colorType: Math.random() < 0.2 ? 'highlight' : 'dim'
+                state: 'falling'
             });
         }
     }
 }
 
 function animate(canvas, ctx) {
+    const moving = !reducedMotion.matches && !document.hidden && window.innerWidth > 768;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    const style = getComputedStyle(document.body);
-    const colorHighlight = style.getPropertyValue('--terminal-highlight').trim() || '#7ef2ad';
-    const colorDim = style.getPropertyValue('--terminal-dim').trim() || '#2f4a3c';
-    const colorFg = style.getPropertyValue('--terminal-fg').trim() || '#e6efe7';
     
     // Draw Stars
     ctx.font = '10px monospace';
     stars.forEach(star => {
-        star.opacity += star.twinkleSpeed;
-        if (star.opacity > 1 || star.opacity < 0) {
+        if (moving) star.opacity += star.twinkleSpeed;
+        if (moving && (star.opacity > 1 || star.opacity < 0)) {
             star.twinkleSpeed = -star.twinkleSpeed;
         }
         
-        ctx.globalAlpha = Math.max(0, Math.min(1, star.opacity)) * 0.15;
-        ctx.fillStyle = colorFg;
+        ctx.globalAlpha = Math.max(0, Math.min(1, star.opacity)) * 0.05;
+        ctx.fillStyle = colors.fg;
         ctx.shadowBlur = 0;
         ctx.fillText(star.char, star.x, star.y);
     });
@@ -138,7 +169,7 @@ function animate(canvas, ctx) {
             const dy = mouse.y - char.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             
-            if (char.state === 'falling') {
+            if (moving && char.state === 'falling') {
                 if (mouse.active && dist < 25) {
                     char.state = 'shrinking';
                 } else {
@@ -160,7 +191,7 @@ function animate(canvas, ctx) {
                     char.x += pullX;
                     char.y += pullY + char.speedY;
                 }
-            } else if (char.state === 'shrinking') {
+            } else if (moving && char.state === 'shrinking') {
                 char.scale -= 0.08;
                 char.opacity -= 0.08;
                 
@@ -181,7 +212,7 @@ function animate(canvas, ctx) {
                 }
             }
             
-            if (char.x < -20 || char.x > canvas.width + 20 || char.y > canvas.height + 20) {
+            if (moving && (char.x < -20 || char.x > canvas.width + 20 || char.y > canvas.height + 20)) {
                 char.x = Math.random() * canvas.width;
                 char.y = -Math.random() * 100 - 20;
                 char.scale = 1.0;
@@ -191,25 +222,27 @@ function animate(canvas, ctx) {
             }
             
             ctx.save();
-            ctx.globalAlpha = Math.max(0, Math.min(1, char.opacity)) * 0.35;
+            ctx.globalAlpha = Math.max(0, Math.min(1, char.opacity)) * colors.matrixOpacity;
             ctx.font = `${char.fontSize * char.scale}px monospace`;
-            ctx.fillStyle = char.colorType === 'highlight' ? colorHighlight : colorDim;
-            
-            ctx.shadowColor = char.colorType === 'highlight' ? colorHighlight : colorDim;
-            ctx.shadowBlur = 4;
+            ctx.fillStyle = colors.dim;
+            ctx.shadowBlur = 0;
             
             ctx.fillText(char.char, char.x, char.y);
             ctx.restore();
         });
     }
     
-    animationFrame = requestAnimationFrame(() => animate(canvas, ctx));
+    animationFrame = moving ? requestAnimationFrame(() => animate(canvas, ctx)) : null;
 }
 
 export function cleanup() {
     if (animationFrame) {
         cancelAnimationFrame(animationFrame);
     }
+    if (disposeListeners) disposeListeners();
+    animationFrame = null;
+    disposeListeners = null;
+    refreshAnimation = null;
     window.removeEventListener('mousemove', handleMouseMove);
     window.removeEventListener('touchmove', handleTouchMove);
     window.removeEventListener('mouseleave', handleMouseLeave);

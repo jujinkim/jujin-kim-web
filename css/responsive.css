@@ -20,6 +20,26 @@
 }
 
 @media screen and (max-width: 768px) {
+    #crt-screen > div {
+        opacity: 0.65;
+    }
+
+    #crt-screen > .crt-scanlines {
+        opacity: calc(var(--crt-line-opacity) * 0.65);
+    }
+
+    #crt-screen > .crt-noise {
+        opacity: calc(var(--crt-grain-opacity) * 0.65);
+    }
+
+    #crt-screen[data-noise='retro'] .crt-noise {
+        opacity: var(--crt-grain-opacity);
+    }
+
+    .crt-glass::after {
+        border-radius: 24px / 28px;
+    }
+
     #profile-picture {
         width: 180px;
         height: 180px;
@@ -199,6 +219,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+    #crt-screen[data-noise] > .crt-sweep {
+        display: none;
+    }
+
     * {
         animation: none !important;
         transition: none !important;
@@ -206,6 +230,11 @@
 }
 
 @media print {
+    #crt-screen,
+    #crt-preview {
+        display: none;
+    }
+
     #starfield,
     .scan-line,
     .matrix-char {

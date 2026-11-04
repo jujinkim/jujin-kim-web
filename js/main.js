@@ -5,6 +5,7 @@ import { initTheme, setTheme } from './modules/theme.js';
 import { initContent } from './modules/content.js';
 import { initProfilePicture } from './modules/profile-ascii.js';
 import { initTerminalInput } from './modules/terminal-input.js';
+import { initCRTEffects } from './modules/crt-effects.js';
 
 // Make functions globally available
 window.setTheme = setTheme;
@@ -24,6 +25,7 @@ function scheduleFixedChromeOffsetUpdate() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
+    initCRTEffects();
     initASCIITitle();
     initNavigation();
     initAnimations();

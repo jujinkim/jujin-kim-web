@@ -5,6 +5,7 @@
     width: 100%;
     height: 100%;
     z-index: 0;
+    pointer-events: none;
 }
 
 @keyframes twinkle {
@@ -15,27 +16,6 @@
 .star {
     animation: twinkle 3s infinite;
     animation-delay: calc(var(--delay) * 1s);
-}
-
-@keyframes scan-line {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100vh); }
-}
-
-.scan-line {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(to bottom, 
-        transparent, 
-        var(--terminal-highlight), 
-        transparent);
-    opacity: 0.1;
-    animation: scan-line 8s linear infinite;
-    pointer-events: none;
-    z-index: 2;
 }
 
 @keyframes glitch {
@@ -58,4 +38,103 @@
 
 .glitch {
     animation: glitch 3s infinite;
+}
+
+#crt-screen {
+    --crt-grain-opacity: 0.035;
+    --crt-line-opacity: 0.055;
+    --crt-edge-opacity: 0.3;
+    --crt-reflection-opacity: 0.035;
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+    z-index: 11000;
+}
+
+body[data-theme='light'] #crt-screen {
+    --crt-grain-opacity: 0.02;
+    --crt-line-opacity: 0.025;
+    --crt-edge-opacity: 0.12;
+    --crt-reflection-opacity: 0.05;
+}
+
+#crt-screen.is-disabled {
+    display: none;
+}
+
+#crt-screen > div {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.crt-glass {
+    background:
+        radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(0, 0, 0, var(--crt-edge-opacity)) 100%),
+        radial-gradient(ellipse at 50% -30%, rgba(255, 255, 255, var(--crt-reflection-opacity)), transparent 70%);
+}
+
+.crt-glass::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 48px / 36px;
+    border: 1px solid rgba(160, 190, 172, 0.09);
+    box-shadow: inset 0 0 24px rgba(0, 0, 0, var(--crt-edge-opacity)),
+        0 0 0 8px rgba(0, 0, 0, var(--crt-edge-opacity));
+}
+
+.is-flat .crt-glass {
+    display: none;
+}
+
+.crt-scanlines {
+    background: repeating-linear-gradient(to bottom, transparent 0 2px, #000 2px 3px);
+    opacity: var(--crt-line-opacity);
+}
+
+#crt-screen > .crt-noise {
+    inset: -32px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 128 128'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23noise)' d='M0 0h128v128H0z'/%3E%3C/svg%3E");
+    opacity: var(--crt-grain-opacity);
+    animation: crt-grain 1s steps(1, end) infinite;
+}
+
+@keyframes crt-grain {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(-13px, 17px); }
+    50% { transform: translate(21px, -11px); }
+    75% { transform: translate(-7px, -23px); }
+}
+
+#crt-screen[data-noise='static'] .crt-noise {
+    animation: none;
+}
+
+#crt-screen[data-noise='retro'] .crt-noise {
+    opacity: calc(var(--crt-grain-opacity) * 1.7);
+    animation-duration: 0.6s;
+}
+
+#crt-screen > .crt-sweep {
+    display: none;
+    bottom: auto;
+    height: 24%;
+    background: linear-gradient(transparent, rgba(160, 210, 180, 0.025), transparent);
+    animation: crt-sweep 12s linear infinite;
+}
+
+#crt-screen[data-noise='retro'] .crt-sweep {
+    display: block;
+}
+
+@keyframes crt-sweep {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(520%); }
+}
+
+#crt-screen.is-paused > div {
+    animation-play-state: paused;
 }
