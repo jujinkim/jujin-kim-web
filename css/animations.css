@@ -8,6 +8,24 @@
     pointer-events: none;
 }
 
+#crt-viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    padding-top: var(--terminal-fixed-topbar-height);
+    padding-bottom: var(--terminal-fixed-footer-height);
+    isolation: isolate;
+    z-index: 1;
+}
+
+#crt-viewport.has-curvature {
+    filter: url(#crt-curvature);
+}
+
+#crt-viewport.is-flat {
+    filter: none;
+}
+
 @keyframes twinkle {
     0%, 100% { opacity: 0; }
     50% { opacity: 1; }

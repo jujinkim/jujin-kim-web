@@ -479,6 +479,8 @@ body {
     letter-spacing: 0.04em;
     text-transform: uppercase;
     line-height: 1;
+    min-width: 44px;
+    min-height: 44px;
 }
 
 body.terminal-open #terminal-toggle {
@@ -592,6 +594,7 @@ body[data-theme='dark'] .terminal-muted {
     border-top: 1px solid rgba(63, 163, 115, 0.35);
     padding: 10px 18px;
     z-index: 100;
+    min-height: 60px;
 }
 
 .footer-content {

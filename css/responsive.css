@@ -1,3 +1,9 @@
+@media screen and (min-width: 769px) {
+    #terminal-container {
+        width: calc(100% - 48px);
+    }
+}
+
 @media screen and (max-width: 1200px) {
     #terminal-container {
         padding: 0;
@@ -20,6 +26,9 @@
 }
 
 @media screen and (max-width: 768px) {
+    #terminal-footer {
+        min-height: 0;
+    }
     #crt-screen > div {
         opacity: 0.65;
     }
@@ -230,6 +239,9 @@
 }
 
 @media print {
+    #crt-viewport.has-curvature {
+        filter: none;
+    }
     #crt-screen,
     #crt-preview {
         display: none;

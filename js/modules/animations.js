@@ -1,3 +1,5 @@
+import { getCurvedPoint } from './crt-effects.js';
+
 let animationFrame;
 let stars = [];
 let matrixChars = [];
@@ -50,9 +52,9 @@ export function initAnimations() {
     };
     const updateColors = () => {
         const style = getComputedStyle(document.body);
-        colors.dim = style.getPropertyValue('--terminal-dim').trim();
         colors.fg = style.getPropertyValue('--terminal-fg').trim();
-        colors.matrixOpacity = document.body.dataset.theme === 'light' ? 0.06 : 0.11;
+        colors.matrix = document.body.dataset.theme === 'light' ? '#38674d' : '#6fa984';
+        colors.matrixOpacity = document.body.dataset.theme === 'light' ? 0.4 : 0.65;
         refreshAnimation();
     };
     const handleResize = () => {
@@ -67,6 +69,7 @@ export function initAnimations() {
     };
     window.addEventListener('resize', handleResize);
     window.addEventListener('theme-changed', updateColors);
+    window.addEventListener('crt-effects-changed', refreshAnimation);
     document.addEventListener('visibilitychange', refreshAnimation);
     if (reducedMotion.addEventListener) {
         reducedMotion.addEventListener('change', refreshAnimation);
@@ -76,6 +79,7 @@ export function initAnimations() {
     disposeListeners = () => {
         window.removeEventListener('resize', handleResize);
         window.removeEventListener('theme-changed', updateColors);
+        window.removeEventListener('crt-effects-changed', refreshAnimation);
         document.removeEventListener('visibilitychange', refreshAnimation);
         if (reducedMotion.removeEventListener) {
             reducedMotion.removeEventListener('change', refreshAnimation);
@@ -124,14 +128,14 @@ function createStars(canvas) {
 
 function createMatrixRain(canvas) {
     matrixChars = [];
-    const columns = Math.floor(canvas.width / 40);
+    const columns = Math.floor(canvas.width / 32);
     
     for (let i = 0; i < columns; i++) {
         const count = Math.random() * 2 + 1;
         for (let j = 0; j < count; j++) {
             const speedY = Math.random() * 2 + 1.2;
             matrixChars.push({
-                x: i * 40 + Math.random() * 6 - 3,
+                x: i * 32 + Math.random() * 6 + 6,
                 y: Math.random() * canvas.height,
                 char: chars[Math.floor(Math.random() * chars.length)],
                 speedY: speedY,
@@ -146,6 +150,11 @@ function createMatrixRain(canvas) {
 
 function animate(canvas, ctx) {
     const moving = !reducedMotion.matches && !document.hidden && window.innerWidth > 768;
+    const curved = document.body.classList.contains('crt-curvature-enabled');
+    const drawCharacter = (char, x, y) => {
+        const point = curved ? getCurvedPoint(x, y, canvas.width, canvas.height) : [x, y];
+        ctx.fillText(char, point[0], point[1]);
+    };
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // Draw Stars
@@ -159,7 +168,7 @@ function animate(canvas, ctx) {
         ctx.globalAlpha = Math.max(0, Math.min(1, star.opacity)) * 0.05;
         ctx.fillStyle = colors.fg;
         ctx.shadowBlur = 0;
-        ctx.fillText(star.char, star.x, star.y);
+        drawCharacter(star.char, star.x, star.y);
     });
     
     // Draw Matrix Rain
@@ -224,10 +233,14 @@ function animate(canvas, ctx) {
             ctx.save();
             ctx.globalAlpha = Math.max(0, Math.min(1, char.opacity)) * colors.matrixOpacity;
             ctx.font = `${char.fontSize * char.scale}px monospace`;
-            ctx.fillStyle = colors.dim;
+            ctx.fillStyle = colors.matrix;
             ctx.shadowBlur = 0;
             
-            ctx.fillText(char.char, char.x, char.y);
+            drawCharacter(char.char, char.x, char.y);
+            for (let trail = 1; trail <= 3; trail++) {
+                ctx.globalAlpha *= 0.55;
+                drawCharacter(char.char, char.x, char.y - trail * 18);
+            }
             ctx.restore();
         });
     }
