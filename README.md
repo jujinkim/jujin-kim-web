@@ -14,6 +14,7 @@ Visit: jujin.kim
 - Animated starfield background and optional matrix rain effect
 - CRT screen curvature, glass, scanlines, grain, and a slow sweep, with visible matrix rain in the desktop margins
 - Smooth screen curvature uses bilinear sampling independently of the CRT texture
+- Retro effects are enabled by default, with phosphor glow, green-black glass, a beveled screen edge, and scanline texture
 - Dim matrix glyphs fall one 22px cell at a time, leaving two fading cells behind
 - Reduced-motion support for CRT grain and background animation
 

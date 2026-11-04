@@ -696,6 +696,32 @@ body[data-theme='dark'] .keyboard-guide {
     opacity: 1 !important;
 }
 
+body.crt-effects-enabled[data-theme='dark'] {
+    --terminal-bg: #080f0b;
+    --terminal-bg-soft: #0b1410;
+    --terminal-fg: #d9f0df;
+}
+
+body.crt-effects-enabled[data-theme='dark'] .ascii-title-img {
+    filter: drop-shadow(0 0 3px rgba(126, 242, 173, 0.48)) drop-shadow(0 0 14px rgba(94, 223, 176, 0.18));
+}
+
+body.crt-effects-enabled[data-theme='dark'] .content-section h2 {
+    text-shadow: 0 0 7px rgba(126, 242, 173, 0.25);
+}
+
+body.crt-effects-enabled[data-theme='dark'] .section-content h3 {
+    text-shadow: 0 0 7px rgba(244, 200, 138, 0.22);
+}
+
+body.crt-effects-enabled[data-theme='dark'] .menu-item.active {
+    box-shadow: 0 0 12px rgba(126, 242, 173, 0.2);
+}
+
+body.crt-effects-enabled[data-theme='dark'] #terminal-container {
+    box-shadow: 0 0 40px rgba(30, 76, 44, 0.18);
+}
+
 #crt-preview {
     position: fixed;
     right: 16px;

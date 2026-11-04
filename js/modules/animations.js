@@ -54,7 +54,7 @@ export function initAnimations() {
     };
     window.addEventListener('resize', handleResize);
     window.addEventListener('theme-changed', updateColors);
-    window.addEventListener('crt-effects-changed', refreshAnimation);
+    window.addEventListener('crt-effects-changed', updateColors);
     document.addEventListener('visibilitychange', refreshAnimation);
     if (reducedMotion.addEventListener) {
         reducedMotion.addEventListener('change', refreshAnimation);
@@ -64,7 +64,7 @@ export function initAnimations() {
     disposeListeners = () => {
         window.removeEventListener('resize', handleResize);
         window.removeEventListener('theme-changed', updateColors);
-        window.removeEventListener('crt-effects-changed', refreshAnimation);
+        window.removeEventListener('crt-effects-changed', updateColors);
         document.removeEventListener('visibilitychange', refreshAnimation);
         if (reducedMotion.removeEventListener) {
             reducedMotion.removeEventListener('change', refreshAnimation);

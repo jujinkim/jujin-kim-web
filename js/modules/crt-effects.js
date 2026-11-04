@@ -6,6 +6,7 @@ export function initCRTEffects() {
     if (!screen || !viewport) return;
 
     screen.dataset.noise = 'retro';
+    document.body.classList.add('crt-effects-enabled');
     initScreenCurvature(viewport);
 
     const updateVisibility = () => {
@@ -39,6 +40,7 @@ export function initCRTEffects() {
     preview.addEventListener('change', () => {
         const enabled = preview.querySelector('#crt-enabled').checked;
         const curved = preview.querySelector('#crt-curved').checked;
+        document.body.classList.toggle('crt-effects-enabled', enabled);
         screen.classList.toggle('is-disabled', !enabled);
         screen.classList.toggle('is-flat', !curved);
         viewport.classList.toggle('is-flat', !enabled || !curved);
