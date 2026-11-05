@@ -12,8 +12,10 @@ Visit: jujin.kim
 - Responsive layout from mobile to large displays
 - Theme switching (light/dark/system)
 - Animated starfield background and optional matrix rain effect
-- CRT screen curvature, glass, scanlines, grain, and a slow sweep, with visible matrix rain in the desktop margins
-- Smooth screen curvature uses bilinear sampling independently of the CRT texture
+- CRT glass curvature, scanlines, grain, and a slow sweep, with visible matrix rain in the desktop margins
+- Smooth vector curves frame the screen without filtering live text or scrolling; frame geometry updates only on resize
+- Glass shading and grain use cached 128px textures; only grain and sweep layers animate via transforms
+- Grain and sweep pause during scrolling and resume afterward to keep interaction responsive
 - Retro effects are enabled by default, with phosphor glow, green-black glass, a beveled screen edge, and scanline texture
 - Dim matrix glyphs fall one 22px cell at a time, leaving two fading cells behind
 - Reduced-motion support for CRT grain and background animation

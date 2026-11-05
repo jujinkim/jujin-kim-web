@@ -15,6 +15,16 @@ export function initCRTEffects() {
     document.addEventListener('visibilitychange', updateVisibility);
     updateVisibility();
 
+    let scrollTimer;
+    const pauseDuringScroll = () => {
+        screen.classList.add('is-scrolling');
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => screen.classList.remove('is-scrolling'), 160);
+    };
+    document.addEventListener('scroll', pauseDuringScroll, { capture: true, passive: true });
+    viewport.addEventListener('wheel', pauseDuringScroll, { passive: true });
+    viewport.addEventListener('touchmove', pauseDuringScroll, { passive: true });
+
     if (new URLSearchParams(window.location.search).get('crt-preview') !== '1') return;
 
     const preview = document.createElement('details');

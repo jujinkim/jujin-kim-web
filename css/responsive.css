@@ -232,6 +232,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+    #crt-screen > .crt-noise,
+    #crt-screen > .crt-sweep {
+        will-change: auto;
+    }
+
     #crt-screen[data-noise] > .crt-sweep {
         display: none;
     }
@@ -243,9 +248,6 @@
 }
 
 @media print {
-    #crt-viewport.has-curvature {
-        filter: none;
-    }
     #crt-screen,
     #crt-preview {
         display: none;
