@@ -1,100 +1,62 @@
 # Project Agent Guide
 
+@/home/jujin/.codex/RTK.md
+
 ## Snapshot
-- **Terminal Portfolio**: A terminal-inspired, single-page portfolio website for Jujin Kim mimicking a CLI interface.
-- **Tech Stack**: Pure HTML5, CSS3 (custom variables + custom styling), and vanilla JS (ES6 modules) with no framework or build tooling.
-- **Entry Point**: `index.html` -> `js/main.js` -> modules in `js/modules/`.
-- **Shared Constants**: Live in `js/constants.js` (e.g., `CONTACT_EMAIL`).
 
----
+- **Code, Composed.**: An editorial, scroll-based software engineering portfolio for Jujin Kim.
+- **Stack**: Pure HTML5, CSS3, and vanilla JavaScript ES modules. No framework, dependencies, compiler, or build pipeline.
+- **Entry point**: `index.html` → `js/main.js` → `js/modules/`.
+- **Shared values**: `js/constants.js` owns `CONTACT_EMAIL` and `PROFILE_IMAGE_URL`.
+- **Visual language**: Ivory, ink, cobalt, oversized typography, numbered sections, striped SVG JK monogram. Local variable fonts and native SVG/canvas only.
 
-## Project Structure
-```
-jujin_kim_web/
-├── index.html
-├── css/
-│   ├── reset.css
-│   ├── site.css          # Main terminal styles
-│   ├── animations.css    # Starfield background & other transitions
-│   ├── modal.css         # Modal dialog styling
-│   └── responsive.css    # Responsive layouts for mobile/tablet/desktop
-├── js/
-│   ├── main.js           # App initialization
-│   ├── constants.js      # Global/shared constants (e.g. CONTACT_EMAIL)
-│   └── modules/
-│       ├── ascii-art.js        # Home ASCII title & art helpers
-│       ├── navigation.js       # Section navigation & key shortcuts
-│       ├── animations.js       # Canvas starfield & matrix rain animations
-│       ├── theme.js            # Theme switching mechanics (light/dark/system)
-│       ├── theme-export.js     # Helper functions for exporting themes
-│       ├── content.js          # Main content templates for all sections
-│       ├── terminal-input.js   # Terminal command parser & input logic
-│       └── profile-ascii.js    # Profile picture loader (photo-only)
-├── img/
-│   ├── ascii-title.svg
-│   ├── ascii-title-light.svg
-│   ├── ascii-title-dark.svg
-│   └── profile.jpg       # Profile picture (JPEG format)
-├── fonts/
-│   └── JetBrainsMono-Regular.woff2
-├── favicon.ico
-├── favicon.svg
-├── README.md
-└── AGENTS.md             # This guide
-```
+## Structure and content
 
----
+- `index.html`: page shell and static hero/contact; meaningful project fallbacks for JavaScript-disabled browsing.
+- `js/modules/content.js`: dynamic projects, archive, about/career, practice, year, experience duration, and KST time.
+- `css/site.css`: theme tokens and component styles. `css/responsive.css`: responsive/print rules. `css/animations.css`: motion rules.
+- `js/modules/navigation.js`: native anchor enhancement, active section, history, and shortcuts.
+- `js/modules/monogram.js`: SVG pointer/touch interaction; visible-only compositor motion on mobile/coarse pointers; static with reduced motion; no continuous JavaScript loop while idle.
+- `js/modules/monitor-effects.js`: cached monitor grain, fine scanlines, downward bright sweep, scroll pause, reading progress, and mobile scroll effects.
+- `js/modules/theme.js`: Light/Dark/System, `theme-mode` persistence, and `window.setTheme`.
+- `js/modules/profile-ascii.js`: profile photograph, despite the historical module name; Gravatar with a one-time local fallback.
+- `js/modules/terminal-input.js`: desktop terminal input, history, commands, and focus management.
+- `js/modules/animations.js`: opt-in matrix effect restricted to the terminal panel.
+- `img/projects/`: real product captures. Source provenance is in README.
+- Legacy CRT, curvature, ASCII-title, and modal modules remain inactive. The lightweight monitor overlay reuses `img/crt-noise.png`; do not restore screen-wide displacement/blur filters.
 
-## Active Focus & Key Behavior
+## Stable behavior
 
-### 1. Style & Theme Mechanics
-- **Monospace Terminal Aesthetic**: Monospace typography, green accent palette, and customized ASCII styling.
-- **CSS Variables**: Core theme variables (colors, fonts, etc.) are declared in `:root` inside `css/site.css` and adjusted dynamically via `js/modules/theme.js`.
-- **Theme Selection**: Driven by `window.setTheme` (exposed globally in `js/main.js`) and triggered by the footer links.
+- Section IDs: `home`, `projects`, `about`, `technologies`, `home-contact`. `navigateToSection(id)` scrolls rather than hiding other sections.
+- `Shift+1~4`: Home, Work, About, Practice. Unmodified number keys do not navigate. Do not intercept shortcuts while editing inputs.
+- `Escape`: close an open terminal first; otherwise return home.
+- `/` or the footer Terminal button opens the terminal on desktop fine-pointer devices. It is hidden at widths <=768px and for coarse pointers.
+- Commands: `help`, `clear`, `about`, `skills`, `contact`, `date`, `matrix`. Arrow keys browse command history. Use a real input; restore focus on close.
+- New visitors default to Light. Respect saved Light/Dark/System selections and system changes in System mode. Storage failures must not break the page.
+- Profile fallback clears its error handler before loading `img/profile.jpg`.
+- Keep exact role names `Software Engineer` and `Developer`, Frequaw primary/Legacy URLs, institution/dates, and modest AI learning/experimentation wording.
 
-### 2. Navigation & Commands
-- **Keyboard Navigation**:
-  - `Shift+1~4`: Instantly switch between corresponding sections.
-  - `ESC`: Return directly to the Home section.
-- **Terminal Input (Home section only)**:
-  - Command handling resides in `js/modules/terminal-input.js`.
-  - Supported commands: `help`, `clear`, `about`, `skills`, `contact`, `date`, `ls`, `cat`, `matrix`.
+## Editing guidelines
 
-### 3. Content & Shared Values
-- **Content Rendering**: All section contents (HTML templates) are rendered dynamically via `load*Section` helpers in `js/modules/content.js`.
-- **Authoritative Constants**: Keep key contact details (like email address) authoritative by consuming `CONTACT_EMAIL` from `js/constants.js`.
-- **Contact Links**: Contact details are integrated into the Home section; there is no separate Contact page.
+- Keep vanilla ES modules and template literals; do not introduce frameworks, build tooling, or external animation libraries.
+- Content changes belong in the corresponding `load*Section` helper; synchronize static fallback content if relevant.
+- Preserve existing factual claims, contact links, dates, and project destinations unless explicitly changed by the user.
+- Keep shared contact values authoritative through constants; static HTML includes an email fallback for no-JavaScript browsing.
+- Keep comments minimal and purposeful. New modules need descriptive names and clean exports.
+- The files already include Unicode typography; use it consistently and avoid decorative emoji.
+- Do not fabricate product screenshots. Use an actual public capture or explicit typographic artwork. Record image sources in README.
+- Performance comes first on desktop and mobile. Monitor grain and sweep animate cached layers through transforms; pause them during scrolling and in hidden tabs. Do not regenerate noise or filter live page text.
+- Respect reduced motion. Pause animated work in hidden tabs and outside its visible region. Reserve image dimensions, lazy-load below-fold images, and handle failures.
 
----
+## Verification
 
-## Coordination Checklist
+Run a static HTTP server: `python3 -m http.server 8000`. ES modules require HTTP. Prefix shell commands with `rtk` per the shared guide.
 
-1. **Content updates** -> edit the relevant `load*Section` function in `js/modules/content.js`.
-2. **Shared values** -> prefer adding to/consuming from `js/constants.js`.
-3. **Terminal commands** -> adjust command handlers or prompt behaviors in `js/modules/terminal-input.js`.
-4. **Navigation & section switching** -> check `js/modules/navigation.js`.
-5. **Animations (starfield/matrix rain)** -> update canvas/render loops in `js/modules/animations.js`.
-6. **Theme behavior** -> update color variables or toggle states in `js/modules/theme.js` (along with `window.setTheme` handling).
-7. **Visual styling** -> touch only the relevant scoped CSS files (`css/site.css` for main styles, `css/responsive.css` for media queries).
-
----
-
-## Coding Guidelines
-
-- **Vanilla ES6 Modules**: Stick strictly to ES6 modules and template literals. Avoid introducing frameworks, compiler steps, or external build pipelines.
-- **ASCII & Text**: Use ASCII characters unless a file already mixes in Unicode (such as emoji in content templates).
-- **Inline Comments**: Keep inline comments minimal, purposeful, and clean.
-- **Adding Files**: When creating new modules, favor descriptive names and export clean module-scoped functions/constants.
-- **Manual Testing**:
-  - Open `index.html` directly in the browser, or
-  - Start a static local server via Python:
-    ```bash
-    python3 -m http.server 8000
-    ```
-
----
-
-## Key Contacts & Links
-- **GitHub**: [@jujinkim](https://github.com/jujinkim)
-- **Website**: [jujin.kim](https://jujin.kim)
-- **Email**: [jk@jujin.kim](mailto:jk@jujin.kim)
+- `node --check` on changed modules; `git diff --check`.
+- Browser checks at 360, 390, 768, 1440, and 1920px. Check overflow and mobile navigation without horizontal clipping.
+- Verify both themes, saved settings/System mode, keyboard focus and shortcuts, direct hashes and browser Back.
+- Verify terminal commands, history, close/focus restoration, and localized matrix effect.
+- Verify monitor sweep direction, grain motion, pause/resume during scroll, visible-only mobile motion, touch response without trapping vertical scroll, and reduced motion.
+- Measure idle/scroll frame timing on desktop/mobile before claiming performance; distinguish emulation from physical-device evidence.
+- Verify JavaScript-disabled core content, project image failures, and profile fallback.
+- Keep README navigation/command documentation synchronized. Separate local, remote Git, and deployed browser evidence.

@@ -1,187 +1,109 @@
-#starfield {
+@media (prefers-reduced-motion: no-preference) {
+    .hero-copy { animation: compose-in 650ms ease-out both; }
+    .hero-art { animation: compose-in 900ms ease-out both; }
+    @keyframes compose-in {
+        from { opacity: 0; transform: translateY(14px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+}
+
+:root {
+    --monitor-grain-opacity: 0.045;
+    --monitor-line-opacity: 0.24;
+    --monitor-sweep-opacity: 0.4;
+}
+:root[data-theme='dark'] {
+    --monitor-grain-opacity: 0.075;
+    --monitor-line-opacity: 0.36;
+    --monitor-sweep-opacity: 0.8;
+}
+#monitor-effects {
     position: fixed;
-    top: 0;
+    inset: 0;
+    z-index: 30;
+    overflow: hidden;
+    contain: strict;
+    pointer-events: none;
+}
+.monitor-lines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(to bottom, transparent 0 3px, rgba(35, 60, 120, 0.12) 3px 4px);
+    opacity: var(--monitor-line-opacity);
+}
+.monitor-noise {
+    position: absolute;
+    inset: -6px;
+    background: url('../img/crt-noise.png') repeat;
+    background-size: 128px 128px;
+    opacity: var(--monitor-grain-opacity);
+    animation: monitor-grain 480ms steps(1, end) infinite;
+    will-change: transform;
+}
+.monitor-sweep {
+    position: absolute;
+    top: -112px;
     left: 0;
     width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-}
-
-#crt-viewport {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    padding-top: var(--terminal-fixed-topbar-height);
-    padding-bottom: var(--terminal-fixed-footer-height);
-    isolation: isolate;
-    z-index: 1;
-}
-
-#crt-curvature-frame {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    fill: none;
-    stroke: rgba(63, 163, 115, 0.45);
-    stroke-width: 1;
-}
-
-@media screen {
-    .crt-curvature-enabled #terminal-container,
-    .crt-curvature-enabled #terminal-header,
-    .crt-curvature-enabled #terminal-menu .menu-border,
-    .crt-curvature-enabled #terminal-footer,
-    .crt-curvature-enabled .content-border {
-        border-color: transparent;
-    }
-}
-
-@keyframes twinkle {
-    0%, 100% { opacity: 0; }
-    50% { opacity: 1; }
-}
-
-.star {
-    animation: twinkle 3s infinite;
-    animation-delay: calc(var(--delay) * 1s);
-}
-
-@keyframes glitch {
-    0%, 100% { 
-        text-shadow: 
-            2px 0 var(--terminal-dim),
-            -2px 0 var(--terminal-highlight);
-    }
-    25% { 
-        text-shadow: 
-            -2px 0 var(--terminal-dim),
-            2px 0 var(--terminal-highlight);
-    }
-    50% { 
-        text-shadow: 
-            2px 0 var(--terminal-highlight),
-            -2px 0 var(--terminal-dim);
-    }
-}
-
-.glitch {
-    animation: glitch 3s infinite;
-}
-
-#crt-screen {
-    --crt-grain-opacity: 0.042;
-    --crt-line-opacity: 0.085;
-    --crt-frame-color: rgba(150, 186, 159, 0.16);
-    --crt-sweep-opacity: 0.04;
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-    user-select: none;
-    z-index: 11000;
-    /* Composite moving textures separately from the scrolling document. */
-    transform: translateZ(0);
-}
-
-body[data-theme='light'] #crt-screen {
-    --crt-grain-opacity: 0.025;
-    --crt-line-opacity: 0.04;
-    --crt-frame-color: rgba(50, 80, 60, 0.15);
-    --crt-sweep-opacity: 0.025;
-}
-
-#crt-screen.is-disabled {
-    display: none;
-}
-
-#crt-screen > div {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-}
-
-.crt-glass {
-    /* Cache the glass shading instead of repainting viewport-sized blurred shadows. */
-    background: url('../img/crt-glass-dark.png') center / 100% 100% no-repeat;
-}
-
-body[data-theme='light'] .crt-glass {
-    background-image: url('../img/crt-glass-light.png');
-}
-
-.crt-glass::before {
-    content: '';
-    position: absolute;
-    inset: 10px 18px;
-    border-radius: 44px / 32px;
-    border-top: 1px solid var(--crt-frame-color);
-}
-
-.crt-glass::after {
-    content: '';
-    position: absolute;
-    inset: 3px;
-    border-radius: 48px / 36px;
-    border: 1px solid var(--crt-frame-color);
-}
-
-.is-flat .crt-glass {
-    display: none;
-}
-
-.crt-scanlines {
-    background:
-        repeating-linear-gradient(to bottom, transparent 0 2px, #000 2px 3px),
-        repeating-linear-gradient(to right, rgba(105, 185, 130, 0.12) 0 1px, transparent 1px 3px);
-    opacity: var(--crt-line-opacity);
-}
-
-#crt-screen > .crt-noise {
-    inset: -32px;
-    background-image: url('../img/crt-noise.png');
-    opacity: var(--crt-grain-opacity);
-    animation: crt-grain 1s steps(1, end) infinite;
+    height: 112px;
+    background: linear-gradient(to bottom, transparent 20%, rgba(160, 190, 255, 0.03) 55%, rgba(181, 205, 255, 0.06) 77%, rgba(255, 255, 255, 0.1) 79%, rgba(255, 255, 255, 0.1) 81%, rgba(153, 187, 255, 0.04) 83%, transparent 100%);
+    opacity: var(--monitor-sweep-opacity);
+    animation: monitor-sweep 9s linear infinite;
     will-change: transform;
 }
-
-@keyframes crt-grain {
-    0%, 100% { transform: translate(0, 0); }
-    25% { transform: translate(-13px, 17px); }
-    50% { transform: translate(21px, -11px); }
-    75% { transform: translate(-7px, -23px); }
+.site-header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(var(--reading-progress, 0));
+    transform-origin: left;
 }
-
-#crt-screen[data-noise='static'] .crt-noise {
-    animation: none;
-    will-change: auto;
-}
-
-#crt-screen[data-noise='retro'] .crt-noise {
-    opacity: calc(var(--crt-grain-opacity) * 1.7);
-    animation-duration: 0.6s;
-}
-
-#crt-screen > .crt-sweep {
-    display: none;
-    bottom: auto;
-    height: 24%;
-    background: linear-gradient(transparent, rgba(160, 210, 180, var(--crt-sweep-opacity)), transparent);
-    animation: crt-sweep 12s steps(120, end) infinite;
+.hero-art[data-motion='ambient'] .monogram {
+    animation: monogram-float 7s ease-in-out infinite;
     will-change: transform;
+    touch-action: pan-y;
 }
-
-#crt-screen[data-noise='retro'] .crt-sweep {
-    display: block;
+.hero-art[data-motion='ambient'] .art-interaction { display: inline; }
+.mobile-effects-enabled .project-visual .browser-frame {
+    transform: translate3d(0, var(--card-drift, 15px), 0) rotate(calc(-3deg + var(--card-roll, -2deg)));
+    transition: none;
 }
-
-@keyframes crt-sweep {
-    from { transform: translateY(-100%); }
-    to { transform: translateY(520%); }
+.mobile-effects-enabled .frequaw-visual img {
+    transform: translate3d(0, calc(20px + var(--card-drift, 0px)), 0) rotate(calc(3deg - var(--card-roll, -2deg)));
+    transition: none;
 }
-
-#crt-screen.is-paused > div,
-#crt-screen.is-scrolling > div {
-    animation-play-state: paused;
+.mobile-effects-enabled .cryptic-star { transform: rotate(var(--card-orbit, 0deg)); }
+.mobile-effects-enabled .weather-degree { transform: translate3d(0, var(--card-drift, 0px), 0); }
+.mobile-effects-enabled .project-visual.is-in-view :is(.browser-frame, img, .cryptic-star, .weather-degree) { will-change: transform; }
+.is-scrolling :is(.monitor-noise, .monitor-sweep),
+.motion-paused :is(.monitor-noise, .monitor-sweep),
+.is-scrolling .hero-art .monogram,
+.motion-paused .hero-art .monogram { animation-play-state: paused; }
+@keyframes monitor-grain {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    25% { transform: translate3d(-3px, 2px, 0); }
+    50% { transform: translate3d(2px, -3px, 0); }
+    75% { transform: translate3d(-2px, -1px, 0); }
+}
+@keyframes monitor-sweep {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(0, calc(100vh + 112px), 0); }
+}
+@keyframes monogram-float {
+    0%, 100% { transform: translate3d(0, 3px, 0) rotate(-1deg); }
+    50% { transform: translate3d(0, -4px, 0) rotate(1deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .monitor-sweep { display: none; }
+    .monitor-noise { will-change: auto; }
+    .hero-art .art-interaction { display: none; }
+}
+@media print {
+    #monitor-effects, .site-header::after { display: none !important; }
 }
