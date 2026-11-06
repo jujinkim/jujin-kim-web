@@ -1,25 +1,49 @@
-import { PROFILE_IMAGE_URL } from '../constants.js?v=20261106.1';
+import { PROFILE_IMAGE_URL } from '../constants.js?v=20261106.2';
 
+// Profile picture loader (photo only)
 export function initProfilePicture() {
-    const container = document.getElementById('profile-picture');
-    if (!container) return;
-    const wrapper = document.createElement('div');
-    wrapper.className = 'original-profile';
-    const image = new Image();
-    image.alt = 'Jujin Kim';
-    image.width = 142;
-    image.height = 172;
-    image.loading = 'lazy';
-    image.decoding = 'async';
-    image.onerror = function () {
+    const profileContainer = document.getElementById('profile-picture');
+    if (!profileContainer) {
+        console.log('Profile container not found');
+        return;
+    }
+
+    // Clear any existing content
+    profileContainer.innerHTML = '';
+
+    const imageContainer = document.createElement('div');
+    imageContainer.className = 'original-profile';
+
+    const img = document.createElement('img');
+    img.alt = 'Jujin Kim';
+
+    img.onload = function() {
+        console.log('Profile image loaded successfully from:', img.src);
+    };
+
+    img.onerror = function() {
+        console.error('Failed to load profile image from:', img.src);
         this.onerror = null;
         this.src = 'img/profile.jpg';
     };
-    image.src = PROFILE_IMAGE_URL;
-    wrapper.append(image);
-    container.replaceChildren(wrapper);
+
+    img.src = PROFILE_IMAGE_URL;
+
+    imageContainer.appendChild(img);
+    profileContainer.appendChild(imageContainer);
+
+    console.log('Profile picture initialized with photo only');
 }
 
 export function updateProfilePosition() {
-    document.getElementById('profile-picture')?.classList.toggle('mobile', window.innerWidth <= 768);
+    // Update profile position if needed for responsive design
+    const profileContainer = document.getElementById('profile-picture');
+    if (!profileContainer) return;
+
+    const screenWidth = window.innerWidth;
+    if (screenWidth < 768) {
+        profileContainer.classList.add('mobile');
+    } else {
+        profileContainer.classList.remove('mobile');
+    }
 }

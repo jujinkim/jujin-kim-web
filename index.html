@@ -1,97 +1,110 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f4f2eb">
-    <meta name="description" content="Jujin Kim, software engineer. Android applications, independent products, and curious experiments. Based in Suwon, South Korea.">
-    <title>Jujin Kim — Software, thoughtfully made.</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="alternate icon" href="favicon.ico">
-    <link rel="preload" href="fonts/SpaceGrotesk-Latin.woff2?v=20261106.1" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="css/reset.css?v=20261106.1">
-    <link rel="stylesheet" href="css/site.css?v=20261106.1">
-    <link rel="stylesheet" href="css/animations.css?v=20261106.1">
-    <link rel="stylesheet" href="css/responsive.css?v=20261106.1">
-    <script>
-        try {
-            const mode = localStorage.getItem('theme-mode') || 'light';
-            document.documentElement.dataset.theme = mode === 'dark' || (mode === 'system' && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
-        } catch (_) {}
-    </script>
+    <title>Jujin Kim - Software Engineer</title>
+    <meta name="description" content="Personal portfolio of Jujin Kim, Software Engineer">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261106.2">
+    <link rel="alternate icon" href="favicon.ico?v=20261106.2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/reset.css?v=20261106.2">
+    <link rel="stylesheet" href="css/site.css?v=20261106.2">
+    <link rel="stylesheet" href="css/animations.css?v=20261106.2">
+    <link rel="stylesheet" href="css/modal.css?v=20261106.2">
+    <link rel="stylesheet" href="css/responsive.css?v=20261106.2">
 </head>
-<body>
-    <a class="skip-link" href="#home">Skip to content</a>
-    <header class="site-header">
-        <a class="wordmark" href="#home" aria-label="Jujin Kim, home">jk<span class="brand-dot">.</span></a>
-        <span class="header-descriptor">INDEPENDENT MIND.<br>ENGINEER BY TRADE.</span>
-        <nav aria-label="Main navigation">
-            <a class="menu-item" href="#projects" data-section="projects">Work<span>01</span></a>
-            <a class="menu-item" href="#about" data-section="about">About<span>02</span></a>
-            <a class="menu-item" href="#technologies" data-section="technologies">Practice<span>03</span></a>
-            <a class="menu-item contact-nav" href="#home-contact" data-section="home-contact">Let’s talk <span aria-hidden="true">↗</span></a>
-        </nav>
-    </header>
-    <main id="terminal-content">
-        <section id="home" class="hero content-section" aria-labelledby="hero-title">
-            <div class="hero-topline mono"><span>SOFTWARE ENGINEER / DEVELOPER</span><span>SUWON, KR <span class="status-dot" aria-hidden="true"></span> <span data-kst>UTC+09:00</span></span></div>
-            <div class="hero-layout">
-                <div class="hero-copy">
-                    <div class="hero-name"><span class="eyebrow">A PORTFOLIO BY</span><h1 id="hero-title">JUJIN<br><span>KIM<span class="name-period">.</span></span></h1></div>
-                    <p class="hero-statement">Software,<br><em>thoughtfully</em> made.</p>
-                    <p class="hero-description">I build applications, connect systems,<br class="desktop-break"> and follow ideas a little further.</p>
-                    <div class="hero-actions"><a class="button button-primary" href="#projects">Selected work <span aria-hidden="true">↘</span></a><a class="text-link" href="#home-contact">Get in touch <span aria-hidden="true">↗</span></a></div>
+<body class="crt-effects-enabled">
+    <canvas id="starfield" class="background-animation" aria-hidden="true"></canvas>
+    <div id="crt-viewport">
+        <div id="terminal-container">
+
+        <header id="terminal-header">
+            <pre id="ascii-title"></pre>
+            <nav id="terminal-menu" role="navigation" aria-label="Main navigation">
+                <div class="menu-border">
+                    <ul class="menu-list">
+                        <li class="menu-item" data-section="home" tabindex="0">Home</li>
+                        <li class="menu-item" data-section="about" tabindex="0">About &amp; Career</li>
+                        <li class="menu-item" data-section="projects" tabindex="0">Projects &amp; Skills</li>
+                        <li class="menu-item" data-section="technologies" tabindex="0" aria-label="Tech &amp; Experiences">Tech &amp; Exp.</li>
+                    </ul>
                 </div>
-                <div class="hero-art" id="hero-art">
-                    <div class="art-top mono"><span>FIG. 001 — STRUCTURE / EXPRESSION</span><span aria-hidden="true">+</span></div>
-                    <svg class="monogram" id="jk-monogram" viewBox="0 0 600 600" role="img" aria-label="JK monogram constructed from blue lines">
-                        <defs>
-                            <pattern id="art-grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 H 0 V 50" fill="none" stroke="currentColor" stroke-width="0.55" opacity="0.18"/></pattern>
-                            <clipPath id="jk-clip"><path d="M105 112H292V353C292 449 252 490 168 490C91 490 57 447 57 378H139C139 407 147 421 170 421C194 421 204 402 204 367V190H105ZM325 112H411V269L508 112H602L487 293L607 488H504L411 329V488H325Z"/></clipPath>
-                        </defs>
-                        <rect width="600" height="600" fill="url(#art-grid)"/>
-                        <g class="art-guides" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.35"><circle cx="300" cy="300" r="244"/><circle cx="300" cy="300" r="173"/><path d="M0 300H600M300 0V600M128 128L472 472M128 472L472 128"/></g>
-                        <g transform="translate(-15 0)"><g id="monogram-lines" clip-path="url(#jk-clip)" fill="currentColor"><path d="M0 112H630V119H0ZM0 124H630V131H0ZM0 136H630V143H0ZM0 148H630V155H0ZM0 160H630V167H0ZM0 172H630V179H0ZM0 184H630V191H0ZM0 196H630V203H0ZM0 208H630V215H0ZM0 220H630V227H0ZM0 232H630V239H0ZM0 244H630V251H0ZM0 256H630V263H0ZM0 268H630V275H0ZM0 280H630V287H0ZM0 292H630V299H0ZM0 304H630V311H0ZM0 316H630V323H0ZM0 328H630V335H0ZM0 340H630V347H0ZM0 352H630V359H0ZM0 364H630V371H0ZM0 376H630V383H0ZM0 388H630V395H0ZM0 400H630V407H0ZM0 412H630V419H0ZM0 424H630V431H0ZM0 436H630V443H0ZM0 448H630V455H0ZM0 460H630V467H0ZM0 472H630V479H0ZM0 484H630V491H0Z"/></g></g>
-                        <g class="art-crosshair" fill="none" stroke="currentColor" stroke-width="1"><path d="M288 300H312M300 288V312"/><circle cx="300" cy="300" r="5"/></g>
-                        <path d="M8 25V8H25M575 8H592V25M8 575V592H25M575 592H592V575" fill="none" stroke="currentColor"/>
-                    </svg>
-                    <div class="art-bottom mono"><span>BUILT WITH INTENT.</span><span class="art-interaction">MOVE TO EXPLORE <span aria-hidden="true">↗</span></span></div>
+            </nav>
+        </header>
+
+        <main id="terminal-content">
+            <div class="content-border">
+                <section id="home" class="content-section">
+                    <h2>&gt; Welcome</h2>
+                    <div class="section-content">
+                        <p>Welcome to my terminal interface. Use the menu above to navigate.</p>
+                    </div>
+                </section>
+
+                <section id="about" class="content-section" style="display: none;">
+                    <h2>&gt; About &amp; Career</h2>
+                    <div class="section-content">
+                        <p>Welcome to my terminal. I'm a software engineer passionate about creating elegant solutions to complex problems.</p>
+                    </div>
+                </section>
+
+                <section id="projects" class="content-section" style="display: none;">
+                    <h2>&gt; Projects &amp; Skills</h2>
+                    <div class="section-content">
+                        <p>Featured projects and technical skills...</p>
+                    </div>
+                </section>
+
+                <section id="technologies" class="content-section" style="display: none;">
+                    <h2>&gt; Tech &amp; Experiences</h2>
+                    <div class="section-content">
+                        <p>Tech stack and experience areas...</p>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <footer id="terminal-footer">
+            <div class="footer-content">
+                <div class="keyboard-guide">
+                    <span class="quick-menu-hint"><span>1~4</span> Quick Menu |</span>
+                    Theme: <a href="#" onclick="event.preventDefault(); window.setTheme('light'); return false;">Light</a>/<a href="#" onclick="event.preventDefault(); window.setTheme('dark'); return false;">Dark</a>/<a href="#" onclick="event.preventDefault(); window.setTheme('system'); return false;">System</a>
+                </div>
+                <div class="footer-actions">
+                    <button id="terminal-toggle" type="button" aria-controls="terminal-panel" aria-expanded="false" aria-label="Toggle terminal">
+                        &gt;_
+                    </button>
                 </div>
             </div>
-            <div class="hero-baseline mono"><span>ANDROID SINCE 2017 <span class="baseline-divider">/</span> IDEAS BEYOND IT.</span><a href="#projects">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></a><span>CODE, COMPOSED.</span></div>
-        </section>
-        <section id="projects" class="work-section content-section section-pad" aria-labelledby="work-title">
-            <div class="section-heading"><div><p class="eyebrow">01 / SELECTED WORK</p><h2 id="work-title">Ideas into<br><span class="serif-word">everyday things.</span></h2></div><p class="section-intro">From the apps in your pocket<br>to the experiments on my desk.<br>A few things I’ve worked on.</p></div>
-            <div class="section-content work-grid">
-                <article class="project-fallback"><h3>Samsung Weather Client</h3><p>2020–Present · Android application development at Samsung Electronics.</p></article>
-                <article class="project-fallback"><h3><a href="https://goksorry.com">Goksorry.com ↗</a></h3><p>AI-powered stock sentiment aggregator.</p></article>
-                <article class="project-fallback"><h3><a href="https://crypticwiki.net">CrypticWiki Network ↗</a></h3><p>Collaborative mystery fiction for humans and AI.</p></article>
-                <article class="project-fallback"><h3><a href="https://play.google.com/store/apps/details?id=kim.jujin.frequaw">Frequaw ↗</a></h3><p>Your frequently used apps, within reach.</p><a href="https://play.google.com/store/apps/details?id=com.jujinkim.frequaw">View on Play Store (Legacy)</a></article>
+        </footer>
+    </div>
+    <div id="terminal-panel" aria-hidden="true">
+        <div class="terminal-panel-header">
+            <span>Terminal</span>
+            <button class="terminal-panel-close" type="button" aria-label="Close terminal">Close</button>
+        </div>
+        <div class="terminal-panel-body">
+            <div class="terminal-output"></div>
+            <div class="terminal-input-line">
+                <span class="terminal-prompt">&gt;</span>
+                <span class="terminal-input"></span>
+                <span class="cursor-blink">█</span>
+                <span class="terminal-placeholder">(type "help" for commands)</span>
             </div>
-            <div id="project-archive"></div>
-        </section>
-        <section id="about" class="about-section content-section section-pad" aria-labelledby="about-title">
-            <div class="section-heading"><div><p class="eyebrow">02 / THE PERSON BEHIND THE CODE</p><h2 id="about-title">Grounded in craft.<br><span class="serif-word">Driven by curiosity.</span></h2></div></div>
-            <div class="section-content"><p>I’m Jujin Kim, a software engineer based in Suwon, South Korea. I’ve worked on Android applications at Samsung Electronics since 2017.</p><p>B.S. in Computer Science &amp; VR/AR Media Convergence, Namseoul University (2011–2016).</p></div>
-        </section>
-        <section id="technologies" class="practice-section content-section section-pad" aria-labelledby="practice-title">
-            <div class="section-heading"><div><p class="eyebrow">03 / TOOLS, THINKING &amp; EXPLORATION</p><h2 id="practice-title">A focused practice.<br><span class="serif-word">An open mind.</span></h2></div><p class="section-intro">Deep roots in Android.<br>Room for the next question.</p></div>
-            <div class="section-content"><p>Android development, Kotlin, and Java. Hands-on learning and experimentation with AI, machine learning, and agentic workflows.</p></div>
-        </section>
-        <section id="home-contact" class="contact-section content-section section-pad" aria-labelledby="contact-title">
-            <div class="contact-top mono"><span>04 / NEXT CONVERSATION</span><span>SUWON, SOUTH KOREA</span></div>
-            <h2 id="contact-title">Good things start<br>with <span class="serif-word">a conversation.</span></h2>
-            <a class="contact-email" data-email href="mailto:jk@jujin.kim">jk@jujin.kim <span aria-hidden="true">↗</span></a>
-            <div class="contact-bottom"><p>Have a question, an idea,<br>or something worth building?</p><div class="social-links"><a href="https://github.com/jujinkim" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://linkedin.com/in/jujinkim" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://jujin.dev" target="_blank" rel="noopener noreferrer">Blog ↗</a><a href="https://jujin.kim">Website ↗</a></div></div>
-        </section>
-    </main>
-    <footer class="site-footer" id="terminal-footer"><p class="mono">© <span data-year>2026</span> JUJIN KIM <span class="footer-note">— CODE, COMPOSED.</span></p><div class="footer-controls"><div class="theme-picker" role="group" aria-label="Color theme" hidden><button type="button" data-theme-mode="light" aria-pressed="true">Light</button><button type="button" data-theme-mode="dark" aria-pressed="false">Dark</button><button type="button" data-theme-mode="system" aria-pressed="false">System</button></div><button id="terminal-toggle" class="terminal-toggle" type="button" aria-controls="terminal-panel" aria-expanded="false" hidden><span aria-hidden="true">&gt;_</span> Terminal <kbd>/</kbd></button><a class="back-top" href="#home" aria-label="Back to top">↑</a></div></footer>
-    <aside id="terminal-panel" role="dialog" aria-modal="false" aria-labelledby="terminal-title" hidden>
-        <canvas id="terminal-matrix" aria-hidden="true"></canvas>
-        <div class="terminal-panel-header"><span id="terminal-title">JUJIN.KIM / TERMINAL</span><button class="terminal-panel-close" type="button" aria-label="Close terminal">ESC <span aria-hidden="true">×</span></button></div>
-        <div class="terminal-panel-body"><div class="terminal-output" role="log" aria-label="Command output" aria-live="polite"><p class="terminal-welcome">A little closer to the source.<br>Type "help" to look around.</p></div><form class="terminal-input-line"><label for="terminal-input" aria-label="Command">&gt;</label><input id="terminal-input" class="terminal-input" name="command" aria-label="Terminal command" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type a command…"></form></div>
-    </aside>
-    <div id="theme-status" class="theme-status mono" role="status"></div>
-    <script type="module" src="js/main.js?v=20261106.1"></script>
+        </div>
+    </div>
+
+    </div>
+    <div id="crt-screen" data-noise="retro" aria-hidden="true">
+        <div class="crt-glass"></div>
+        <div class="crt-scanlines"></div>
+        <div class="crt-noise"></div>
+        <div class="crt-sweep"></div>
+    </div>
+    <script type="module" src="js/main.js?v=20261106.2"></script>
 </body>
 </html>

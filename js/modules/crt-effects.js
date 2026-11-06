@@ -1,4 +1,4 @@
-import { initScreenCurvature } from './screen-curvature.js';
+import { initScreenCurvature } from './screen-curvature.js?v=20261106.2';
 
 export function initCRTEffects() {
     const screen = document.getElementById('crt-screen');

@@ -1,73 +1,103 @@
-const sectionIds = ['home', 'projects', 'about', 'technologies'];
+let menuItems = [];
+const MOBILE_SHORTCUT_BREAKPOINT = 768;
 
-export function navigateToSection(sectionId) {
-    const target = document.getElementById(sectionId);
-    if (!target) return;
-    if (location.hash !== `#${sectionId}`) history.pushState(null, '', `#${sectionId}`);
-    target.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth' });
-    target.setAttribute('tabindex', '-1');
-    target.focus({ preventScroll: true });
+function isMobileInputContext() {
+    const isSmallViewport = window.innerWidth <= MOBILE_SHORTCUT_BREAKPOINT;
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    return isSmallViewport || isCoarsePointer;
 }
 
 export function initNavigation() {
-    history.scrollRestoration = 'manual';
-    document.addEventListener('click', event => {
-        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-        const link = event.target.closest('a[href^="#"], [data-section-link]');
-        if (!link) return;
-        const id = link.dataset.sectionLink || link.getAttribute('href').slice(1);
-        if (document.getElementById(id)) {
-            event.preventDefault();
-            navigateToSection(id);
-        }
+    menuItems = document.querySelectorAll('.menu-item');
+
+    menuItems.forEach(item => {
+        item.addEventListener('click', () => selectMenuItem(item));
     });
-    document.addEventListener('keydown', event => {
-        if (event.defaultPrevented || isEditing(event.target) || document.body.classList.contains('terminal-open')) return;
-        if (event.ctrlKey || event.metaKey || event.altKey) return;
-        const index = ['Digit1', 'Digit2', 'Digit3', 'Digit4'].indexOf(event.code);
-        if (event.shiftKey && index !== -1) {
-            event.preventDefault();
-            navigateToSection(sectionIds[index]);
-        } else if (event.key === 'Escape') {
-            event.preventDefault();
-            navigateToSection('home');
-        }
-    });
-    const items = [...document.querySelectorAll('.menu-item')];
-    let scheduled = false;
-    const update = () => {
-        scheduled = false;
-        const marker = window.innerHeight * 0.35;
-        let activeId = 'home';
-        [...sectionIds, 'home-contact'].forEach(id => {
-            if (document.getElementById(id).getBoundingClientRect().top <= marker) activeId = id;
-        });
-        items.forEach(item => {
-            const active = item.dataset.section === activeId;
-            item.classList.toggle('active', active);
-            if (active) item.setAttribute('aria-current', 'location');
-            else item.removeAttribute('aria-current');
-        });
-    };
-    const schedule = () => {
-        if (!scheduled) { scheduled = true; requestAnimationFrame(update); }
-    };
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule, { passive: true });
-    const followHash = () => {
-        const target = document.getElementById(location.hash.slice(1) || 'home');
-        if (target) target.scrollIntoView({ behavior: 'instant' });
-        schedule();
-    };
-    let hashFrame = 0;
-    const scheduleHash = () => {
-        cancelAnimationFrame(hashFrame);
-        hashFrame = requestAnimationFrame(followHash);
-    };
-    window.addEventListener('popstate', scheduleHash);
-    window.addEventListener('hashchange', scheduleHash);
-    scheduleHash();
-    update();
+
+    document.addEventListener('click', handleSectionLink);
+
+    // Add keyboard shortcuts
+    if (!isMobileInputContext()) {
+        document.addEventListener('keydown', handleKeyboardShortcuts);
+    }
+
+    selectMenuItem(menuItems[0]);
 }
-function reducedMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
-function isEditing(target) { return target.closest('input, textarea, select, [contenteditable="true"]'); }
+
+export function navigateToSection(sectionId) {
+    if (!menuItems.length) {
+        menuItems = document.querySelectorAll('.menu-item');
+    }
+
+    const items = Array.from(menuItems);
+    const targetItem = items.find(item => item.dataset.section === sectionId);
+    if (targetItem) {
+        selectMenuItem(targetItem);
+    }
+}
+
+function selectMenuItem(menuItem) {
+    const sectionId = menuItem.dataset.section;
+
+    // Update active state
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    menuItem.classList.add('active');
+
+    showSection(sectionId);
+}
+
+function showSection(sectionId) {
+    const sections = document.querySelectorAll('.content-section');
+
+    sections.forEach(section => {
+        section.style.display = section.id === sectionId ? '' : 'none';
+    });
+
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection && sectionId === 'home') {
+        import('./profile-ascii.js?v=20261106.2').then(module => {
+            setTimeout(() => {
+                module.initProfilePicture();
+            }, 100);
+        });
+    }
+}
+
+function handleKeyboardShortcuts(e) {
+    if (isMobileInputContext()) return;
+
+    // Number shortcuts for menu navigation (1~4), key code based for layout consistency
+    const numberCodeMap = {
+        Digit1: 0,
+        Digit2: 1,
+        Digit3: 2,
+        Digit4: 3
+    };
+
+    const index = numberCodeMap[e.code];
+    if (typeof index === 'number') {
+        e.preventDefault();
+        if (index < menuItems.length) {
+            selectMenuItem(menuItems[index]);
+        }
+    }
+
+    // ESC key to return to Home
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        selectMenuItem(menuItems[0]);
+    }
+}
+
+function handleSectionLink(event) {
+    const link = event.target.closest('[data-section-link]');
+    if (!link) return;
+
+    const sectionId = link.dataset.sectionLink;
+    if (sectionId) {
+        event.preventDefault();
+        navigateToSection(sectionId);
+    }
+}

@@ -1,83 +1,162 @@
-let enabled = false;
-let frame = 0;
-let refresh;
-let dispose;
+import { getCurvedPoint } from './screen-curvature.js?v=20261106.2';
+
+const CELL_SIZE = 22;
+const TRAIL_LENGTH = 2;
+const FRAME_INTERVAL = 50;
+const chars = '01가나다라마바사아자차카타파하김주진서울코딩개발프로그래머안녕하세요반갑습니다';
+let animationFrame;
+let lastFrameTime = 0;
+let stars = [];
+let matrixChars = [];
+let matrixRainEnabled = true;
+let reducedMotion;
+let refreshAnimation;
+let disposeListeners;
+let colors = {};
+
+const randomCharacter = () => chars[Math.floor(Math.random() * chars.length)];
 
 export function toggleMatrixRain() {
-    enabled = !enabled;
-    refresh?.();
-    return enabled;
+    matrixRainEnabled = !matrixRainEnabled;
+    if (refreshAnimation) refreshAnimation();
+    return matrixRainEnabled;
 }
 
 export function initAnimations() {
     cleanup();
-    const canvas = document.getElementById('terminal-matrix');
-    const panel = document.getElementById('terminal-panel');
-    const ctx = canvas?.getContext('2d');
-    if (!canvas || !panel || !ctx) return;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const desktop = window.matchMedia('(min-width: 769px) and (pointer: fine)');
-    let width = 0;
-    let height = 0;
-    let streams = [];
-    let lastTime = 0;
-    const isVisible = () => enabled && !panel.hidden && !document.hidden && desktop.matches;
-    const draw = now => {
-        frame = 0;
-        if (!isVisible()) return;
-        const moving = !reduced.matches;
-        if (!moving || now - lastTime >= 90) {
-            lastTime = now;
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = '#a7bbff';
-            ctx.font = '12px monospace';
-            streams.forEach(stream => {
-                if (moving) stream.y = (stream.y + 17) % (height + 50);
-                for (let tail = 0; tail < 3; tail++) {
-                    ctx.globalAlpha = 0.7 - tail * 0.2;
-                    ctx.fillText((Math.floor(stream.y / 17) + tail) % 2, stream.x, stream.y - tail * 17);
-                }
+    const canvas = document.getElementById('starfield');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    refreshAnimation = () => {
+        cancelAnimationFrame(animationFrame);
+        lastFrameTime = -Infinity;
+        const now = performance.now();
+        matrixChars.forEach(stream => { stream.nextStepAt = now + stream.interval; });
+        animate(canvas, ctx, now);
+    };
+    const updateColors = () => {
+        const style = getComputedStyle(document.body);
+        colors.fg = style.getPropertyValue('--terminal-fg').trim();
+        const isLight = document.body.dataset.theme === 'light';
+        colors.matrix = isLight ? '#38674d' : '#6fa984';
+        colors.matrixOpacity = isLight ? 0.16 : 0.24;
+        refreshAnimation();
+    };
+    const handleResize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        createStars(canvas);
+        createMatrixRain(canvas);
+        refreshAnimation();
+    };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('theme-changed', updateColors);
+    window.addEventListener('crt-effects-changed', updateColors);
+    document.addEventListener('visibilitychange', refreshAnimation);
+    if (reducedMotion.addEventListener) {
+        reducedMotion.addEventListener('change', refreshAnimation);
+    } else {
+        reducedMotion.addListener(refreshAnimation);
+    }
+    disposeListeners = () => {
+        window.removeEventListener('resize', handleResize);
+        window.removeEventListener('theme-changed', updateColors);
+        window.removeEventListener('crt-effects-changed', updateColors);
+        document.removeEventListener('visibilitychange', refreshAnimation);
+        if (reducedMotion.removeEventListener) {
+            reducedMotion.removeEventListener('change', refreshAnimation);
+        } else {
+            reducedMotion.removeListener(refreshAnimation);
+        }
+    };
+    updateColors();
+    handleResize();
+}
+
+function createStars(canvas) {
+    const starChars = ['*', '+', '.', '°', '·'];
+    stars = Array.from({ length: Math.floor(canvas.width * canvas.height / 10000) }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        char: starChars[Math.floor(Math.random() * starChars.length)],
+        opacity: Math.random(),
+        twinkleSpeed: Math.random() * 0.02 + 0.005
+    }));
+}
+
+function createMatrixRain(canvas) {
+    matrixChars = [];
+    if (canvas.width <= 768) return;
+    const rows = Math.ceil(canvas.height / CELL_SIZE);
+    for (let column = 0; column < Math.floor(canvas.width / CELL_SIZE); column += 2) {
+        const interval = 160 + Math.floor(Math.random() * 3) * 40;
+        matrixChars.push({
+            column,
+            row: Math.floor(Math.random() * rows),
+            glyphs: Array.from({ length: TRAIL_LENGTH + 1 }, randomCharacter),
+            opacity: 0.7 + Math.random() * 0.3,
+            interval,
+            nextStepAt: performance.now() + interval
+        });
+    }
+}
+
+function animate(canvas, ctx, now = performance.now()) {
+    const moving = !reducedMotion.matches && !document.hidden && window.innerWidth > 768;
+    const scheduleFrame = () => requestAnimationFrame(time => animate(canvas, ctx, time));
+    if (moving && now - lastFrameTime < FRAME_INTERVAL) {
+        animationFrame = scheduleFrame();
+        return;
+    }
+    lastFrameTime = now;
+    const curved = document.body.classList.contains('crt-curvature-enabled');
+    const drawCharacter = (char, x, y) => {
+        const point = curved ? getCurvedPoint(x, y, canvas.width, canvas.height) : [x, y];
+        ctx.fillText(char, point[0], point[1]);
+    };
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.shadowBlur = 0;
+    ctx.textAlign = 'left';
+    ctx.font = '10px monospace';
+    stars.forEach(star => {
+        if (moving) star.opacity += star.twinkleSpeed;
+        if (moving && (star.opacity > 1 || star.opacity < 0)) star.twinkleSpeed *= -1;
+        ctx.globalAlpha = Math.max(0, Math.min(1, star.opacity)) * 0.035;
+        ctx.fillStyle = colors.fg;
+        drawCharacter(star.char, star.x, star.y);
+    });
+
+    if (matrixRainEnabled) {
+        const rows = Math.ceil(canvas.height / CELL_SIZE);
+        ctx.font = '14px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = colors.matrix;
+        matrixChars.forEach(stream => {
+            if (moving && now >= stream.nextStepAt) {
+                stream.row = (stream.row + 1) % (rows + TRAIL_LENGTH);
+                stream.glyphs.unshift(randomCharacter());
+                stream.glyphs.pop();
+                stream.nextStepAt = now + stream.interval;
+            }
+            // Each glyph stays in its cell; only its age changes as the head advances.
+            stream.glyphs.forEach((char, age) => {
+                const row = stream.row - age;
+                if (row < 0 || row >= rows) return;
+                ctx.globalAlpha = colors.matrixOpacity * stream.opacity * Math.pow(0.35, age);
+                drawCharacter(char, (stream.column + 0.5) * CELL_SIZE, (row + 0.75) * CELL_SIZE);
             });
-        }
-        if (moving) frame = requestAnimationFrame(draw);
-    };
-    refresh = () => {
-        cancelAnimationFrame(frame);
-        frame = 0;
-        canvas.dataset.running = String(isVisible() && !reduced.matches);
-        if (!isVisible()) {
-            ctx.clearRect(0, 0, width, height);
-            return;
-        }
-        width = panel.clientWidth;
-        height = panel.clientHeight;
-        const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
-        canvas.width = Math.round(width * ratio);
-        canvas.height = Math.round(height * ratio);
-        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-        streams = Array.from({ length: Math.ceil(width / 30) }, (_, index) => ({ x: index * 30, y: Math.random() * height }));
-        lastTime = 0;
-        draw(performance.now());
-    };
-    window.addEventListener('terminal-state-changed', refresh);
-    window.addEventListener('resize', refresh, { passive: true });
-    document.addEventListener('visibilitychange', refresh);
-    reduced.addEventListener('change', refresh);
-    desktop.addEventListener('change', refresh);
-    dispose = () => {
-        window.removeEventListener('terminal-state-changed', refresh);
-        window.removeEventListener('resize', refresh);
-        document.removeEventListener('visibilitychange', refresh);
-        reduced.removeEventListener('change', refresh);
-        desktop.removeEventListener('change', refresh);
-    };
-    refresh();
+        });
+    }
+    animationFrame = moving ? scheduleFrame() : null;
 }
 
 export function cleanup() {
-    cancelAnimationFrame(frame);
-    dispose?.();
-    frame = 0;
-    dispose = null;
-    refresh = null;
+    cancelAnimationFrame(animationFrame);
+    if (disposeListeners) disposeListeners();
+    animationFrame = null;
+    disposeListeners = null;
+    refreshAnimation = null;
 }
