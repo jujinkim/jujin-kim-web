@@ -1,4 +1,4 @@
-import { getCurvedPoint } from './screen-curvature.js?v=20261106.2';
+import { getCurvedPoint } from './screen-curvature.js?v=20261106.3';
 
 const CELL_SIZE = 22;
 const TRAIL_LENGTH = 2;

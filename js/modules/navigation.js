@@ -57,7 +57,7 @@ function showSection(sectionId) {
 
     const targetSection = document.getElementById(sectionId);
     if (targetSection && sectionId === 'home') {
-        import('./profile-ascii.js?v=20261106.2').then(module => {
+        import('./profile-ascii.js?v=20261106.3').then(module => {
             setTimeout(() => {
                 module.initProfilePicture();
             }, 100);

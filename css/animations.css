@@ -74,10 +74,11 @@
     --crt-grain-opacity: 0.042;
     --crt-line-opacity: 0.085;
     --crt-frame-color: rgba(150, 186, 159, 0.16);
-    --crt-sweep-opacity: 0.04;
+    --crt-sweep-opacity: 0.22;
     position: fixed;
     inset: 0;
     overflow: hidden;
+    contain: strict;
     pointer-events: none;
     user-select: none;
     z-index: 11000;
@@ -89,7 +90,7 @@ body[data-theme='light'] #crt-screen {
     --crt-grain-opacity: 0.025;
     --crt-line-opacity: 0.04;
     --crt-frame-color: rgba(50, 80, 60, 0.15);
-    --crt-sweep-opacity: 0.025;
+    --crt-sweep-opacity: 0.12;
 }
 
 #crt-screen.is-disabled {
@@ -143,6 +144,7 @@ body[data-theme='light'] .crt-glass {
     background-image: url('../img/crt-noise.png');
     opacity: var(--crt-grain-opacity);
     animation: crt-grain 1s steps(1, end) infinite;
+    animation-delay: 2s;
     will-change: transform;
 }
 
@@ -165,10 +167,12 @@ body[data-theme='light'] .crt-glass {
 
 #crt-screen > .crt-sweep {
     display: none;
+    top: -96px;
     bottom: auto;
-    height: 24%;
-    background: linear-gradient(transparent, rgba(160, 210, 180, var(--crt-sweep-opacity)), transparent);
-    animation: crt-sweep 12s steps(120, end) infinite;
+    height: 96px;
+    background: url('../img/crt-sweep.png') center / 100% 100% no-repeat;
+    opacity: var(--crt-sweep-opacity);
+    animation: crt-sweep 8s linear 2s infinite;
     will-change: transform;
 }
 
@@ -177,8 +181,8 @@ body[data-theme='light'] .crt-glass {
 }
 
 @keyframes crt-sweep {
-    from { transform: translateY(-100%); }
-    to { transform: translateY(520%); }
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(0, calc(100vh + 96px), 0); }
 }
 
 #crt-screen.is-paused > div,

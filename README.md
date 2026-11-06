@@ -12,9 +12,12 @@ Visit: jujin.kim
 - Responsive layout from mobile to large displays
 - Theme switching (light/dark/system)
 - Animated starfield background and optional matrix rain effect
-- CRT glass curvature, scanlines, grain, and a slow sweep, with visible matrix rain in the desktop margins
+- CRT glass curvature, scanlines, moving grain, and a narrow bright scan band traveling downward every 8 seconds
+- Mobile retains the same monitor animation, with visible grain and a brighter scan band
 - Smooth vector curves frame the screen without filtering live text or scrolling; frame geometry updates only on resize
 - Glass shading and grain use cached 128px textures; only grain and sweep layers animate via transforms
+- The bright sweep uses a cached 2px × 96px texture so its gradient does not need to be repainted every frame
+- Moving texture layers start after a 2-second settling period to give the initial content render priority
 - Grain and sweep pause during scrolling and resume afterward to keep interaction responsive
 - Retro effects are enabled by default, with phosphor glow, green-black glass, a beveled screen edge, and scanline texture
 - Dim matrix glyphs fall one 22px cell at a time, leaving two fading cells behind
@@ -41,7 +44,7 @@ System Reduce Motion settings pause animation in every mode. Collapse the previe
 
 ## Release Cache Version
 
-Local CSS, entry script, active module imports, font URLs, and favicons use the `v=20261106.2` release key. Keep this key consistent when replacing runtime assets so returning browsers load the matching terminal UI and code.
+Local CSS, entry script, active module imports, font URLs, and favicons use the `v=20261106.3` release key. Keep this key consistent when replacing runtime assets so returning browsers load the matching terminal UI and code.
 
 ## Browser Support
 - Chrome/Edge 90+

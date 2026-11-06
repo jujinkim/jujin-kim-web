@@ -46,7 +46,11 @@
     }
 
     #crt-screen[data-noise='retro'] .crt-noise {
-        opacity: var(--crt-grain-opacity);
+        opacity: calc(var(--crt-grain-opacity) * 1.35);
+    }
+
+    #crt-screen > .crt-sweep {
+        opacity: calc(var(--crt-sweep-opacity) * 0.9);
     }
 
     .crt-glass::after {
