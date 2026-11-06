@@ -1,5 +1,5 @@
-import { CONTACT_EMAIL } from '../constants.js';
-import { toggleMatrixRain } from './animations.js';
+import { CONTACT_EMAIL } from '../constants.js?v=20261106.1';
+import { toggleMatrixRain } from './animations.js?v=20261106.1';
 
 let panel;
 let toggleButton;

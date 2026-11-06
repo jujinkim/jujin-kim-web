@@ -1,4 +1,4 @@
-import { PROFILE_IMAGE_URL } from '../constants.js';
+import { PROFILE_IMAGE_URL } from '../constants.js?v=20261106.1';
 
 export function initProfilePicture() {
     const container = document.getElementById('profile-picture');

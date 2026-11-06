@@ -57,6 +57,10 @@ The old ASCII-title, CRT, curvature, and modal modules remain inactive. The moni
 - Samsung Weather and CrypticWiki use custom typographic artwork, not simulated product interfaces. CrypticWiki returned a connection timeout during asset collection.
 - Variable fonts are from Google Fonts. Their SIL Open Font Licenses are included in `fonts/spacegrotesk-OFL.txt` and `fonts/jetbrainsmono-OFL.txt`.
 
+## Cache version on release
+
+The HTML stylesheet/module/font links, active relative ES-module imports, and CSS font URLs share the `v=20261106.1` release key. When replacing runtime assets, update this key consistently so returning browsers do not combine old scripts with new markup. The font preload and CSS URL must match, and shared module imports must use the same key.
+
 ## Verification
 
 Check the JavaScript modules with `node --check` and whitespace with `git diff --check`. In a browser, verify 360, 390, 768, 1440, and 1920px widths; Light/Dark/System; reduced motion; keyboard-only navigation; direct anchors and Back; terminal commands/history/focus; failed project/profile images; and JavaScript disabled.

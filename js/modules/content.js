@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL } from '../constants.js';
+import { CONTACT_EMAIL } from '../constants.js?v=20261106.1';
 
 function calculateExperienceYears() {
     const today = new Date();
