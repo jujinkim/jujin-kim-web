@@ -1,5 +1,5 @@
-import { CONTACT_EMAIL } from '../constants.js?v=20261106.3';
-import { toggleMatrixRain } from './animations.js?v=20261106.3';
+import { CONTACT_EMAIL } from '../constants.js?v=20261107.6';
+import { toggleMatrixRain } from './animations.js?v=20261107.6';
 
 let currentInput = '';
 let commandHistory = [];
@@ -16,7 +16,7 @@ let placeholderSpan = null;
 const MOBILE_BREAKPOINT = 768;
 
 function shouldDisableTerminalInput() {
-    const isSmallViewport = window.innerWidth <= MOBILE_BREAKPOINT;
+    const isSmallViewport = document.getElementById('monitor-glass').clientWidth <= MOBILE_BREAKPOINT;
     const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
     return isSmallViewport || isCoarsePointer;
 }

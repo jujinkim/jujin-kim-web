@@ -1,7 +1,9 @@
 let currentThemeMode = 'system'; // 'light', 'dark', or 'system'
 
 export function initTheme() {
-    const savedTheme = localStorage.getItem('theme-mode') || 'system';
+    let savedTheme = 'system';
+    try { savedTheme = localStorage.getItem('theme-mode') || 'system'; } catch {}
+    if (!['light', 'dark', 'system'].includes(savedTheme)) savedTheme = 'system';
     currentThemeMode = savedTheme;
     applyTheme();
 
@@ -46,8 +48,9 @@ function updateTheme(isDark) {
 }
 
 export function setTheme(mode) {
+    if (!['light', 'dark', 'system'].includes(mode)) return;
     currentThemeMode = mode;
-    localStorage.setItem('theme-mode', mode);
+    try { localStorage.setItem('theme-mode', mode); } catch {}
     applyTheme();
     window.dispatchEvent(new CustomEvent('theme-changed', {
         detail: {
@@ -80,7 +83,7 @@ function applyTheme() {
 function showThemeNotification(mode) {
     const notification = document.createElement('div');
     notification.style.cssText = `
-        position: fixed;
+        position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -95,7 +98,7 @@ function showThemeNotification(mode) {
     const modeText = mode === 'system' ? 'System Theme' : mode === 'dark' ? 'Dark Mode' : 'Light Mode';
     notification.textContent = `Theme: ${modeText}`;
 
-    document.body.appendChild(notification);
+    document.getElementById('screen-notices').appendChild(notification);
 
     setTimeout(() => {
         notification.remove();

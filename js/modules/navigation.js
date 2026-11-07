@@ -1,103 +1,66 @@
 let menuItems = [];
-const MOBILE_SHORTCUT_BREAKPOINT = 768;
+const scrollPositions = new Map();
+let currentSection;
 
 function isMobileInputContext() {
-    const isSmallViewport = window.innerWidth <= MOBILE_SHORTCUT_BREAKPOINT;
-    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
-    return isSmallViewport || isCoarsePointer;
+    return (
+        document.getElementById('monitor-glass').clientWidth <= 768 || matchMedia('(pointer: coarse)').matches
+    );
 }
 
 export function initNavigation() {
-    menuItems = document.querySelectorAll('.menu-item');
-
-    menuItems.forEach(item => {
-        item.addEventListener('click', () => selectMenuItem(item));
+    menuItems = [...document.querySelectorAll('.menu-item')];
+    for (const item of menuItems)
+        item.addEventListener('click', (event) => {
+            if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            navigateToSection(item.dataset.section);
+        });
+    document.addEventListener('click', (event) => {
+        const link = event.target.closest('[data-section-link]');
+        if (!link) return;
+        event.preventDefault();
+        navigateToSection(link.dataset.sectionLink);
     });
-
-    document.addEventListener('click', handleSectionLink);
-
-    // Add keyboard shortcuts
-    if (!isMobileInputContext()) {
-        document.addEventListener('keydown', handleKeyboardShortcuts);
-    }
-
-    selectMenuItem(menuItems[0]);
+    document.addEventListener('keydown', (event) => {
+        if (
+            isMobileInputContext() ||
+            event.ctrlKey ||
+            event.metaKey ||
+            event.altKey ||
+            (event.key !== 'Escape' && document.body.classList.contains('terminal-open')) ||
+            event.target.closest('input, textarea, select, [contenteditable]')
+        )
+            return;
+        const index = ['Digit1', 'Digit2', 'Digit3', 'Digit4'].indexOf(event.code);
+        if (index >= 0 || event.key === 'Escape') {
+            event.preventDefault();
+            navigateToSection(index >= 0 ? menuItems[index].dataset.section : 'home');
+        }
+    });
+    window.addEventListener('hashchange', () => showSection(location.hash.slice(1)));
+    showSection(location.hash.slice(1));
 }
 
 export function navigateToSection(sectionId) {
-    if (!menuItems.length) {
-        menuItems = document.querySelectorAll('.menu-item');
-    }
-
-    const items = Array.from(menuItems);
-    const targetItem = items.find(item => item.dataset.section === sectionId);
-    if (targetItem) {
-        selectMenuItem(targetItem);
-    }
-}
-
-function selectMenuItem(menuItem) {
-    const sectionId = menuItem.dataset.section;
-
-    // Update active state
-    document.querySelectorAll('.menu-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    menuItem.classList.add('active');
-
+    if (!menuItems.some((item) => item.dataset.section === sectionId)) return;
     showSection(sectionId);
+    if (location.hash !== `#${sectionId}`) history.pushState(null, '', `#${sectionId}`);
 }
 
 function showSection(sectionId) {
-    const sections = document.querySelectorAll('.content-section');
-
-    sections.forEach(section => {
+    if (!menuItems.some((item) => item.dataset.section === sectionId)) sectionId = 'home';
+    const scroller = document.getElementById('terminal-content');
+    if (currentSection) scrollPositions.set(currentSection, scroller.scrollTop);
+    for (const item of menuItems) {
+        const active = item.dataset.section === sectionId;
+        item.classList.toggle('active', active);
+        if (active) item.setAttribute('aria-current', 'page');
+        else item.removeAttribute('aria-current');
+    }
+    for (const section of document.querySelectorAll('.content-section')) {
         section.style.display = section.id === sectionId ? '' : 'none';
-    });
-
-    const targetSection = document.getElementById(sectionId);
-    if (targetSection && sectionId === 'home') {
-        import('./profile-ascii.js?v=20261106.3').then(module => {
-            setTimeout(() => {
-                module.initProfilePicture();
-            }, 100);
-        });
     }
-}
-
-function handleKeyboardShortcuts(e) {
-    if (isMobileInputContext()) return;
-
-    // Number shortcuts for menu navigation (1~4), key code based for layout consistency
-    const numberCodeMap = {
-        Digit1: 0,
-        Digit2: 1,
-        Digit3: 2,
-        Digit4: 3
-    };
-
-    const index = numberCodeMap[e.code];
-    if (typeof index === 'number') {
-        e.preventDefault();
-        if (index < menuItems.length) {
-            selectMenuItem(menuItems[index]);
-        }
-    }
-
-    // ESC key to return to Home
-    if (e.key === 'Escape') {
-        e.preventDefault();
-        selectMenuItem(menuItems[0]);
-    }
-}
-
-function handleSectionLink(event) {
-    const link = event.target.closest('[data-section-link]');
-    if (!link) return;
-
-    const sectionId = link.dataset.sectionLink;
-    if (sectionId) {
-        event.preventDefault();
-        navigateToSection(sectionId);
-    }
+    currentSection = sectionId;
+    scroller.scrollTop = scrollPositions.get(sectionId) || 0;
 }

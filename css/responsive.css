@@ -25,7 +25,7 @@
     }
 }
 
-@media screen and (max-width: 768px) {
+@container monitor (max-width: 768px) {
     #terminal-footer {
         min-height: 0;
     }
@@ -120,10 +120,6 @@
         padding: 15px;
     }
 
-    body {
-        font-size: 12px;
-    }
-
     .terminal-open #terminal-panel,
     #terminal-panel {
         display: none;
@@ -163,7 +159,7 @@
     }
 }
 
-@media screen and (max-width: 480px) {
+@container monitor (max-width: 480px) {
     #profile-picture {
         width: 150px;
         height: 150px;
@@ -225,7 +221,7 @@
     }
 }
 
-@media screen and (max-width: 360px) {
+@container monitor (max-width: 360px) {
     #terminal-header {
         padding-top: 4px;
     }
@@ -272,6 +268,214 @@
     .menu-border::after,
     .content-border::before,
     .content-border::after {
+        display: none;
+    }
+}
+
+@media (min-width: 1000px) and (min-height: 600px) {
+    body:not([data-display-mode='web1']) {
+        --monitor-bezel: clamp(24px, 3.6vmin, 56px);
+        --monitor-gap: var(--monitor-bezel);
+        --monitor-stand-height: clamp(30px, 4.5vmin, 64px);
+        align-items: end;
+        padding-bottom: calc(var(--monitor-stand-height) + var(--monitor-gap));
+        background: #101519 url('../img/crt-room.webp?v=20261107.6') no-repeat;
+        background-size: 100% 106%;
+        background-position: center calc(100% + 4dvh);
+    }
+    #monitor-shell {
+        --monitor-chin-height: calc(var(--monitor-bezel) * 1.8);
+        width: min(
+            calc(100vw - var(--monitor-gap) * 2),
+            calc(
+                (100dvh - var(--monitor-gap) * 2 - var(--monitor-stand-height, 0px) - var(--monitor-bezel) - var(--monitor-chin-height) - 2px) *
+                    4 / 3 + var(--monitor-bezel) * 2 + 2px
+            )
+        );
+        height: auto;
+        padding: var(--monitor-bezel) var(--monitor-bezel) 0;
+        border-radius: 12px;
+    }
+    body:not([data-display-mode='web1']) .monitor-face {
+        display: block;
+        border-style: solid;
+        border-color: transparent;
+        border-width: var(--monitor-bezel) var(--monitor-bezel) var(--monitor-chin-height);
+        border-image-source: url('../img/crt-bezel.webp?v=20261107.6');
+        border-image-slice: 137 205 228 199;
+        border-image-repeat: stretch;
+    }
+    #monitor-shell::before,
+    #monitor-shell::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        z-index: -1;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #monitor-shell::before {
+        top: calc(100% - 4px);
+        width: 23%;
+        height: var(--monitor-stand-height);
+        border-radius: 0 0 35% 35%;
+        background: linear-gradient(90deg, #111719, #343c3f 25%, #252d30 65%, #101619);
+        box-shadow: inset 0 13px 12px #0009, inset 1px 0 0 #87969a3b;
+    }
+    #monitor-shell::after {
+        top: calc(100% + var(--monitor-stand-height) - var(--monitor-bezel) * 1.65);
+        width: 43%;
+        height: calc(var(--monitor-bezel) * 1.65);
+        border: 1px solid #11191b;
+        border-radius: 50% 50% 24% 24% / 55% 55% 32% 32%;
+        background: linear-gradient(175deg, #465054, #303a3d 35%, #172023 72%, #0b1113 74%);
+        box-shadow:
+            inset 1px 1px 1px #a8b8be30,
+            0 3px 2px #000c,
+            0 7px 7px #0009,
+            12px 9px 20px 8px #0005;
+    }
+    #monitor-glass {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        flex: none;
+        border-radius: 20px / 18px;
+    }
+    .monitor-chin {
+        height: var(--monitor-chin-height);
+        font-size: 10px;
+        padding: 0 8px;
+    }
+    .monitor-chin > span:first-child {
+        position: absolute;
+        left: calc(var(--monitor-bezel) * -0.45);
+        top: 58%;
+        font-size: clamp(6px, 0.55vmin, 9px);
+        letter-spacing: 0.12em;
+        color: #9b9f9e;
+    }
+    .monitor-hardware {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        left: 64%;
+        right: calc(var(--monitor-bezel) * -0.5);
+        top: 43%;
+        height: 37%;
+        padding-right: 20px;
+        border: 1px solid #0a0e10;
+        border-radius: 4px;
+        background: linear-gradient(#14191b, #252b2d);
+        box-shadow: inset 0 2px 3px #000b, 0 1px 1px #8f999b40;
+    }
+    .monitor-dial {
+        position: relative;
+        width: clamp(9px, 1.2vmin, 17px);
+        aspect-ratio: 1;
+        border: 1px solid #0a0e10;
+        border-radius: 50%;
+        background:
+            radial-gradient(circle, #3e4648 0 40%, transparent 48%),
+            repeating-conic-gradient(#535b5e 0 8deg, #1a2022 8deg 16deg);
+        box-shadow: 0 1px 2px #000c;
+    }
+    .monitor-dial::after {
+        content: '';
+        position: absolute;
+        left: 48%;
+        top: 2px;
+        width: 1px;
+        height: 3px;
+        background: #a6afad;
+    }
+    .monitor-rocker {
+        width: clamp(14px, 1.7vmin, 24px);
+        height: clamp(8px, 0.9vmin, 13px);
+        border: 1px solid #090d0e;
+        border-radius: 2px;
+        background: linear-gradient(#505759, #272d2f);
+        box-shadow: inset 0 1px 0 #7f888a50, 0 1px 2px #000b;
+    }
+    .power-led {
+        position: absolute;
+        right: calc(var(--monitor-bezel) * -0.36);
+        top: calc(63% - 3px);
+        width: 6px;
+        height: 6px;
+    }
+}
+@media (min-width: 1000px) and (min-height: 600px) and (max-aspect-ratio: 4 / 3) {
+    body:not([data-display-mode='web1']) {
+        background-size: auto 106%;
+        background-position: right calc(100% + 4dvh);
+    }
+}
+@container monitor (max-width: 768px) {
+    #monitor-shell #terminal-header {
+        padding: 8px 4px 0;
+    }
+    #monitor-shell .ascii-title-img {
+        max-width: 360px;
+        max-height: 72px;
+    }
+    #monitor-shell .menu-item {
+        padding: 6px 5px;
+        font-size: 11px;
+        letter-spacing: 0;
+    }
+    #monitor-shell .menu-border {
+        padding: 6px 2px;
+    }
+    #monitor-shell .content-border {
+        padding: 4px;
+    }
+    #monitor-shell .footer-content {
+        flex-direction: row;
+        justify-content: center;
+        min-height: 28px;
+    }
+}
+@container monitor (max-width: 380px) {
+    #monitor-shell .menu-item {
+        padding: 6px 3px;
+        font-size: 10px;
+    }
+    #monitor-shell .menu-list {
+        gap: 2px;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    #monitor-glass.power-on::after {
+        display: none;
+    }
+}
+@media print {
+    body:not([data-display-mode='web1']) .monitor-face,
+    #monitor-shell::before,
+    #monitor-shell::after {
+        display: none;
+    }
+    body:not([data-display-mode='web1']) {
+        padding: 0;
+        background: white;
+    }
+    body,
+    #monitor-shell,
+    #monitor-shell #monitor-glass,
+    #monitor-shell #crt-viewport,
+    #monitor-shell #terminal-container,
+    #monitor-shell #terminal-content {
+        height: auto;
+        overflow: visible;
+        display: block;
+        background: white;
+        box-shadow: none;
+        border: 0;
+        padding: 0;
+    }
+    .monitor-chin {
         display: none;
     }
 }

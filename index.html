@@ -1,110 +1,184 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jujin Kim - Software Engineer</title>
-    <meta name="description" content="Personal portfolio of Jujin Kim, Software Engineer">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261106.3">
-    <link rel="alternate icon" href="favicon.ico?v=20261106.3">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/reset.css?v=20261106.3">
-    <link rel="stylesheet" href="css/site.css?v=20261106.3">
-    <link rel="stylesheet" href="css/animations.css?v=20261106.3">
-    <link rel="stylesheet" href="css/modal.css?v=20261106.3">
-    <link rel="stylesheet" href="css/responsive.css?v=20261106.3">
-</head>
-<body class="crt-effects-enabled">
-    <canvas id="starfield" class="background-animation" aria-hidden="true"></canvas>
-    <div id="crt-viewport">
-        <div id="terminal-container">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Jujin Kim - Software Engineer</title>
+        <meta name="description" content="Personal portfolio of Jujin Kim, Software Engineer" />
+        <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261107.6" />
+        <link rel="alternate icon" href="favicon.ico?v=20261107.6" />
+        <link rel="stylesheet" href="css/reset.css?v=20261107.6" />
+        <link rel="stylesheet" href="css/site.css?v=20261107.6" />
+        <link rel="stylesheet" href="css/animations.css?v=20261107.6" />
+        <link rel="stylesheet" href="css/modal.css?v=20261107.6" />
+        <link rel="stylesheet" href="css/responsive.css?v=20261107.6" />
+    </head>
+    <body class="crt-effects-enabled">
+        <div id="monitor-shell">
+            <div class="monitor-face" aria-hidden="true"></div>
+            <div id="monitor-glass">
+                <div id="crt-viewport">
+                    <canvas id="starfield" class="background-animation" aria-hidden="true"></canvas>
+                    <div id="terminal-container">
+                        <header id="terminal-header">
+                            <pre id="ascii-title">JUJIN KIM</pre>
+                            <nav id="terminal-menu" role="navigation" aria-label="Main navigation">
+                                <div class="menu-border">
+                                    <ul class="menu-list">
+                                        <li>
+                                            <a class="menu-item" data-section="home" href="#home">Home</a>
+                                        </li>
+                                        <li>
+                                            <a class="menu-item" data-section="about" href="#about"
+                                                >About &amp; Career</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a class="menu-item" data-section="projects" href="#projects"
+                                                >Projects &amp; Skills</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                class="menu-item"
+                                                data-section="technologies"
+                                                href="#technologies"
+                                                aria-label="Tech &amp; Experiences"
+                                                >Tech &amp; Exp.</a
+                                            >
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </header>
 
-        <header id="terminal-header">
-            <pre id="ascii-title"></pre>
-            <nav id="terminal-menu" role="navigation" aria-label="Main navigation">
-                <div class="menu-border">
-                    <ul class="menu-list">
-                        <li class="menu-item" data-section="home" tabindex="0">Home</li>
-                        <li class="menu-item" data-section="about" tabindex="0">About &amp; Career</li>
-                        <li class="menu-item" data-section="projects" tabindex="0">Projects &amp; Skills</li>
-                        <li class="menu-item" data-section="technologies" tabindex="0" aria-label="Tech &amp; Experiences">Tech &amp; Exp.</li>
-                    </ul>
+                        <main id="terminal-content" tabindex="0" aria-label="Portfolio content">
+                            <div class="content-border">
+                                <section id="home" class="content-section">
+                                    <h2>&gt; Welcome</h2>
+                                    <div class="section-content">
+                                        <p>
+                                            Jujin Kim — Software Engineer. App development, game development,
+                                            and software engineering.
+                                        </p>
+                                        <p>
+                                            <a href="mailto:jk@jujin.kim">jk@jujin.kim</a> ·
+                                            <a href="https://github.com/jujinkim">GitHub</a>
+                                        </p>
+                                    </div>
+                                </section>
+
+                                <section id="about" class="content-section">
+                                    <h2>&gt; About &amp; Career</h2>
+                                    <div class="section-content">
+                                        <p>
+                                            Welcome to my terminal. I'm a software engineer passionate about
+                                            creating elegant solutions to complex problems.
+                                        </p>
+                                    </div>
+                                </section>
+
+                                <section id="projects" class="content-section">
+                                    <h2>&gt; Projects &amp; Skills</h2>
+                                    <div class="section-content">
+                                        <p>
+                                            Explore my projects and source code on
+                                            <a href="https://github.com/jujinkim">GitHub</a>.
+                                        </p>
+                                    </div>
+                                </section>
+
+                                <section id="technologies" class="content-section">
+                                    <h2>&gt; Tech &amp; Experiences</h2>
+                                    <div class="section-content">
+                                        <p>Experience areas: mobile apps, games, and AI.</p>
+                                    </div>
+                                </section>
+                            </div>
+                        </main>
+
+                        <footer id="terminal-footer">
+                            <div class="footer-content">
+                                <div class="keyboard-guide">
+                                    <span class="quick-menu-hint"><span>1~4</span> Quick Menu |</span>
+                                    Theme:
+                                    <a
+                                        href="#"
+                                        onclick="
+                                            event.preventDefault();
+                                            window.setTheme('light');
+                                            return false;
+                                        "
+                                        >Light</a
+                                    >/<a
+                                        href="#"
+                                        onclick="
+                                            event.preventDefault();
+                                            window.setTheme('dark');
+                                            return false;
+                                        "
+                                        >Dark</a
+                                    >/<a
+                                        href="#"
+                                        onclick="
+                                            event.preventDefault();
+                                            window.setTheme('system');
+                                            return false;
+                                        "
+                                        >System</a
+                                    >
+                                </div>
+                                <div class="footer-actions">
+                                    <button
+                                        id="terminal-toggle"
+                                        type="button"
+                                        aria-controls="terminal-panel"
+                                        aria-expanded="false"
+                                        aria-label="Toggle terminal"
+                                    >
+                                        &gt;_
+                                    </button>
+                                </div>
+                            </div>
+                        </footer>
+                    </div>
+                    <div id="terminal-panel" aria-hidden="true">
+                        <div class="terminal-panel-header">
+                            <span>Terminal</span>
+                            <button class="terminal-panel-close" type="button" aria-label="Close terminal">
+                                Close
+                            </button>
+                        </div>
+                        <div class="terminal-panel-body">
+                            <div class="terminal-output"></div>
+                            <div class="terminal-input-line">
+                                <span class="terminal-prompt">&gt;</span>
+                                <span class="terminal-input"></span>
+                                <span class="cursor-blink">█</span>
+                                <span class="terminal-placeholder">(type "help" for commands)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="screen-notices" aria-live="polite"></div>
                 </div>
-            </nav>
-        </header>
-
-        <main id="terminal-content">
-            <div class="content-border">
-                <section id="home" class="content-section">
-                    <h2>&gt; Welcome</h2>
-                    <div class="section-content">
-                        <p>Welcome to my terminal interface. Use the menu above to navigate.</p>
-                    </div>
-                </section>
-
-                <section id="about" class="content-section" style="display: none;">
-                    <h2>&gt; About &amp; Career</h2>
-                    <div class="section-content">
-                        <p>Welcome to my terminal. I'm a software engineer passionate about creating elegant solutions to complex problems.</p>
-                    </div>
-                </section>
-
-                <section id="projects" class="content-section" style="display: none;">
-                    <h2>&gt; Projects &amp; Skills</h2>
-                    <div class="section-content">
-                        <p>Featured projects and technical skills...</p>
-                    </div>
-                </section>
-
-                <section id="technologies" class="content-section" style="display: none;">
-                    <h2>&gt; Tech &amp; Experiences</h2>
-                    <div class="section-content">
-                        <p>Tech stack and experience areas...</p>
-                    </div>
-                </section>
-
+                <div id="crt-screen" data-noise="retro" aria-hidden="true">
+                    <div class="crt-glass"></div>
+                    <div class="crt-scanlines"></div>
+                    <div class="crt-noise"></div>
+                    <div class="crt-sweep"></div>
+                </div>
             </div>
-        </main>
-
-        <footer id="terminal-footer">
-            <div class="footer-content">
-                <div class="keyboard-guide">
-                    <span class="quick-menu-hint"><span>1~4</span> Quick Menu |</span>
-                    Theme: <a href="#" onclick="event.preventDefault(); window.setTheme('light'); return false;">Light</a>/<a href="#" onclick="event.preventDefault(); window.setTheme('dark'); return false;">Dark</a>/<a href="#" onclick="event.preventDefault(); window.setTheme('system'); return false;">System</a>
-                </div>
-                <div class="footer-actions">
-                    <button id="terminal-toggle" type="button" aria-controls="terminal-panel" aria-expanded="false" aria-label="Toggle terminal">
-                        &gt;_
-                    </button>
-                </div>
+            <div class="monitor-chin" aria-hidden="true">
+                <span>JK / TERMINAL</span>
+                <span class="monitor-hardware">
+                    <i class="monitor-dial"></i>
+                    <i class="monitor-dial"></i>
+                    <i class="monitor-rocker"></i>
+                </span>
+                <span class="power-led"></span>
             </div>
-        </footer>
-    </div>
-    <div id="terminal-panel" aria-hidden="true">
-        <div class="terminal-panel-header">
-            <span>Terminal</span>
-            <button class="terminal-panel-close" type="button" aria-label="Close terminal">Close</button>
         </div>
-        <div class="terminal-panel-body">
-            <div class="terminal-output"></div>
-            <div class="terminal-input-line">
-                <span class="terminal-prompt">&gt;</span>
-                <span class="terminal-input"></span>
-                <span class="cursor-blink">█</span>
-                <span class="terminal-placeholder">(type "help" for commands)</span>
-            </div>
-        </div>
-    </div>
-
-    </div>
-    <div id="crt-screen" data-noise="retro" aria-hidden="true">
-        <div class="crt-glass"></div>
-        <div class="crt-scanlines"></div>
-        <div class="crt-noise"></div>
-        <div class="crt-sweep"></div>
-    </div>
-    <script type="module" src="js/main.js?v=20261106.3"></script>
-</body>
+        <script type="module" src="js/main.js?v=20261107.6"></script>
+    </body>
 </html>

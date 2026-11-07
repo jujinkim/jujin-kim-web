@@ -1,0 +1,332 @@
+[
+  {
+    "browser": "chrome157",
+    "version": "157.0.8103.38",
+    "label": "desktop",
+    "mode": "curved",
+    "fps": 60.0026593976464,
+    "p95": 16.700000000000728,
+    "endMode": "curved",
+    "resolution": 1,
+    "samples": [
+      {
+        "fps": 60.001983536645845,
+        "p95": 16.700000000000728,
+        "slow": false,
+        "mode": "curved",
+        "resolution": 1
+      },
+      {
+        "fps": 60,
+        "p95": 16.700000000000728,
+        "slow": false,
+        "mode": "curved",
+        "resolution": 1
+      }
+    ],
+    "before": {
+      "uploads": 123,
+      "uploadedPixels": 39170704,
+      "contentUploads": 6,
+      "frames": 58,
+      "tiles": 8,
+      "resolution": 1
+    },
+    "after": {
+      "uploads": 823,
+      "uploadedPixels": 42870678,
+      "contentUploads": 6,
+      "frames": 414,
+      "tiles": 8,
+      "resolution": 1
+    }
+  },
+  {
+    "browser": "chrome157",
+    "version": "157.0.8103.38",
+    "label": "desktop",
+    "mode": "flat",
+    "fps": 60.00265939764644,
+    "p95": 16.700000000000728,
+    "endMode": "flat",
+    "resolution": 1,
+    "samples": [
+      {
+        "fps": 60.004959087527894,
+        "p95": 16.700000000000728,
+        "slow": false,
+        "mode": "flat",
+        "resolution": 1
+      },
+      {
+        "fps": 60.00198353664583,
+        "p95": 16.699999999999818,
+        "slow": false,
+        "mode": "flat",
+        "resolution": 1
+      }
+    ],
+    "before": {},
+    "after": null
+  },
+  {
+    "browser": "chrome157",
+    "version": "157.0.8103.38",
+    "label": "desktop",
+    "mode": "web1",
+    "fps": 60.00265939764639,
+    "p95": 16.700000000000728,
+    "endMode": "web1",
+    "resolution": 1,
+    "samples": [],
+    "before": {},
+    "after": null
+  },
+  {
+    "browser": "chrome157",
+    "version": "157.0.8103.38",
+    "label": "mobile-retina",
+    "mode": "curved",
+    "fps": 59.336823734729485,
+    "p95": 16.799999999999272,
+    "endMode": "curved",
+    "resolution": 1,
+    "samples": [
+      {
+        "fps": 59.01314158194892,
+        "p95": 16.799999999999272,
+        "slow": false,
+        "mode": "curved",
+        "resolution": 1
+      },
+      {
+        "fps": 59.50905033473841,
+        "p95": 16.700000000000728,
+        "slow": false,
+        "mode": "curved",
+        "resolution": 1
+      }
+    ],
+    "before": {
+      "uploads": 26,
+      "uploadedPixels": 9057400,
+      "contentUploads": 6,
+      "frames": 12,
+      "tiles": 8,
+      "resolution": 1
+    },
+    "after": {
+      "uploads": 710,
+      "uploadedPixels": 23226200,
+      "contentUploads": 6,
+      "frames": 361,
+      "tiles": 8,
+      "resolution": 1
+    }
+  },
+  {
+    "browser": "chrome157",
+    "version": "157.0.8103.38",
+    "label": "mobile-retina",
+    "mode": "flat",
+    "fps": 60.00265939764638,
+    "p95": 16.700000000000728,
+    "endMode": "flat",
+    "resolution": 1,
+    "samples": [
+      {
+        "fps": 60.004959087527894,
+        "p95": 16.799999999999272,
+        "slow": false,
+        "mode": "flat",
+        "resolution": 1
+      },
+      {
+        "fps": 60,
+        "p95": 16.800000000000182,
+        "slow": false,
+        "mode": "flat",
+        "resolution": 1
+      }
+    ],
+    "before": {},
+    "after": null
+  },
+  {
+    "browser": "chrome157",
+    "version": "157.0.8103.38",
+    "label": "mobile-retina",
+    "mode": "web1",
+    "fps": 60.00265939764638,
+    "p95": 16.799999999999272,
+    "endMode": "web1",
+    "resolution": 1,
+    "samples": [],
+    "before": {},
+    "after": null
+  },
+  {
+    "browser": "firefox",
+    "version": "155.0",
+    "label": "desktop",
+    "mode": "flat",
+    "fps": 58.99960666928888,
+    "p95": 17.360000000000582,
+    "endMode": "flat",
+    "resolution": 1,
+    "samples": [
+      {
+        "fps": 57.988982093402264,
+        "p95": 17.38000000000011,
+        "slow": false,
+        "mode": "flat",
+        "resolution": 1
+      },
+      {
+        "fps": 60.00317372158529,
+        "p95": 17.38000000000011,
+        "slow": false,
+        "mode": "flat",
+        "resolution": 1
+      }
+    ],
+    "before": {},
+    "after": null
+  },
+  {
+    "browser": "firefox",
+    "version": "155.0",
+    "label": "desktop",
+    "mode": "web1",
+    "fps": 60.16646611177962,
+    "p95": 17.279999999998836,
+    "endMode": "web1",
+    "resolution": 1,
+    "samples": [],
+    "before": {},
+    "after": null
+  },
+  {
+    "browser": "firefox",
+    "version": "155.0",
+    "label": "mobile-retina",
+    "mode": "flat",
+    "fps": 59.993600682593865,
+    "p95": 17.23999999999978,
+    "endMode": "flat",
+    "resolution": 1,
+    "samples": [
+      {
+        "fps": 59.98860216558853,
+        "p95": 17.280000000000655,
+        "slow": false,
+        "mode": "flat",
+        "resolution": 1
+      },
+      {
+        "fps": 59.992463756619,
+        "p95": 17.26000000000022,
+        "slow": false,
+        "mode": "flat",
+        "resolution": 1
+      }
+    ],
+    "before": {},
+    "after": null
+  },
+  {
+    "browser": "firefox",
+    "version": "155.0",
+    "label": "mobile-retina",
+    "mode": "web1",
+    "fps": 60.16827170794788,
+    "p95": 17.26000000000022,
+    "endMode": "web1",
+    "resolution": 1,
+    "samples": [],
+    "before": {},
+    "after": null
+  },
+  {
+    "browser": "webkit",
+    "version": "27.2",
+    "label": "desktop",
+    "mode": "flat",
+    "fps": 62.12524983344437,
+    "p95": 17,
+    "endMode": "flat",
+    "resolution": 1,
+    "samples": [
+      {
+        "fps": 62.18905472636816,
+        "p95": 17,
+        "slow": false,
+        "mode": "flat",
+        "resolution": 1
+      },
+      {
+        "fps": 62.18905472636816,
+        "p95": 17,
+        "slow": false,
+        "mode": "flat",
+        "resolution": 1
+      }
+    ],
+    "before": {},
+    "after": null
+  },
+  {
+    "browser": "webkit",
+    "version": "27.2",
+    "label": "desktop",
+    "mode": "web1",
+    "fps": 61.69965075669383,
+    "p95": 17,
+    "endMode": "web1",
+    "resolution": 1,
+    "samples": [],
+    "before": {},
+    "after": null
+  },
+  {
+    "browser": "webkit",
+    "version": "27.2",
+    "label": "mobile-retina",
+    "mode": "flat",
+    "fps": 48.046550290939315,
+    "p95": 26,
+    "endMode": "web1",
+    "resolution": 1,
+    "samples": [
+      {
+        "fps": 41.5,
+        "p95": 29,
+        "slow": true,
+        "mode": "flat",
+        "resolution": 1
+      },
+      {
+        "fps": 42.67990074441688,
+        "p95": 26,
+        "slow": true,
+        "mode": "flat",
+        "resolution": 1
+      }
+    ],
+    "before": {},
+    "after": null
+  },
+  {
+    "browser": "webkit",
+    "version": "27.2",
+    "label": "mobile-retina",
+    "mode": "web1",
+    "fps": 61.91744340878828,
+    "p95": 17,
+    "endMode": "web1",
+    "resolution": 1,
+    "samples": [],
+    "before": {},
+    "after": null
+  }
+]

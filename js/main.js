@@ -1,11 +1,11 @@
-import { initASCIITitle } from './modules/ascii-art.js?v=20261106.3';
-import { initNavigation } from './modules/navigation.js?v=20261106.3';
-import { initAnimations } from './modules/animations.js?v=20261106.3';
-import { initTheme, setTheme } from './modules/theme.js?v=20261106.3';
-import { initContent } from './modules/content.js?v=20261106.3';
-import { initProfilePicture } from './modules/profile-ascii.js?v=20261106.3';
-import { initTerminalInput } from './modules/terminal-input.js?v=20261106.3';
-import { initCRTEffects } from './modules/crt-effects.js?v=20261106.3';
+import { initASCIITitle } from './modules/ascii-art.js?v=20261107.6';
+import { initNavigation } from './modules/navigation.js?v=20261107.6';
+import { initAnimations } from './modules/animations.js?v=20261107.6';
+import { initTheme, setTheme } from './modules/theme.js?v=20261107.6';
+import { initContent } from './modules/content.js?v=20261107.6';
+import { initProfilePicture } from './modules/profile-ascii.js?v=20261107.6';
+import { initTerminalInput } from './modules/terminal-input.js?v=20261107.6';
+import { initCRTEffects } from './modules/crt-effects.js?v=20261107.6';
 
 // Make functions globally available
 window.setTheme = setTheme;
@@ -13,7 +13,7 @@ window.setTheme = setTheme;
 function updateFixedChromeOffsets() {
     const footer = document.getElementById('terminal-footer');
 
-    const footerHeight = footer ? Math.ceil(footer.getBoundingClientRect().height) : 0;
+    const footerHeight = footer ? footer.offsetHeight : 0;
 
     document.documentElement.style.setProperty('--terminal-fixed-menu-height', '0px');
     document.documentElement.style.setProperty('--terminal-fixed-footer-height', `${footerHeight}px`);
@@ -25,12 +25,12 @@ function scheduleFixedChromeOffsetUpdate() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
-    initCRTEffects();
     initASCIITitle();
+    initContent();
     initNavigation();
     initAnimations();
-    initContent();
     initTerminalInput();
+    initCRTEffects();
 
     // Initialize profile picture after content is loaded
     setTimeout(() => {
@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scheduleFixedChromeOffsetUpdate();
     window.addEventListener('resize', scheduleFixedChromeOffsetUpdate);
     window.addEventListener('orientationchange', scheduleFixedChromeOffsetUpdate);
+    new ResizeObserver(scheduleFixedChromeOffsetUpdate).observe(document.getElementById('terminal-footer'));
 
     console.log('%c Welcome to Jujin Kim\'s Terminal ',
         'background: #00ff00; color: #000; font-size: 20px; padding: 10px;');

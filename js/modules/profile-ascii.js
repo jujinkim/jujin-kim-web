@@ -1,4 +1,4 @@
-import { PROFILE_IMAGE_URL } from '../constants.js?v=20261106.3';
+import { PROFILE_IMAGE_URL } from '../constants.js?v=20261107.6';
 
 // Profile picture loader (photo only)
 export function initProfilePicture() {
@@ -7,6 +7,7 @@ export function initProfilePicture() {
         console.log('Profile container not found');
         return;
     }
+    if (profileContainer.querySelector('img')) return;
 
     // Clear any existing content
     profileContainer.innerHTML = '';
@@ -16,6 +17,7 @@ export function initProfilePicture() {
 
     const img = document.createElement('img');
     img.alt = 'Jujin Kim';
+    img.crossOrigin = 'anonymous';
 
     img.onload = function() {
         console.log('Profile image loaded successfully from:', img.src);
@@ -40,7 +42,7 @@ export function updateProfilePosition() {
     const profileContainer = document.getElementById('profile-picture');
     if (!profileContainer) return;
 
-    const screenWidth = window.innerWidth;
+    const screenWidth = document.getElementById('monitor-glass').clientWidth;
     if (screenWidth < 768) {
         profileContainer.classList.add('mobile');
     } else {

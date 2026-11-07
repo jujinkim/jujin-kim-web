@@ -1,5 +1,3 @@
-import { getCurvedPoint } from './screen-curvature.js?v=20261106.3';
-
 const CELL_SIZE = 22;
 const TRAIL_LENGTH = 2;
 const FRAME_INTERVAL = 50;
@@ -11,6 +9,10 @@ let matrixChars = [];
 let matrixRainEnabled = true;
 let reducedMotion;
 let refreshAnimation;
+let resizeAnimation;
+let rasterScale = 1;
+let animationWidth = 0;
+let animationHeight = 0;
 let disposeListeners;
 let colors = {};
 
@@ -22,8 +24,14 @@ export function toggleMatrixRain() {
     return matrixRainEnabled;
 }
 
+export function setAnimationResolution(value) {
+    rasterScale = Math.max(0.1, Math.min(1, value));
+    resizeAnimation?.();
+}
+
 export function initAnimations() {
     cleanup();
+    if (document.body.dataset.displayMode === 'web1') return;
     const canvas = document.getElementById('starfield');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -46,13 +54,18 @@ export function initAnimations() {
         refreshAnimation();
     };
     const handleResize = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        createStars(canvas);
-        createMatrixRain(canvas);
+        const glass = document.getElementById('monitor-glass');
+        animationWidth = glass.clientWidth;
+        animationHeight = glass.clientHeight;
+        canvas.width = Math.max(1, Math.round(animationWidth * rasterScale));
+        canvas.height = Math.max(1, Math.round(animationHeight * rasterScale));
+        createStars(animationWidth, animationHeight);
+        createMatrixRain(animationWidth, animationHeight);
         refreshAnimation();
     };
-    window.addEventListener('resize', handleResize);
+    resizeAnimation = handleResize;
+    const observer = new ResizeObserver(handleResize);
+    observer.observe(document.getElementById('monitor-glass'));
     window.addEventListener('theme-changed', updateColors);
     window.addEventListener('crt-effects-changed', updateColors);
     document.addEventListener('visibilitychange', refreshAnimation);
@@ -62,7 +75,7 @@ export function initAnimations() {
         reducedMotion.addListener(refreshAnimation);
     }
     disposeListeners = () => {
-        window.removeEventListener('resize', handleResize);
+        observer.disconnect();
         window.removeEventListener('theme-changed', updateColors);
         window.removeEventListener('crt-effects-changed', updateColors);
         document.removeEventListener('visibilitychange', refreshAnimation);
@@ -76,22 +89,22 @@ export function initAnimations() {
     handleResize();
 }
 
-function createStars(canvas) {
+function createStars(width, height) {
     const starChars = ['*', '+', '.', '°', '·'];
-    stars = Array.from({ length: Math.floor(canvas.width * canvas.height / 10000) }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+    stars = Array.from({ length: Math.floor(width * height / 10000) }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
         char: starChars[Math.floor(Math.random() * starChars.length)],
         opacity: Math.random(),
         twinkleSpeed: Math.random() * 0.02 + 0.005
     }));
 }
 
-function createMatrixRain(canvas) {
+function createMatrixRain(width, height) {
     matrixChars = [];
-    if (canvas.width <= 768) return;
-    const rows = Math.ceil(canvas.height / CELL_SIZE);
-    for (let column = 0; column < Math.floor(canvas.width / CELL_SIZE); column += 2) {
+    if (width <= 768) return;
+    const rows = Math.ceil(height / CELL_SIZE);
+    for (let column = 0; column < Math.floor(width / CELL_SIZE); column += 2) {
         const interval = 160 + Math.floor(Math.random() * 3) * 40;
         matrixChars.push({
             column,
@@ -105,19 +118,21 @@ function createMatrixRain(canvas) {
 }
 
 function animate(canvas, ctx, now = performance.now()) {
-    const moving = !reducedMotion.matches && !document.hidden && window.innerWidth > 768;
+    if (document.hidden) { animationFrame = null; return; }
+    const width = animationWidth, height = animationHeight;
+    if (!width || !height) { animationFrame = null; return; }
+    const moving = !reducedMotion.matches && width > 768;
     const scheduleFrame = () => requestAnimationFrame(time => animate(canvas, ctx, time));
     if (moving && now - lastFrameTime < FRAME_INTERVAL) {
         animationFrame = scheduleFrame();
         return;
     }
     lastFrameTime = now;
-    const curved = document.body.classList.contains('crt-curvature-enabled');
     const drawCharacter = (char, x, y) => {
-        const point = curved ? getCurvedPoint(x, y, canvas.width, canvas.height) : [x, y];
-        ctx.fillText(char, point[0], point[1]);
+        ctx.fillText(char, x, y);
     };
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.setTransform(canvas.width / width, 0, 0, canvas.height / height, 0, 0);
+    ctx.clearRect(0, 0, width, height);
     ctx.shadowBlur = 0;
     ctx.textAlign = 'left';
     ctx.font = '10px monospace';
@@ -130,7 +145,7 @@ function animate(canvas, ctx, now = performance.now()) {
     });
 
     if (matrixRainEnabled) {
-        const rows = Math.ceil(canvas.height / CELL_SIZE);
+        const rows = Math.ceil(height / CELL_SIZE);
         ctx.font = '14px monospace';
         ctx.textAlign = 'center';
         ctx.fillStyle = colors.matrix;
@@ -159,4 +174,6 @@ export function cleanup() {
     animationFrame = null;
     disposeListeners = null;
     refreshAnimation = null;
+    resizeAnimation = null;
+    rasterScale = 1;
 }
