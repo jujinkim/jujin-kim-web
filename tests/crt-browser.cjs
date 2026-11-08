@@ -20,6 +20,11 @@ async function pageFor(b, opts = {}, mode = 'curved') {
     });
     await p.route(/^https:/, (r) => r.abort());
     p.errors = [];
+    p.decorationRequests = [];
+    p.on('request', (request) => {
+        if (/\/img\/crt-(room|bezel)\.webp/.test(request.url()))
+            p.decorationRequests.push(request.url());
+    });
     p.on('pageerror', (e) => p.errors.push(e.message));
     await p.goto(url + (mode === 'curved' ? '' : '&crt-mode=' + mode), { waitUntil: 'domcontentloaded' });
     await p.waitForFunction((m) => window.crtDiagnostics?.mode === m, mode, { timeout: 5000 });
@@ -77,7 +82,7 @@ async function visualPoint(p, selector, edge = 0.5) {
                         count: document.querySelectorAll('.menu-item').length,
                         sections: document.querySelectorAll('.content-section').length,
                         doms: document.querySelectorAll('#crt-viewport').length,
-                        room: getComputedStyle(document.body).backgroundImage,
+                        roomVisible: getComputedStyle(document.querySelector('#room-scene')).display !== 'none',
                         screen: [
                             document.querySelector('#monitor-glass').clientWidth,
                             document.querySelector('#monitor-glass').clientHeight
@@ -93,8 +98,11 @@ async function visualPoint(p, selector, edge = 0.5) {
                             p.errors.length === 0,
                         state
                     );
-                    if (width < 1000 || height < 600 || mode === 'web1')
-                        check('no room small/web1', !state.room.includes('crt-room'));
+                    check(
+                        'CSS room visibility and no decoration image requests',
+                        state.roomVisible === (width >= 1000 && height >= 600 && mode !== 'web1') &&
+                            p.decorationRequests.length === 0
+                    );
                     if (mode === 'curved') {
                         const pt = await visualPoint(p, '[data-section="technologies"]', 0.95);
                         await p.mouse.click(pt.x, pt.y);

@@ -5,17 +5,59 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Jujin Kim - Software Engineer</title>
         <meta name="description" content="Personal portfolio of Jujin Kim, Software Engineer" />
-        <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261108.1" />
-        <link rel="alternate icon" href="favicon.ico?v=20261108.1" />
-        <link rel="stylesheet" href="css/reset.css?v=20261108.1" />
-        <link rel="stylesheet" href="css/site.css?v=20261108.1" />
-        <link rel="stylesheet" href="css/animations.css?v=20261108.1" />
-        <link rel="stylesheet" href="css/modal.css?v=20261108.1" />
-        <link rel="stylesheet" href="css/responsive.css?v=20261108.1" />
+        <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261109.6" />
+        <link rel="alternate icon" href="favicon.ico?v=20261109.6" />
+        <link rel="stylesheet" href="css/reset.css?v=20261109.6" />
+        <link rel="stylesheet" href="css/site.css?v=20261109.6" />
+        <link rel="stylesheet" href="css/animations.css?v=20261109.6" />
+        <link rel="stylesheet" href="css/modal.css?v=20261109.6" />
+        <link rel="stylesheet" href="css/responsive.css?v=20261109.6" />
     </head>
     <body class="crt-effects-enabled">
+        <div id="room-scene" aria-hidden="true" inert>
+            <div class="room-backdrop">
+                <div class="room-architecture"><i></i><i></i><i></i></div>
+                <div class="room-wall-left">
+                    <div class="room-window">
+                        <div class="room-skyline"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                        <div class="room-window-bars"><i></i><i></i><i></i></div>
+                        <div class="room-curtain"><i></i><i></i><i></i></div>
+                        <div class="room-window-latch"></div>
+                    </div>
+                </div>
+                <div class="room-wall-right">
+                    <div class="room-conduit"></div>
+                    <div class="room-neon"><i></i></div>
+                    <div class="room-shelf">
+                        <div class="room-books"><i></i><i></i><i></i><i></i><i></i></div>
+                        <div class="room-storage"><i></i><i></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="room-desk">
+                <div class="room-desk-grid"><i></i><i></i><i></i></div>
+                <div class="room-keyboard"><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="room-cable"></div>
+            </div>
+            <div class="room-speaker"><i></i><i></i></div>
+            <div class="room-lamp">
+                <div class="lamp-base"></div>
+                <div class="lamp-arm lamp-arm-lower"></div>
+                <div class="lamp-arm lamp-arm-upper"></div>
+                <div class="lamp-joint"></div>
+                <div class="lamp-shade"></div>
+            </div>
+            <div class="room-rack">
+                <div class="rack-rails"></div>
+                <div class="rack-meter"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="rack-patch"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="rack-fans"><i></i><i></i></div>
+                <div class="rack-drives"><i></i><i></i><i></i></div>
+                <div class="rack-feet"></div>
+            </div>
+        </div>
         <div id="monitor-shell">
-            <div class="monitor-face" aria-hidden="true"></div>
+            <div class="monitor-face" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
             <div id="monitor-glass">
                 <div id="crt-viewport">
                     <canvas id="starfield" class="background-animation" aria-hidden="true"></canvas>
@@ -171,6 +213,7 @@
             </div>
             <div class="monitor-chin" aria-hidden="true">
                 <span>JK / TERMINAL</span>
+                <span class="monitor-vents"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
                 <span class="monitor-hardware">
                     <i class="monitor-dial"></i>
                     <i class="monitor-dial"></i>
@@ -179,6 +222,6 @@
                 <span class="power-led"></span>
             </div>
         </div>
-        <script type="module" src="js/main.js?v=20261108.1"></script>
+        <script type="module" src="js/main.js?v=20261109.6"></script>
     </body>
 </html>

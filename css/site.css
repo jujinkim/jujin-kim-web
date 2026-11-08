@@ -45,7 +45,7 @@ html {
 
 @font-face {
     font-family: 'JetBrains Mono Local';
-    src: url('../fonts/JetBrainsMono-Regular.woff2?v=20261108.1') format('woff2');
+    src: url('../fonts/JetBrainsMono-Regular.woff2?v=20261109.6') format('woff2');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -785,27 +785,593 @@ body.crt-effects-enabled[data-theme='dark'] #terminal-container {
 
 /* Monitor coordinates are shared by layout, canvas, and hit testing. */
 body {
+    --scene-bg: #101c15;
+    --scene-line: #304d3b;
+    --scene-accent: #86b493;
     padding: 0;
     height: 100dvh;
     min-height: 0;
     display: grid;
     place-items: center;
-    background: #101213;
+    background: var(--scene-bg);
+}
+#room-scene {
+    --scene-desk-height: clamp(112px, 20dvh, 320px);
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    isolation: isolate;
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+    background: var(--scene-bg);
+    color: var(--scene-line);
+}
+.room-backdrop {
+    position: absolute;
+    inset: 0;
+}
+.room-architecture {
+    position: absolute;
+    inset: 12% 23% 25%;
+    border: 1px solid var(--scene-line);
+}
+.room-architecture::before,
+.room-architecture::after {
+    content: '';
+    position: absolute;
+    inset: 12px -44vw auto;
+    height: 10px;
+    border-block: 1px solid var(--scene-line);
+}
+.room-architecture::after {
+    inset: auto -44vw 8%;
+    height: 6px;
+}
+.room-architecture i {
+    position: absolute;
+    inset: 0 auto 0 28%;
+    border-left: 1px solid var(--scene-line);
+}
+.room-architecture i:nth-child(2) { left: 72%; }
+.room-architecture i:nth-child(3) {
+    inset: -20vh 0 auto;
+    height: 20vh;
+    border: 0;
+    border-inline: 1px solid var(--scene-line);
+    transform: skewX(18deg);
+    transform-origin: bottom;
+}
+.room-wall-left {
+    position: absolute;
+    inset: 0 auto 0 -3%;
+    width: 34%;
+    transform: skewY(4deg) scaleX(0.92);
+    transform-origin: left 42%;
+}
+.room-window {
+    position: absolute;
+    inset: 9% 0 32% 0;
+    border: 2px solid var(--scene-accent);
+    outline: 1px solid var(--scene-line);
+    outline-offset: 9px;
+    background: var(--scene-bg);
+}
+.room-window::after {
+    content: '';
+    position: absolute;
+    inset: auto -16px -17px;
+    height: 8px;
+    border: 1px solid var(--scene-accent);
+    background: var(--scene-line);
+    transform: skewX(-35deg);
+}
+.room-skyline {
+    position: absolute;
+    inset: 8% 0 0;
+    overflow: hidden;
+}
+.room-skyline i {
+    position: absolute;
+    bottom: 0;
+    left: 4%;
+    width: 12%;
+    height: 26%;
+    border: 1px solid var(--scene-line);
+    background: var(--scene-bg);
+}
+.room-skyline i::before {
+    content: '';
+    position: absolute;
+    inset: 10px 25%;
+    border-inline: 1px solid var(--scene-line);
+}
+.room-skyline i::after {
+    content: '';
+    position: absolute;
+    inset: 25% 0;
+    border-block: 1px solid var(--scene-line);
+}
+.room-skyline i:nth-child(2) { left: 18%; height: 48%; width: 17%; }
+.room-skyline i:nth-child(3) { left: 37%; height: 35%; }
+.room-skyline i:nth-child(4) { left: 50%; height: 62%; width: 18%; }
+.room-skyline i:nth-child(5) { left: 70%; height: 40%; }
+.room-skyline i:nth-child(6) { left: 84%; height: 75%; }
+.room-skyline i:nth-child(7) { left: 23%; height: 17%; width: 48%; }
+.room-skyline i:nth-child(even) {
+    background: var(--scene-line);
+}
+.room-skyline i:nth-child(even)::before,
+.room-skyline i:nth-child(even)::after {
+    border-color: var(--scene-bg);
+}
+.room-window-bars {
+    position: absolute;
+    inset: 0;
+}
+.room-window-bars::before,
+.room-window-bars::after {
+    content: '';
+    position: absolute;
+    inset: 28% 0 auto;
+    height: 5px;
+    border-block: 1px solid var(--scene-accent);
+    background: var(--scene-line);
+}
+.room-window-bars::after { top: 78%; }
+.room-window-bars i {
+    position: absolute;
+    inset: 0 auto 0 25%;
+    width: 5px;
+    border-inline: 1px solid var(--scene-accent);
+    background: var(--scene-line);
+}
+.room-window-bars i:nth-child(2) { left: 50%; }
+.room-window-bars i:nth-child(3) { left: 75%; }
+.room-curtain {
+    position: absolute;
+    inset: -15px auto -35px 3%;
+    width: 23%;
+    border-top: 1px solid var(--scene-accent);
+    border-bottom: 1px solid var(--scene-line);
+    background: var(--scene-line);
+    transform: skewX(-3deg);
+}
+.room-curtain i {
+    position: absolute;
+    inset: 0 auto 0 8%;
+    width: 25%;
+    border-inline: 1px solid var(--scene-bg);
+    transform: skewX(2deg);
+}
+.room-curtain i:nth-child(2) { left: 40%; transform: skewX(-1deg); }
+.room-curtain i:nth-child(3) { left: 72%; transform: skewX(1deg); }
+.room-window-latch {
+    position: absolute;
+    left: calc(50% - 6px);
+    top: 64%;
+    width: 16px;
+    height: 7px;
+    border: 1px solid var(--scene-accent);
+    background: var(--scene-accent);
+}
+.room-wall-right {
+    position: absolute;
+    inset: 0 -2% 0 auto;
+    width: 27%;
+    transform: skewY(-4deg) scaleX(0.94);
+    transform-origin: right 42%;
+}
+.room-conduit {
+    position: absolute;
+    inset: 0 13% 14% auto;
+    width: 9px;
+    border-inline: 1px solid var(--scene-line);
+}
+.room-conduit::before,
+.room-conduit::after {
+    content: '';
+    position: absolute;
+    inset: 18% 100% auto auto;
+    width: 15vw;
+    height: 5px;
+    border-block: 1px solid var(--scene-line);
+}
+.room-conduit::after { top: 44%; width: 7vw; }
+.room-neon {
+    position: absolute;
+    top: 11%;
+    left: 20%;
+    width: 48%;
+    height: 17%;
+    border-block: 1px solid var(--scene-line);
+}
+.room-neon::before {
+    content: '';
+    position: absolute;
+    top: 25%;
+    left: 13%;
+    width: 26%;
+    aspect-ratio: 1;
+    border-top: 3px solid var(--scene-accent);
+    border-right: 3px solid var(--scene-accent);
+    transform: rotate(45deg);
+}
+.room-neon::after {
+    content: '';
+    position: absolute;
+    left: 59%;
+    right: 8%;
+    bottom: 20%;
+    border-bottom: 3px solid var(--scene-accent);
+}
+.room-neon i {
+    position: absolute;
+    inset: 6px -8px;
+    border-inline: 1px solid var(--scene-line);
+}
+.room-shelf {
+    position: absolute;
+    top: 39%;
+    left: 8%;
+    right: 10%;
+    height: 6px;
+    border: 1px solid var(--scene-accent);
+    background: var(--scene-line);
+}
+.room-shelf::before,
+.room-shelf::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 10%;
+    width: 12%;
+    height: 24px;
+    border-left: 1px solid var(--scene-line);
+    border-bottom: 1px solid var(--scene-line);
+    transform: skewY(-32deg);
+}
+.room-shelf::after { left: 76%; }
+.room-books {
+    position: absolute;
+    bottom: 5px;
+    left: 5%;
+    width: 40%;
+    height: clamp(45px, 7dvh, 110px);
+    display: flex;
+    align-items: end;
+    gap: 3px;
+}
+.room-books i {
+    flex: 1;
+    height: 100%;
+    border: 1px solid var(--scene-bg);
+    background: var(--scene-line);
+}
+.room-books i:nth-child(2) { height: 85%; }
+.room-books i:nth-child(3) { height: 92%; background: var(--scene-bg); border-color: var(--scene-line); }
+.room-books i:nth-child(4) { height: 75%; }
+.room-books i:nth-child(5) { transform: rotate(-12deg); transform-origin: bottom; }
+.room-storage {
+    position: absolute;
+    inset: auto 5% 5px auto;
+    width: 35%;
+    display: grid;
+    gap: 3px;
+}
+.room-storage i {
+    position: relative;
+    height: clamp(16px, 2.5dvh, 35px);
+    border: 1px solid var(--scene-line);
+    background: var(--scene-line);
+}
+.room-storage i::after {
+    content: '';
+    position: absolute;
+    inset: 30% 35%;
+    border: 1px solid var(--scene-bg);
+    background: var(--scene-bg);
+}
+.room-desk {
+    position: absolute;
+    inset: auto 0 0;
+    height: var(--scene-desk-height);
+    border-top: 2px solid var(--scene-accent);
+    background: var(--scene-bg);
+}
+.room-desk::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: clamp(10px, 1.6dvh, 22px);
+    border-top: 2px solid var(--scene-line);
+    background: var(--scene-line);
+}
+.room-desk-grid {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+.room-desk-grid i {
+    position: absolute;
+    inset: 0 auto 0 24%;
+    border-left: 1px solid var(--scene-line);
+    transform: skewX(-32deg);
+    transform-origin: top;
+}
+.room-desk-grid i:nth-child(2) { left: 76%; transform: skewX(32deg); }
+.room-desk-grid i:nth-child(3) { inset: 16% 0 auto; border: 0; border-top: 1px solid var(--scene-line); }
+.room-keyboard {
+    --key-step: 1.7vw;
+    position: absolute;
+    left: 2.5%;
+    bottom: 20%;
+    width: 23%;
+    height: 38%;
+    padding: 8px 12px;
+    border: 1px solid var(--scene-accent);
+    background: var(--scene-line);
+    transform: skewX(-32deg);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.room-keyboard i {
+    position: relative;
+    flex: 1;
+    min-height: 2px;
+    overflow: hidden;
+    border: 1px solid var(--scene-line);
+    background: var(--scene-bg);
+}
+.room-keyboard i::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 var(--key-step);
+    width: 1px;
+    background: var(--scene-line);
+    box-shadow: var(--key-step) 0 var(--scene-line),
+        calc(var(--key-step) * 2) 0 var(--scene-line), calc(var(--key-step) * 3) 0 var(--scene-line),
+        calc(var(--key-step) * 4) 0 var(--scene-line), calc(var(--key-step) * 5) 0 var(--scene-line),
+        calc(var(--key-step) * 6) 0 var(--scene-line), calc(var(--key-step) * 7) 0 var(--scene-line),
+        calc(var(--key-step) * 8) 0 var(--scene-line), calc(var(--key-step) * 9) 0 var(--scene-line),
+        calc(var(--key-step) * 10) 0 var(--scene-line), calc(var(--key-step) * 11) 0 var(--scene-line);
+}
+.room-keyboard i:last-child { margin-inline: 18%; }
+.room-keyboard i:last-child::after { display: none; }
+.room-cable {
+    position: absolute;
+    inset: 10% 4% 16% 78%;
+    border: 1px solid var(--scene-line);
+    border-top: 0;
+    border-right: 0;
+    border-radius: 0 0 0 28px;
+}
+.room-cable::after {
+    content: '';
+    position: absolute;
+    right: -14px;
+    bottom: -4px;
+    width: 16px;
+    height: 7px;
+    border: 1px solid var(--scene-accent);
+    background: var(--scene-bg);
+}
+.room-speaker {
+    position: absolute;
+    left: 13%;
+    bottom: calc(var(--scene-desk-height) - 3dvh);
+    width: clamp(90px, 9vw, 180px);
+    height: clamp(160px, 22dvh, 290px);
+    border: 1px solid var(--scene-accent);
+    background: var(--scene-line);
+}
+.room-speaker::before,
+.room-rack::before {
+    content: '';
+    position: absolute;
+    top: -13px;
+    left: 5px;
+    right: -7px;
+    height: 12px;
+    border: 1px solid var(--scene-line);
+    background: var(--scene-line);
+    transform: skewX(-45deg);
+}
+.room-speaker::after,
+.room-rack::after {
+    content: '';
+    position: absolute;
+    top: -7px;
+    right: -13px;
+    bottom: 5px;
+    width: 12px;
+    border: 1px solid var(--scene-line);
+    background: var(--scene-bg);
+    transform: skewY(-45deg);
+}
+.room-speaker i {
+    position: absolute;
+    left: 15%;
+    bottom: 10%;
+    width: 70%;
+    aspect-ratio: 1;
+    border: 1px solid var(--scene-line);
+    border-radius: 50%;
+    background: var(--scene-bg);
+}
+.room-speaker i::after,
+.rack-fans i::after {
+    content: '';
+    position: absolute;
+    inset: 22%;
+    border: 1px solid var(--scene-line);
+    border-radius: 50%;
+    background: var(--scene-line);
+}
+.room-speaker i:nth-child(2) { width: 28%; left: 36%; bottom: auto; top: 10%; }
+.room-lamp {
+    position: absolute;
+    left: 0.8%;
+    bottom: calc(var(--scene-desk-height) - 5dvh);
+    width: clamp(140px, 16vw, 300px);
+    aspect-ratio: 4 / 5;
+}
+.lamp-base {
+    position: absolute;
+    left: 13%;
+    right: 35%;
+    bottom: 0;
+    height: 6%;
+    border: 1px solid var(--scene-accent);
+    background: var(--scene-line);
+    transform: skewX(-32deg);
+}
+.lamp-arm {
+    position: absolute;
+    width: 6px;
+    border-inline: 1px solid var(--scene-accent);
+    background: var(--scene-line);
+    transform-origin: bottom;
+}
+.lamp-arm-lower { left: 35%; bottom: 6%; height: 47%; transform: rotate(32deg); }
+.lamp-arm-upper { left: 65%; bottom: 45%; height: 42%; transform: rotate(-50deg); }
+.lamp-joint {
+    position: absolute;
+    left: calc(65% - 3px);
+    top: calc(55% - 4px);
+    width: 12px;
+    height: 12px;
+    border: 1px solid var(--scene-accent);
+    border-radius: 50%;
+    background: var(--scene-accent);
+}
+.lamp-shade {
+    position: absolute;
+    left: 6%;
+    top: 17%;
+    width: 45%;
+    height: 11%;
+    border: 1px solid var(--scene-accent);
+    background: var(--scene-line);
+    transform: rotate(10deg) skewX(-15deg);
+}
+.lamp-shade::after {
+    content: '';
+    position: absolute;
+    inset: auto -6px -5px;
+    height: 4px;
+    border: 1px solid var(--scene-accent);
+    background: var(--scene-accent);
+}
+.room-rack {
+    position: absolute;
+    right: 2.4%;
+    bottom: calc(var(--scene-desk-height) - 5dvh);
+    width: clamp(150px, 16vw, 330px);
+    height: clamp(260px, 37dvh, 510px);
+    padding: 16px 22px 20px;
+    display: grid;
+    grid-template-rows: 1.1fr 0.6fr 1.3fr 1.4fr;
+    gap: 10px;
+    border: 2px solid var(--scene-accent);
+    background: var(--scene-line);
+}
+.rack-rails {
+    position: absolute;
+    inset: 6px 8px;
+    border-inline: 1px solid var(--scene-bg);
+}
+.rack-meter,
+.rack-patch,
+.rack-fans,
+.rack-drives {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 5px;
+    border: 1px solid var(--scene-line);
+    padding: 8px;
+    background: var(--scene-bg);
+}
+.rack-meter { align-items: end; padding: 12px; }
+.rack-meter i { flex: 1; height: 35%; border: 1px solid var(--scene-line); background: var(--scene-line); }
+.rack-meter i:nth-child(2n) { height: 70%; }
+.rack-meter i:nth-child(3n) { height: 50%; border-color: var(--scene-accent); background: var(--scene-accent); }
+.rack-meter i:last-child { height: 90%; }
+.rack-patch i { width: 7px; height: 7px; border: 1px solid var(--scene-accent); border-radius: 50%; }
+.rack-patch::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 18%;
+    width: 24%;
+    height: 22px;
+    border: 1px solid var(--scene-accent);
+    border-top: 0;
+    border-radius: 0 0 10px 10px;
+    background: var(--scene-bg);
+}
+.rack-fans i {
+    position: relative;
+    width: 36%;
+    max-height: 100%;
+    aspect-ratio: 1;
+    border: 1px solid var(--scene-line);
+    border-radius: 50%;
+    background: var(--scene-line);
+}
+.rack-fans i::after { background: var(--scene-bg); }
+.rack-fans i::before {
+    content: '';
+    position: absolute;
+    inset: 48% 0;
+    border-top: 1px solid var(--scene-bg);
+    transform: rotate(-45deg);
+}
+.rack-drives { flex-direction: column; }
+.rack-drives i {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    border: 1px solid var(--scene-line);
+    background: var(--scene-line);
+}
+.rack-drives i::before {
+    content: '';
+    position: absolute;
+    inset: 45% 25% auto 8%;
+    border-top: 1px solid var(--scene-bg);
+}
+.rack-drives i::after {
+    content: '';
+    position: absolute;
+    right: 6%;
+    top: calc(50% - 2px);
+    width: 4px;
+    height: 4px;
+    background: var(--scene-accent);
+}
+.rack-feet {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: -7px;
+    height: 6px;
+    border-inline: 12px solid var(--scene-line);
 }
 #monitor-shell {
     position: relative;
+    z-index: 1;
     isolation: isolate;
     width: calc(100% - 12px);
     height: calc(100dvh - 12px);
     padding: 9px 9px 0;
-    background: linear-gradient(135deg, #485061, #363b4a 24%, #292b36 70%, #3e3444);
-    border: 1px solid #171a23;
-    border-radius: 20px;
-    box-shadow:
-        inset 1px 1px 0 #8294a34d,
-        inset -3px -4px 0 #15151fb3,
-        2px 4px 0 #12151d,
-        12px 18px 26px #05070b80;
+    background: var(--scene-line);
+    border: 1px solid var(--scene-accent);
+    border-radius: 3px;
     display: flex;
     flex-direction: column;
 }
@@ -814,22 +1380,22 @@ body {
     flex: 1;
     min-height: 0;
     overflow: hidden;
-    border-radius: 18px / 14px;
+    border-radius: 6px;
     background: var(--terminal-bg);
-    box-shadow:
-        0 0 0 3px #070c0d,
-        0 -3px 0 5px #1b202a,
-        0 3px 1px 5px #68667940;
+    box-shadow: 0 0 0 1px var(--scene-accent);
     container: monitor / inline-size;
 }
 .monitor-face {
     display: none;
     position: absolute;
-    inset: 0;
+    inset: calc(var(--monitor-bezel) * 0.22);
+    border: 1px solid var(--scene-bg);
+    border-radius: 2px;
     pointer-events: none;
     z-index: 2;
 }
-.monitor-hardware {
+.monitor-hardware,
+.monitor-vents {
     display: none;
 }
 #monitor-shell #crt-viewport {
@@ -941,18 +1507,17 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 0 16px;
-    color: #818d90;
+    color: var(--scene-accent);
     font-size: 9px;
     letter-spacing: 0.2em;
-    text-shadow: 0 1px 0 #050809;
+    text-shadow: none;
 }
 .power-led {
     position: relative;
     width: 6px;
     height: 6px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #c0f7ba, #63c96e 50%, #28603c);
-    box-shadow: 0 0 0 2px #11191b, 0 1px 1px 3px #69767750, 0 0 7px #6ac67680;
+    border-radius: 0;
+    background: var(--scene-accent);
 }
 #crt-canvas {
     display: block;
@@ -1055,7 +1620,9 @@ body[data-display-mode='web1'] #monitor-shell {
     box-shadow: none;
 }
 body[data-display-mode='web1'] #monitor-shell::before,
-body[data-display-mode='web1'] #monitor-shell::after {
+body[data-display-mode='web1'] #monitor-shell::after,
+body[data-display-mode='web1'] #room-scene,
+body[data-display-mode='web1'] .monitor-face {
     display: none;
 }
 body[data-display-mode='web1'] #monitor-glass {

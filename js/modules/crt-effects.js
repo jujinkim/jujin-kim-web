@@ -1,6 +1,6 @@
-import { createCurvature } from './screen-curvature.js?v=20261108.1';
-import { monitorPerformance } from './display-performance.js?v=20261108.1';
-import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261108.1';
+import { createCurvature } from './screen-curvature.js?v=20261109.6';
+import { monitorPerformance } from './display-performance.js?v=20261109.6';
+import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261109.6';
 
 const VISIT_MODE = 'crt-display-mode';
 const POWER_SEEN = 'crt-power-seen';

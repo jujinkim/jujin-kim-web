@@ -277,11 +277,12 @@
         --monitor-bezel: clamp(24px, 3.6vmin, 56px);
         --monitor-gap: var(--monitor-bezel);
         --monitor-stand-height: clamp(30px, 4.5vmin, 64px);
+        --monitor-foot-height: calc(var(--monitor-stand-height) * 0.72);
         align-items: end;
         padding-bottom: calc(var(--monitor-stand-height) + var(--monitor-gap));
-        background: #101519 url('../img/crt-room.webp?v=20261108.1') no-repeat;
-        background-size: 100% 106%;
-        background-position: center calc(100% + 4dvh);
+    }
+    body:not([data-display-mode='web1']) #room-scene {
+        display: block;
     }
     #monitor-shell {
         --monitor-chin-height: calc(var(--monitor-bezel) * 1.8);
@@ -294,16 +295,49 @@
         );
         height: auto;
         padding: var(--monitor-bezel) var(--monitor-bezel) 0;
-        border-radius: 12px;
+        border-radius: 3px;
     }
     body:not([data-display-mode='web1']) .monitor-face {
         display: block;
-        border-style: solid;
-        border-color: transparent;
-        border-width: var(--monitor-bezel) var(--monitor-bezel) var(--monitor-chin-height);
-        border-image-source: url('../img/crt-bezel.webp?v=20261108.1');
-        border-image-slice: 139 206 231 202;
-        border-image-repeat: stretch;
+    }
+    .monitor-face > i {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: calc(var(--monitor-bezel) * 0.78);
+        height: 1px;
+        background: var(--scene-bg);
+        transform: rotate(45deg);
+        transform-origin: left;
+    }
+    .monitor-face > i:nth-child(2) {
+        left: auto;
+        right: 0;
+        transform: rotate(-45deg);
+        transform-origin: right;
+    }
+    .monitor-face > i:nth-child(3),
+    .monitor-face > i:nth-child(4) {
+        top: auto;
+        bottom: 0;
+        width: calc(var(--monitor-bezel) * 0.5);
+        transform: rotate(-45deg);
+    }
+    .monitor-face > i:nth-child(4) {
+        left: auto;
+        right: 0;
+        transform: rotate(45deg);
+        transform-origin: right;
+    }
+    .monitor-face::before {
+        content: '';
+        position: absolute;
+        left: 40%;
+        top: calc(var(--monitor-bezel) * 0.15);
+        width: 20%;
+        height: 4px;
+        border-block: 1px solid var(--scene-bg);
+        background: var(--scene-bg);
     }
     #monitor-shell::before,
     #monitor-shell::after {
@@ -315,31 +349,24 @@
         transform: translateX(-50%);
     }
     #monitor-shell::before {
-        top: calc(100% - 4px);
+        top: 100%;
         width: 23%;
         height: var(--monitor-stand-height);
-        border-radius: 0 0 35% 35%;
-        background: linear-gradient(90deg, #191d28 18%, #33394a 18% 72%, #252938 72%);
-        box-shadow: inset 0 12px 10px #090b1380, inset 1px 0 0 #8195ab40;
+        border: 1px solid var(--scene-line);
+        background: var(--scene-line);
     }
     #monitor-shell::after {
-        top: calc(100% + var(--monitor-stand-height) - var(--monitor-bezel) * 1.65);
+        top: calc(100% + var(--monitor-stand-height) - var(--monitor-foot-height));
         width: 43%;
-        height: calc(var(--monitor-bezel) * 1.65);
-        border: 1px solid #151925;
-        border-radius: 50% 50% 24% 24% / 55% 55% 32% 32%;
-        background: linear-gradient(168deg, #4b5061 16%, #353b4b 16% 53%, #252a37 53% 76%, #171b25 76%);
-        box-shadow:
-            inset 1px 1px 0 #92a1ba40,
-            0 3px 1px #080a12c0,
-            0 7px 7px #07091280,
-            12px 9px 20px 8px #090b1350;
+        height: var(--monitor-foot-height);
+        border: 1px solid var(--scene-accent);
+        background: var(--scene-line);
     }
     #monitor-glass {
         width: 100%;
         aspect-ratio: 4 / 3;
         flex: none;
-        border-radius: 20px / 18px;
+        border-radius: 6px;
     }
     .monitor-chin {
         height: var(--monitor-chin-height);
@@ -349,35 +376,48 @@
     .monitor-chin > span:first-child {
         position: absolute;
         left: calc(var(--monitor-bezel) * -0.45);
-        top: 58%;
+        top: 44%;
         font-size: clamp(6px, 0.55vmin, 9px);
         letter-spacing: 0.12em;
-        color: #a2a6b5;
+        padding: 2px 6px;
+        color: var(--scene-accent);
     }
     .monitor-hardware {
         position: absolute;
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        gap: 10px;
+        gap: 18px;
         left: 64%;
         right: calc(var(--monitor-bezel) * -0.5);
-        top: 43%;
-        height: 37%;
+        top: 25%;
+        height: 50%;
         padding-right: 20px;
-        border: 1px solid #171923;
-        border-radius: 4px;
-        background: linear-gradient(#20212c, #30303c);
-        box-shadow: inset 0 2px 2px #0d101980, 0 1px 0 #8b819e40;
+        border-top: 1px solid var(--scene-line);
+        border-bottom: 1px solid var(--scene-line);
+        background: var(--scene-bg);
+    }
+    .monitor-vents {
+        position: absolute;
+        display: flex;
+        gap: 5px;
+        left: 30%;
+        top: 43%;
+        width: 17%;
+        height: 15%;
+    }
+    .monitor-vents i {
+        flex: 1;
+        border-inline: 1px solid var(--scene-bg);
+        background: var(--scene-bg);
     }
     .monitor-dial {
         position: relative;
         width: clamp(9px, 1.2vmin, 17px);
         aspect-ratio: 1;
-        border: 1px solid #151923;
+        border: 1px solid var(--scene-accent);
         border-radius: 50%;
-        background: linear-gradient(135deg, #667084 35%, #43495b 35% 65%, #2b3040 65%);
-        box-shadow: inset 0 1px 0 #929bb140, 0 1px 1px #0b0e18b0;
+        background: var(--scene-line);
     }
     .monitor-dial::after {
         content: '';
@@ -386,28 +426,20 @@
         top: 2px;
         width: 1px;
         height: 3px;
-        background: #b1b6c4;
+        background: var(--scene-accent);
     }
     .monitor-rocker {
         width: clamp(14px, 1.7vmin, 24px);
         height: clamp(8px, 0.9vmin, 13px);
-        border: 1px solid #151923;
-        border-radius: 2px;
-        background: linear-gradient(#62677a 45%, #3a3d50 45%);
-        box-shadow: inset 0 1px 0 #9ba1b650, 0 1px 1px #0b0e18b0;
+        border: 1px solid var(--scene-accent);
+        background: var(--scene-line);
     }
     .power-led {
         position: absolute;
         right: calc(var(--monitor-bezel) * -0.36);
-        top: calc(63% - 3px);
+        top: calc(50% - 3px);
         width: 6px;
         height: 6px;
-    }
-}
-@media (min-width: 1000px) and (min-height: 600px) and (max-aspect-ratio: 4 / 3) {
-    body:not([data-display-mode='web1']) {
-        background-size: auto 106%;
-        background-position: right calc(100% + 4dvh);
     }
 }
 @container monitor (max-width: 768px) {
@@ -450,6 +482,7 @@
     }
 }
 @media print {
+    body:not([data-display-mode='web1']) #room-scene,
     body:not([data-display-mode='web1']) .monitor-face,
     #monitor-shell::before,
     #monitor-shell::after {
