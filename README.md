@@ -10,7 +10,7 @@ Personal portfolio at [jujin.kim](https://jujin.kim), built with HTML, CSS, and 
 | API unavailable, rendering/interaction error, or context loss | Flat CRT content; monitor and effects retained |
 | Two consecutive slow interaction windows at the lowest resolution, or in flat CRT | Web 1.0 |
 
-The same DOM supplies all three modes: Home, About & Career, Projects & Skills, and Tech & Experiences. Theme choices remain Light, Dark, and System. The charcoal monitor has a detailed plastic bezel, deep glass recess, casing seams, screws, vents, adjustment dials, and a green power LED. At viewport sizes of at least 1000 x 600, its 4:3 screen fills the available space without a fixed width cap, reserving room for a low stand on the desk. Outer clearance on the limiting axis equals the bezel thickness (24–56px). The stand stays near the bottom desk surface, including tall viewports; wider or taller viewports retain the extra space required by 4:3. Smaller viewports use thin bezels and available height. Layout breakpoints use the monitor's internal width. Home stays left; the other three menu links stay grouped on the right.
+The same DOM supplies all three modes: Home, About & Career, Projects & Skills, and Tech & Experiences. Theme choices remain Light, Dark, and System. The charcoal monitor and room share a painted, semi-realistic game-art style: broad shaded bevels, a deep glass recess, simplified vents and controls, and a green power LED. At viewport sizes of at least 1000 x 600, its 4:3 screen fills the available space without a fixed width cap, reserving room for a low stand on the desk. Outer clearance on the limiting axis equals the bezel thickness (24–56px). The stand stays near the bottom desk surface, including tall viewports; wider or taller viewports retain the extra space required by 4:3. Smaller viewports use thin bezels and available height. Layout breakpoints use the monitor's internal width. Home stays left; the other three menu links stay grouped on the right.
 
 The first visit in each tab plays a silent 1000ms power sequence. Reload and navigation do not repeat it. Reduced motion or inaccessible session storage skips it. CSS finishes the reveal without depending on a cleanup callback. JavaScript or module-network failure leaves static introductory content, contact links, and four section anchors visible.
 
@@ -56,7 +56,7 @@ Open `http://127.0.0.1:8000/`. Diagnostic routes:
 
 `window.crtDiagnostics` exposes mode, reason, recent frame windows, texture counters, and resolution. Only preview URLs expose `forceFlat()`, `forceWeb1()`, `submitSample()`, and `toScreen()` for verification. Forced preview modes override the saved visit choice; a normal visit respects it.
 
-Browser verification scripts in `tests/` use an external Playwright installation; they do not add a build pipeline or runtime package. See [initial implementation verification](docs/crt-verification.md), [layout/motion follow-up](docs/crt-feedback-verification.md), [room/monitor refinement](docs/crt-room-refinement.md), [room depth/neon update](docs/crt-room-depth.md), [material/color refinement](docs/crt-material-refinement.md), and [current office background](docs/crt-office-background.md) for commands, measured results, and limits.
+Browser verification scripts in `tests/` use an external Playwright installation; they do not add a build pipeline or runtime package. See [initial implementation verification](docs/crt-verification.md), [layout/motion follow-up](docs/crt-feedback-verification.md), [room/monitor refinement](docs/crt-room-refinement.md), [room depth/neon update](docs/crt-room-depth.md), [material/color refinement](docs/crt-material-refinement.md), [office background](docs/crt-office-background.md), and [current painted room/monitor](docs/crt-painted-room.md) for commands, measured results, and limits.
 
 ```sh
 for file in js/main.js js/modules/*.js; do node --check "$file" || exit; done
@@ -65,11 +65,11 @@ git diff --check
 
 ## Assets and release cache
 
-`img/crt-room.webp` is a generated semi-realistic night office with a rear worktable, office chair, and document storage, graded toward lower saturation and neutral wood/charcoal tones. Layered cyan/violet neon tubes, local bloom, and window/desk reflections provide selective color. Gentle defocus is baked into the background; the foreground monitor and content remain sharp without a live blur filter. The room image is 37,140 bytes. Landscape framing keeps both side bands visible; tall viewports focus on the doorway and neon side. The current prompt and provenance are in [office background notes](docs/crt-office-background.md).
+`img/crt-room.webp` is a generated painted night office with a rear worktable, office chair, document storage, and heavy window curtains. Simplified charcoal/slate forms and soft edges replace photographic surface detail; cyan/violet neon, window light, and painted desk reflections provide selective color. The room image is 40,708 bytes. Landscape framing keeps both side bands visible; tall viewports focus on the doorway and neon side. No live blur filter is used.
 
-`img/crt-bezel.webp` is a 181,560-byte generated transparent frame used as a CSS nine-slice border. Its screen opening and outside are transparent; it never replaces the content DOM. Separate decorative dials retain their proportions as the frame grows. Both assets are desktop CRT decorations, hidden in compact layouts and Web 1.0. CSS provides the shell if the frame image fails. The frame prompt and provenance are in [material refinement notes](docs/crt-material-refinement.md#asset-provenance).
+`img/crt-bezel.webp` is a 94,420-byte generated transparent frame used as a CSS nine-slice border. Broad painted bevels, fewer vents, and muted blue/mauve edge lighting match the room. Its screen opening and outside are transparent; it never replaces the content DOM. Separate decorative dials retain their proportions as the frame grows; the CSS stand and controls use the same restrained shading. Both assets are desktop CRT decorations, hidden in compact layouts and Web 1.0. CSS provides a matching shell if the frame image fails. Prompts and provenance are in [painted room/monitor notes](docs/crt-painted-room.md).
 
-Local entrypoints, module imports, fonts, favicons, and generated assets use `v=20261107.6`. Bump the release key together for runtime releases.
+Local entrypoints, module imports, fonts, favicons, and generated assets use `v=20261108.1`. Bump the release key together for runtime releases.
 
 ## Author
 

@@ -1,5 +1,5 @@
-import { CONTACT_EMAIL } from '../constants.js?v=20261107.6';
-import { toggleMatrixRain } from './animations.js?v=20261107.6';
+import { CONTACT_EMAIL } from '../constants.js?v=20261108.1';
+import { toggleMatrixRain } from './animations.js?v=20261108.1';
 
 let currentInput = '';
 let commandHistory = [];

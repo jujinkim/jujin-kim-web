@@ -45,7 +45,7 @@ html {
 
 @font-face {
     font-family: 'JetBrains Mono Local';
-    src: url('../fonts/JetBrainsMono-Regular.woff2?v=20261107.6') format('woff2');
+    src: url('../fonts/JetBrainsMono-Regular.woff2?v=20261108.1') format('woff2');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -798,19 +798,14 @@ body {
     width: calc(100% - 12px);
     height: calc(100dvh - 12px);
     padding: 9px 9px 0;
-    background:
-        linear-gradient(110deg, #535a5de0, #30383bed 24%, #1f272af2 82%),
-        url('../img/crt-noise.png'),
-        linear-gradient(145deg, #45494b, #303537 24%, #25292b 60%, #161a1c);
-    background-blend-mode: normal, soft-light, normal;
-    border: 1px solid #111719;
+    background: linear-gradient(135deg, #485061, #363b4a 24%, #292b36 70%, #3e3444);
+    border: 1px solid #171a23;
     border-radius: 20px;
     box-shadow:
-        inset 2px 2px 2px #9aa5a54d,
-        inset 7px 7px 12px #86939826,
-        inset -4px -5px 7px #05090bcc,
-        2px 4px 0 #111719,
-        10px 18px 28px #0007;
+        inset 1px 1px 0 #8294a34d,
+        inset -3px -4px 0 #15151fb3,
+        2px 4px 0 #12151d,
+        12px 18px 26px #05070b80;
     display: flex;
     flex-direction: column;
 }
@@ -823,8 +818,8 @@ body {
     background: var(--terminal-bg);
     box-shadow:
         0 0 0 3px #070c0d,
-        0 -3px 0 5px #111719,
-        0 3px 1px 5px #66747740;
+        0 -3px 0 5px #1b202a,
+        0 3px 1px 5px #68667940;
     container: monitor / inline-size;
 }
 .monitor-face {
