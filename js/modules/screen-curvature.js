@@ -37,7 +37,8 @@ export function createCurvature(viewport, onFailure) {
         viewport,
         document.getElementById('starfield'),
         document.getElementById('terminal-header'),
-        main.firstElementChild,
+        // Descendant snapshots can omit content clipped by the native scrollport.
+        main,
         document.getElementById('terminal-footer'),
         document.getElementById('terminal-panel'),
         document.getElementById('screen-notices')
@@ -46,8 +47,12 @@ export function createCurvature(viewport, onFailure) {
         element,
         bitmap: element.id === 'starfield',
         tiles: new Map(),
-        dirty: true
+        dirty: true,
+        refreshVisible: false
     }));
+    const contentLayer = layers[3];
+    const scrollbarLayer = { ...contentLayer, tiles: new Map(), scrollbar: true };
+    layers.splice(4, 0, scrollbarLayer);
     const listeners = new AbortController();
     const stats = { uploads: 0, uploadedPixels: 0, contentUploads: 0, frames: 0, tiles: 0, resolution: 1 };
     let disposed = false,
@@ -91,6 +96,13 @@ export function createCurvature(viewport, onFailure) {
         pending = true;
         canvas.requestPaint();
     }
+    function resume() {
+        pending = false;
+        layers.forEach((layer) => {
+            layer.dirty = true;
+        });
+        request();
+    }
     function clearTiles(layer) {
         for (const tile of layer.tiles.values()) gl.deleteTexture(tile.texture);
         layer.tiles.clear();
@@ -122,10 +134,16 @@ export function createCurvature(viewport, onFailure) {
         }
         return { x, y, w: element.offsetWidth, h: element.offsetHeight };
     }
+    function layerBox(layer) {
+        const r = box(layer.element);
+        if (layer === contentLayer) return { ...r, y: r.y - main.scrollTop, w: r.w - 12, h: main.scrollHeight };
+        if (layer.scrollbar) return { ...r, x: r.x + r.w - 12, w: 12 };
+        return r;
+    }
     function clipFor(layer, r) {
-        if (layer.element === main.firstElementChild) {
+        if (layer === contentLayer) {
             const a = box(main);
-            return { x: a.x, y: a.y, w: main.clientWidth, h: main.clientHeight };
+            return { x: a.x, y: a.y, w: a.w - 12, h: a.h };
         }
         return {
             x: Math.max(0, r.x),
@@ -136,12 +154,13 @@ export function createCurvature(viewport, onFailure) {
     }
     function syncGeometry(pointer) {
         for (const layer of layers) {
+            if (layer.scrollbar) continue;
             const r = box(layer.element);
             if (!r.w || !r.h) {
                 canvas.clearElementGeometry(layer.element);
                 continue;
             }
-            const clip = clipFor(layer, r);
+            const clip = layer === contentLayer ? { ...r } : clipFor(layer, r);
             let matrix;
             if (pointer) matrix = new DOMMatrix().translate(r.x + pointer.dx, r.y + pointer.dy);
             else {
@@ -247,34 +266,60 @@ export function createCurvature(viewport, onFailure) {
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, tw, th, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-            tile = { texture, w: tw, h: th, dirty: true };
+            tile = { texture, w: tw, h: th, dirty: true, start: th, end: 0 };
             layer.tiles.set(index, tile);
         }
         gl.bindTexture(gl.TEXTURE_2D, tile.texture);
-        if (tile.dirty || tile.strip) {
+        function uploaded(pixels) {
+            stats.uploads++;
+            stats.uploadedPixels += pixels;
+            if (layer === contentLayer) stats.contentUploads++;
+        }
+        if (layer === contentLayer) {
+            // Only rows captured inside the native scrollport are valid cache entries.
+            const clip = clipFor(layer, r);
+            const scale = th / sh;
+            const start = Math.max(0, Math.floor((clip.y - r.y - sy) * scale));
+            const end = Math.min(th, Math.ceil((clip.y + clip.h - r.y - sy) * scale));
+            const replace = tile.dirty || start > tile.end || end < tile.start;
+            const ranges = replace
+                ? [[start, end]]
+                : [[start, Math.min(end, tile.start)], [Math.max(start, tile.end), end]];
             gl.disable(gl.BLEND);
-            const stripWidth = Math.min(12, r.w);
-            const offset = tile.dirty ? 0 : Math.floor((r.w - stripWidth) * ratio);
-            const sx = offset / ratio;
+            for (const [from, to] of ranges) {
+                if (to <= from) continue;
+                gl.texElementSubImage2D(gl.TEXTURE_2D, 0, 0, from, main, {
+                    sx: 0,
+                    sy: sy + from / scale - main.scrollTop,
+                    swidth: r.w,
+                    sheight: (to - from) / scale,
+                    width: tw,
+                    height: to - from
+                });
+                uploaded(tw * (to - from));
+            }
+            gl.enable(gl.BLEND);
+            tile.start = replace ? start : Math.min(start, tile.start);
+            tile.end = replace ? end : Math.max(end, tile.end);
+            tile.dirty = false;
+        } else if (tile.dirty) {
+            gl.disable(gl.BLEND);
             if (layer.bitmap) {
                 // Reuse the animation's existing bitmap for its texture.
                 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, layer.element);
             } else {
-                gl.texElementSubImage2D(gl.TEXTURE_2D, 0, offset, 0, layer.element, {
-                    sx,
+                gl.texElementSubImage2D(gl.TEXTURE_2D, 0, 0, 0, layer.element, {
+                    sx: layer.scrollbar ? main.offsetWidth - r.w : 0,
                     sy,
-                    swidth: r.w - sx,
+                    swidth: r.w,
                     sheight: sh,
-                    width: tw - offset,
+                    width: tw,
                     height: th
                 });
             }
             gl.enable(gl.BLEND);
             tile.dirty = false;
-            tile.strip = false;
-            stats.uploads++;
-            stats.uploadedPixels += (tw - offset) * th;
-            if (layer.element === main.firstElementChild) stats.contentUploads++;
+            uploaded(tw * th);
         }
         tile.used = ++stamp;
         return { sy, sh };
@@ -299,8 +344,13 @@ export function createCurvature(viewport, onFailure) {
         if (disposed || document.hidden || !width || !height) return;
         try {
             for (const element of event.changedElements || []) {
-                const layer = layers.find((entry) => entry.element === element);
-                if (layer && element !== viewport) layer.dirty = true;
+                for (const layer of layers) {
+                    if (
+                        layer.element === element && element !== viewport &&
+                        (layer !== contentLayer || !layer.refreshVisible)
+                    )
+                        layer.dirty = true;
+                }
             }
             gl.viewport(0, 0, canvas.width, canvas.height);
             gl.disable(gl.SCISSOR_TEST);
@@ -311,7 +361,9 @@ export function createCurvature(viewport, onFailure) {
             for (const layer of layers) {
                 if (layer.dirty) for (const tile of layer.tiles.values()) tile.dirty = true;
                 layer.dirty = false;
-                const r = box(layer.element),
+                const refreshVisible = layer.refreshVisible;
+                layer.refreshVisible = false;
+                const r = layerBox(layer),
                     clip = clipFor(layer, r);
                 if (!r.w || !r.h || clip.h <= 0 || clip.w <= 0) continue;
                 const tileHeight = layer.bitmap ? r.h : TILE_HEIGHT;
@@ -322,6 +374,7 @@ export function createCurvature(viewport, onFailure) {
                 );
                 gl.uniform4f(gl.getUniformLocation(program, 'clip'), clip.x, clip.y, clip.w, clip.h);
                 for (let i = first; i <= last; i++) {
+                    if (refreshVisible && layer !== contentLayer && layer.tiles.has(i)) layer.tiles.get(i).dirty = true;
                     const { sy, sh } = tileFor(layer, i, r);
                     gl.uniform4f(gl.getUniformLocation(program, 'tile'), r.x, r.y + sy, r.w, sh);
                     const y = Math.max(clip.y, r.y + sy);
@@ -493,8 +546,17 @@ export function createCurvature(viewport, onFailure) {
         listen(
             viewport,
             'scroll',
-            () => {
-                for (const tile of layers[0].tiles.values()) tile.strip = true;
+            (event) => {
+                // WebViews may scroll without reporting a changed drawable snapshot.
+                for (const layer of layers) {
+                    if (
+                        layer.element !== viewport &&
+                        (event.target.contains(layer.element) || layer.element.contains(event.target))
+                    ) {
+                        layer.refreshVisible = true;
+                        if (layer === contentLayer && event.target !== main) layer.dirty = true;
+                    }
+                }
                 request();
             },
             { capture: true, passive: true }
@@ -505,18 +567,17 @@ export function createCurvature(viewport, onFailure) {
             });
             request();
         });
-        mutationObserver = new MutationObserver((records) => {
-            if (
-                records.some(
-                    (record) =>
-                        (record.target.nodeType === 1 ? record.target : record.target.parentElement).closest(
-                            '[drawable]'
-                        ) === viewport
-                )
-            ) {
-                layers[0].dirty = true;
-                request();
+        function invalidate(element) {
+            if (!element) return;
+            const owner = element.closest('[drawable]');
+            for (const layer of layers) {
+                if (layer.element === owner) layer.dirty = true;
             }
+            request();
+        }
+        mutationObserver = new MutationObserver((records) => {
+            for (const record of records)
+                invalidate(record.target.nodeType === 1 ? record.target : record.target.parentElement);
         });
         mutationObserver.observe(viewport, {
             subtree: true,
@@ -526,8 +587,9 @@ export function createCurvature(viewport, onFailure) {
         });
         listen(document, 'visibilitychange', () => {
             pending = false;
-            if (!document.hidden) request();
+            if (!document.hidden) resume();
         });
+        listen(window, 'pageshow', resume);
         listen(canvas, 'pointerdown', pointerDown, { capture: true });
         listen(window, 'pointermove', pointerMove, { capture: true, passive: false });
         listen(window, 'pointerup', () => {
@@ -556,7 +618,11 @@ export function createCurvature(viewport, onFailure) {
             },
             { passive: false }
         );
-        listen(document, 'selectionchange', request);
+        listen(document, 'selectionchange', () => invalidate(main));
+        listen(viewport, 'focusin', (event) => invalidate(event.target));
+        listen(viewport, 'focusout', (event) => invalidate(event.target));
+        listen(viewport, 'load', (event) => invalidate(event.target), { capture: true });
+        listen(document.fonts, 'loadingdone', () => invalidate(main));
         listen(window, 'beforeprint', () => fail('print'));
         observer = new ResizeObserver(resize);
         observer.observe(glass);
