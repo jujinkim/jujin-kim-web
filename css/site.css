@@ -45,7 +45,7 @@ html {
 
 @font-face {
     font-family: 'JetBrains Mono Local';
-    src: url('../fonts/JetBrainsMono-Regular.woff2?v=20261110.1') format('woff2');
+    src: url('../fonts/JetBrainsMono-Regular.woff2?v=20261110.2') format('woff2');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -1538,9 +1538,16 @@ body {
 #screen-notices:empty {
     display: none;
 }
+html[data-crt-startup='pending'] #monitor-glass,
+#monitor-glass.power-on {
+    background: #0c0d0f;
+}
+html[data-crt-startup='pending'] #crt-viewport {
+    visibility: hidden;
+}
 #monitor-glass.power-on > #crt-viewport,
 #monitor-glass.power-on > #crt-canvas {
-    animation: monitor-start 1s linear;
+    animation: monitor-start 600ms linear;
 }
 #monitor-glass.power-on::after {
     content: '';
@@ -1549,7 +1556,7 @@ body {
     background: #d8ffe0;
     pointer-events: none;
     z-index: 400;
-    animation: monitor-light 1s linear;
+    animation: monitor-light 600ms linear;
     opacity: 0;
 }
 @keyframes monitor-start {

@@ -78,6 +78,7 @@ const url = (process.env.CRT_BASE_URL || 'http://127.0.0.1:8000/') + '?crt-previ
         p = await newPage(b);
         await p.route('**/js/**', (r) => r.abort());
         await p.goto(url, { waitUntil: 'domcontentloaded' });
+        await p.waitForFunction(() => getComputedStyle(document.querySelector('#crt-viewport')).visibility === 'visible');
         check(
             'script network failure visible',
             (await p.locator('#home').isVisible()) &&
@@ -104,13 +105,13 @@ const url = (process.env.CRT_BASE_URL || 'http://127.0.0.1:8000/') + '?crt-previ
                 .map((a) => a.effect.getTiming().duration)
         }));
         check(
-            'power exact 1000ms',
+            'power exact 600ms',
             animation.power &&
                 animation.animations.length === 2 &&
-                animation.animations.every((n) => n === 1000),
+                animation.animations.every((n) => n === 600),
             animation
         );
-        await p.waitForTimeout(1200);
+        await p.waitForTimeout(800);
         check('power finished', await p.evaluate(() => !document.querySelector('.power-on')));
         await p.reload({ waitUntil: 'domcontentloaded' });
         check('power once per tab', await p.evaluate(() => !document.querySelector('.power-on')));

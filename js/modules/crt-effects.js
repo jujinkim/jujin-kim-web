@@ -1,6 +1,6 @@
-import { createCurvature } from './screen-curvature.js?v=20261110.1';
-import { monitorPerformance } from './display-performance.js?v=20261110.1';
-import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261110.1';
+import { createCurvature } from './screen-curvature.js?v=20261110.2';
+import { monitorPerformance } from './display-performance.js?v=20261110.2';
+import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261110.2';
 
 const VISIT_MODE = 'crt-display-mode';
 const POWER_SEEN = 'crt-power-seen';
@@ -58,6 +58,7 @@ export function initCRTEffects() {
         performanceMonitor?.exclude();
     }
     function web1(reason) {
+        delete document.documentElement.dataset.crtStartup;
         renderer?.destroy();
         renderer = null;
         performanceMonitor?.stop();
@@ -100,13 +101,15 @@ export function initCRTEffects() {
     }
     document.addEventListener('visibilitychange', visibility, { signal: events.signal });
     visibility();
-    // Storage failure skips startup; CSS animation itself always expires at 1s.
-    if (!motion.matches && !readSession(POWER_SEEN) && writeSession(POWER_SEEN, '1')) {
+    const startupPending = document.documentElement.dataset.crtStartup === 'pending';
+    delete document.documentElement.dataset.crtStartup;
+    // An expired guard skips startup; CSS still reveals content if cleanup is delayed.
+    if (startupPending && !motion.matches && !readSession(POWER_SEEN) && writeSession(POWER_SEEN, '1')) {
         glass.classList.add('power-on');
         powerTimer = setTimeout(() => {
             glass.classList.remove('power-on');
             requestAnimationFrame(startCurvature);
-        }, 1000);
+        }, 600);
     } else {
         writeSession(POWER_SEEN, '1');
         startCurvature();

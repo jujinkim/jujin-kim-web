@@ -12,7 +12,7 @@ Personal portfolio at [jujin.kim](https://jujin.kim), built with HTML, CSS, and 
 
 The same DOM supplies all three modes: Home, About & Career, Projects & Skills, and Tech & Experiences. Theme choices remain Light, Dark, and System. The monitor and surrounding room combine CSS line geometry with flat green fills. A large city window and articulated task lamp occupy the left; a wall shelf, terminal-shaped neon sign, and equipment rack occupy the right. The desk connects them around the central monitor, with a keyboard, speaker, and routed cable. The entire exterior shares exactly three authored colors: `#101c15` (ground), `#304d3b` (surfaces and structure), and `#86b493` (accents). Broad surfaces are solid colors, with no gradients, blur, or cast shadows. At viewport sizes of at least 1000 x 600, its 4:3 screen fills the available space without a fixed width cap, reserving room for a low stand on the desk. Outer clearance on the limiting axis equals the bezel thickness (24–56px). The stand stays near the bottom desk surface, including tall viewports; wider or taller viewports retain the extra space required by 4:3. Smaller viewports use thin bezels and available height. Layout breakpoints use the monitor's internal width. Home stays left; the other three menu links stay grouped on the right.
 
-The first visit in each tab plays a silent 1000ms power sequence. Reload and navigation do not repeat it. Reduced motion or inaccessible session storage skips it. CSS finishes the reveal without depending on a cleanup callback. JavaScript or module-network failure leaves static introductory content, contact links, and four section anchors visible.
+The first visit in each tab plays a silent 600ms power sequence. A small head script keeps screen content hidden before the modules initialize, preventing a fully lit frame before startup. Reload and navigation do not repeat the effect. Reduced motion or inaccessible session storage skips it. CSS finishes the reveal without depending on a cleanup callback. The initial guard releases on load or after 1500ms if startup fails; late modules skip the effect instead of hiding an already visible screen. JavaScript or module-network failure leaves static introductory content, contact links, and four section anchors visible.
 
 ## Renderer and input
 
@@ -56,7 +56,7 @@ Open `http://127.0.0.1:8000/`. Diagnostic routes:
 
 `window.crtDiagnostics` exposes mode, reason, recent frame windows, texture counters, and resolution. Only preview URLs expose `forceFlat()`, `forceWeb1()`, `submitSample()`, and `toScreen()` for verification. Forced preview modes override the saved visit choice; a normal visit respects it.
 
-Browser verification scripts in `tests/` use an external Playwright installation; they do not add a build pipeline or runtime package. See [scroll rendering verification](docs/crt-scroll-rendering.md), [current CSS room/monitor verification](docs/crt-css-scene.md), [initial implementation verification](docs/crt-verification.md), and [layout/motion follow-up](docs/crt-feedback-verification.md) for commands, measured results, and limits. Earlier [room/monitor](docs/crt-room-refinement.md), [room depth/neon](docs/crt-room-depth.md), [material/color](docs/crt-material-refinement.md), [office background](docs/crt-office-background.md), and [painted room](docs/crt-painted-room.md) notes describe superseded image-based designs.
+Browser verification scripts in `tests/` use an external Playwright installation; they do not add a build pipeline or runtime package. See [startup verification](docs/crt-startup.md), [scroll rendering verification](docs/crt-scroll-rendering.md), [current CSS room/monitor verification](docs/crt-css-scene.md), [initial implementation verification](docs/crt-verification.md), and [layout/motion follow-up](docs/crt-feedback-verification.md) for commands, measured results, and limits. Earlier [room/monitor](docs/crt-room-refinement.md), [room depth/neon](docs/crt-room-depth.md), [material/color](docs/crt-material-refinement.md), [office background](docs/crt-office-background.md), and [painted room](docs/crt-painted-room.md) notes describe superseded image-based designs.
 
 ```sh
 for file in js/main.js js/modules/*.js; do node --check "$file" || exit; done
@@ -69,7 +69,7 @@ git diff --check
 
 The bezel uses a solid green body with nested outlines, corner seams, dark vents, and a separate dark control strip around an unpainted center. The stand, round adjustment knobs, rocker, and LED share the same three-color palette, with no simulated bevels or material shading. The room and bezel WebP files have been removed; no replacement image, SVG, canvas, blur filter, animation, or rendering loop is used for these decorations. Existing profile/title assets and screen effects remain. Compact layouts hide the room and retain thin CSS bezels. Web 1.0 and print hide the room, decorative frame, and stand. No settings or public JavaScript interfaces were added.
 
-Local entrypoints, module imports, fonts, and favicons use `v=20261110.1`. Bump the release key together for runtime releases.
+Local entrypoints, module imports, fonts, and favicons use `v=20261110.2`. Bump the release key together for runtime releases.
 
 ## Author
 
