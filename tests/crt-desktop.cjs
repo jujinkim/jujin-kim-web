@@ -100,8 +100,10 @@ async function fixture(browser, dpr, variant = 'baseline', viewport = { width: 1
         route.fulfill({ contentType: 'text/javascript', body: variant === 'chunk64' ? chunked(source) : source }));
     await page.addInitScript(installProbe);
     await page.goto(base + '?crt-preview=1#projects');
-    await page.waitForFunction(() => window.crtDiagnostics?.mode === 'curved');
+    const desktop = viewport.width >= 1000 && viewport.height >= 600;
+    await page.waitForFunction(mode => window.crtDiagnostics?.mode === mode, desktop ? 'curved' : 'flat');
     await page.evaluate(() => document.fonts.ready);
+    if (!desktop) return page;
     await page.evaluate(({ colors, text }) => {
         const style = document.createElement('style');
         style.textContent = '#terminal-content ::selection {background:rgb(255,230,0);color:rgb(255,230,0)}';
@@ -340,14 +342,18 @@ function acceptance(trials) {
         if (!benchmark) for (const [width, height] of [[999, 800], [1000, 599], [1000, 600], [390, 844]]) {
             const page = await fixture(browser, 1, 'baseline', { width, height });
             const state = await page.evaluate(() => {
-                const canvas = document.querySelector('#crt-canvas'), gl = canvas.getContext('webgl2'), program = gl.getParameter(gl.CURRENT_PROGRAM);
+                const canvas = document.querySelector('#crt-canvas');
+                if (!canvas) return { rectangular: false, mode: crtDiagnostics.mode,
+                    radius: getComputedStyle(document.querySelector('#monitor-glass')).borderRadius };
+                const gl = canvas.getContext('webgl2'), program = gl.getParameter(gl.CURRENT_PROGRAM);
                 return { rectangular: gl.getUniform(program, gl.getUniformLocation(program, 'rectangular')),
                     bend: gl.getUniform(program, gl.getUniformLocation(program, 'bend')),
                     width: canvas.clientWidth, radius: getComputedStyle(document.querySelector('#monitor-glass')).borderRadius };
             });
             const desktop = width >= 1000 && height >= 600;
             check(`${width}x${height}: desktop breakpoint and small-screen preservation`, !!state.rectangular === desktop &&
-                state.radius === (desktop ? '0px' : '6px') && Math.abs(state.bend - (state.width <= 768 ? .025 : desktop ? .04 : .055)) < 1e-6, state);
+                state.radius === (desktop ? '0px' : '6px') &&
+                (desktop ? Math.abs(state.bend - (state.width <= 768 ? .025 : .04)) < 1e-6 : state.mode === 'flat'), state);
             await page.close();
         }
     } finally { await browser.close(); }

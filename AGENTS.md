@@ -83,7 +83,9 @@ jujin_kim_web/
 
 - **Visual scope**: Preserve the terminal layout, ASCII title, green palette, four tabs, and monitor frame. Refine requested effects inside this shell unless the user explicitly requests a structural redesign.
 
-- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261114.1` release key. Bump the key together for runtime releases.
+- **Compact screens**: Enable curvature only at viewport sizes of at least 1000x600. Smaller viewports use flat CRT with native DOM input/scrolling and no curved-glass shading. Preserve state when crossing the breakpoint.
+
+- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261118.1` release key. Bump the key together for runtime releases.
 
 - **Vanilla ES6 Modules**: Stick strictly to ES6 modules and template literals. Avoid introducing frameworks, compiler steps, or external build pipelines.
 - **ASCII & Text**: Use ASCII characters unless a file already mixes in Unicode (such as emoji in content templates).

@@ -96,7 +96,7 @@ async function holdModules(page) {
             durations
         );
         await page.waitForFunction(
-            () => window.crtDiagnostics?.mode === 'curved' && !document.querySelector('.power-on')
+            () => window.crtDiagnostics?.mode === 'flat' && crtDiagnostics.reason === 'compact-viewport' && !document.querySelector('.power-on')
         );
         const sequence = await page.evaluate(() => powerProbe);
         const start = sequence.starts.find((entry) => entry.name === 'monitor-start')?.time;
@@ -105,7 +105,7 @@ async function holdModules(page) {
             start && !sequence.frames.some((frame) => frame.time < start && frame.visible && !frame.power)
         );
         check(
-            'power completes and curvature starts',
+            'power completes with flat mobile content',
             await page.evaluate(
                 () =>
                     !document.documentElement.dataset.crtStartup &&
@@ -113,7 +113,7 @@ async function holdModules(page) {
             )
         );
         await page.reload({ waitUntil: 'load' });
-        await page.waitForFunction(() => window.crtDiagnostics?.mode === 'curved');
+        await page.waitForFunction(() => window.crtDiagnostics?.reason === 'compact-viewport');
         check(
             'reload never arms the guard or repeats power',
             await page.evaluate(
@@ -147,7 +147,7 @@ async function holdModules(page) {
             )
         );
         await page.waitForFunction(
-            () => window.crtDiagnostics?.mode === 'curved' && !document.querySelector('.power-on')
+            () => window.crtDiagnostics?.mode === 'flat' && crtDiagnostics.reason === 'compact-viewport' && !document.querySelector('.power-on')
         );
         check(
             'light theme restores after power completes',
@@ -172,7 +172,7 @@ async function holdModules(page) {
             )
         );
         releaseLate();
-        await page.waitForFunction(() => window.crtDiagnostics?.mode === 'curved');
+        await page.waitForFunction(() => window.crtDiagnostics?.reason === 'compact-viewport');
         check(
             'late modules do not hide the screen and replay power',
             await page.evaluate(

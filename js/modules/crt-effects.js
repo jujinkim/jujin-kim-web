@@ -1,6 +1,6 @@
-import { createCurvature } from './screen-curvature.js?v=20261114.1';
-import { monitorPerformance } from './display-performance.js?v=20261114.1';
-import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261114.1';
+import { createCurvature } from './screen-curvature.js?v=20261118.1';
+import { monitorPerformance } from './display-performance.js?v=20261118.1';
+import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261118.1';
 
 const VISIT_MODE = 'crt-display-mode';
 const POWER_SEEN = 'crt-power-seen';
@@ -29,7 +29,9 @@ export function initCRTEffects() {
     const preview = query.get('crt-preview') === '1';
     const forced = preview ? query.get('crt-mode') : null;
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    const desktop = matchMedia('(min-width: 1000px) and (min-height: 600px)');
     let renderer, performanceMonitor, powerTimer;
+    let curvatureFailed = false;
     let level = 0;
     const resolutions = [1, 0.8, 0.6];
     const samples = [];
@@ -51,6 +53,7 @@ export function initCRTEffects() {
     document.body.dataset.displayMode = 'flat';
 
     function flat(reason) {
+        if (reason !== 'compact-viewport') curvatureFailed = true;
         renderer?.destroy();
         renderer = null;
         document.body.dataset.displayMode = 'flat';
@@ -86,16 +89,33 @@ export function initCRTEffects() {
         return;
     }
     function startCurvature() {
-        if (diagnostics.mode === 'web1') return;
-        if (forced !== 'flat') {
-            renderer = createCurvature(viewport, flat);
-            if (!renderer && !diagnostics.reason) diagnostics.reason = 'unsupported-api';
-        } else diagnostics.reason = 'preview';
+        if (diagnostics.mode === 'web1' || curvatureFailed || renderer || glass.classList.contains('power-on')) return;
+        if (forced === 'flat') {
+            diagnostics.reason = 'preview';
+            return;
+        }
+        if (!desktop.matches) {
+            diagnostics.reason = 'compact-viewport';
+            return;
+        }
+        diagnostics.reason = '';
+        renderer = createCurvature(viewport, flat);
+        if (renderer && level > 0) renderer.setResolution(resolutions[level]);
+        if (!renderer && !diagnostics.reason) {
+            curvatureFailed = true;
+            diagnostics.reason = 'unsupported-api';
+        }
     }
     performanceMonitor = monitorPerformance(degrade, (sample) => {
         samples.push({ ...sample, mode: diagnostics.mode, resolution: resolutions[level] });
         if (samples.length > 30) samples.shift();
     });
+    desktop.addEventListener('change', () => {
+        if (diagnostics.mode === 'web1') return;
+        if (!desktop.matches) {
+            if (renderer || !curvatureFailed) flat('compact-viewport');
+        } else startCurvature();
+    }, { signal: events.signal });
     function visibility() {
         screen.classList.toggle('is-paused', document.hidden);
     }

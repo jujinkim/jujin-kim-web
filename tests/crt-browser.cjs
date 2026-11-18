@@ -27,7 +27,9 @@ async function pageFor(b, opts = {}, mode = 'curved') {
     });
     p.on('pageerror', (e) => p.errors.push(e.message));
     await p.goto(url + (mode === 'curved' ? '' : '&crt-mode=' + mode), { waitUntil: 'domcontentloaded' });
-    await p.waitForFunction((m) => window.crtDiagnostics?.mode === m, mode, { timeout: 5000 });
+    await p.waitForFunction((mode) => window.crtDiagnostics?.mode ===
+        (mode === 'curved' && !matchMedia('(min-width: 1000px) and (min-height: 600px)').matches ? 'flat' : mode),
+    mode, { timeout: 5000 });
     await p.waitForFunction(() => {
         const image = document.querySelector('.original-profile img');
         return image?.complete && image.naturalWidth > 0;

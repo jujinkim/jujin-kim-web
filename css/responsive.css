@@ -272,6 +272,12 @@
     }
 }
 
+@media not all and (min-width: 1000px) and (min-height: 600px) {
+    #monitor-shell .crt-glass {
+        display: none;
+    }
+}
+
 @media (min-width: 1000px) and (min-height: 600px) {
     body:not([data-display-mode='web1']) {
         --monitor-bezel: clamp(24px, 3.6vmin, 56px);

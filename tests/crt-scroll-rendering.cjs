@@ -135,8 +135,8 @@ async function fixture(page, viewport) {
         args: ['--no-sandbox']
     });
     try {
-        for (const height of [360, 600, 844]) {
-            const p = await fixture(browser, { width: 390, height });
+        for (const height of [600, 800, 1000]) {
+            const p = await fixture(browser, { width: 1000, height });
             const clientHeight = await p.locator('#terminal-content').evaluate((el) => el.clientHeight);
             await checkRow(p, Math.floor(clientHeight / 128), `${height}: initial text and color`);
             for (const top of [384, 256, 128, 640, 1760, 0, 128, 12000, 0]) {

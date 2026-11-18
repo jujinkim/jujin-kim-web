@@ -1,0 +1,411 @@
+{
+  "release": "20261118.1",
+  "date": "2026-11-18",
+  "environment": "Linux Chromium 157.0.8103.38; emulated viewport/touch/DPR; --no-sandbox; no experimental flags",
+  "desktopViewportMinimum": [
+    1000,
+    600
+  ],
+  "checks": [
+    {
+      "name": "360x800 dark: flat CRT without WebGL",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "reason": "compact-viewport",
+        "canvas": false,
+        "webglRequests": 0,
+        "parent": "monitor-glass",
+        "glass": "none",
+        "scanlines": "block",
+        "effects": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "360x800 dark: native content and scrolling",
+      "pass": true
+    },
+    {
+      "name": "360x800 dark: no script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "360x800 light: flat CRT without WebGL",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "reason": "compact-viewport",
+        "canvas": false,
+        "webglRequests": 0,
+        "parent": "monitor-glass",
+        "glass": "none",
+        "scanlines": "block",
+        "effects": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "360x800 light: native content and scrolling",
+      "pass": true
+    },
+    {
+      "name": "360x800 light: no script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "390x844 dark: flat CRT without WebGL",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "reason": "compact-viewport",
+        "canvas": false,
+        "webglRequests": 0,
+        "parent": "monitor-glass",
+        "glass": "none",
+        "scanlines": "block",
+        "effects": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "390x844 dark: native content and scrolling",
+      "pass": true
+    },
+    {
+      "name": "dark: native copy",
+      "pass": true
+    },
+    {
+      "name": "390x844 dark: no script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "390x844 light: flat CRT without WebGL",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "reason": "compact-viewport",
+        "canvas": false,
+        "webglRequests": 0,
+        "parent": "monitor-glass",
+        "glass": "none",
+        "scanlines": "block",
+        "effects": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "390x844 light: native content and scrolling",
+      "pass": true
+    },
+    {
+      "name": "light: native copy",
+      "pass": true
+    },
+    {
+      "name": "390x844 light: no script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "844x390 dark: flat CRT without WebGL",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "reason": "compact-viewport",
+        "canvas": false,
+        "webglRequests": 0,
+        "parent": "monitor-glass",
+        "glass": "none",
+        "scanlines": "block",
+        "effects": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "844x390 dark: native content and scrolling",
+      "pass": true
+    },
+    {
+      "name": "844x390 dark: no script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "844x390 light: flat CRT without WebGL",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "reason": "compact-viewport",
+        "canvas": false,
+        "webglRequests": 0,
+        "parent": "monitor-glass",
+        "glass": "none",
+        "scanlines": "block",
+        "effects": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "844x390 light: native content and scrolling",
+      "pass": true
+    },
+    {
+      "name": "844x390 light: no script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "768x1024 dark: flat CRT without WebGL",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "reason": "compact-viewport",
+        "canvas": false,
+        "webglRequests": 0,
+        "parent": "monitor-glass",
+        "glass": "none",
+        "scanlines": "block",
+        "effects": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "768x1024 dark: native content and scrolling",
+      "pass": true
+    },
+    {
+      "name": "768x1024 dark: no script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "768x1024 light: flat CRT without WebGL",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "reason": "compact-viewport",
+        "canvas": false,
+        "webglRequests": 0,
+        "parent": "monitor-glass",
+        "glass": "none",
+        "scanlines": "block",
+        "effects": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "768x1024 light: native content and scrolling",
+      "pass": true
+    },
+    {
+      "name": "768x1024 light: no script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "999x800 dark: flat CRT without WebGL",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "reason": "compact-viewport",
+        "canvas": false,
+        "webglRequests": 0,
+        "parent": "monitor-glass",
+        "glass": "none",
+        "scanlines": "block",
+        "effects": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "999x800 dark: native content and scrolling",
+      "pass": true
+    },
+    {
+      "name": "999x800 dark: no script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "999x800 light: flat CRT without WebGL",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "reason": "compact-viewport",
+        "canvas": false,
+        "webglRequests": 0,
+        "parent": "monitor-glass",
+        "glass": "none",
+        "scanlines": "block",
+        "effects": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "999x800 light: native content and scrolling",
+      "pass": true
+    },
+    {
+      "name": "999x800 light: no script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "1000x599 dark: flat CRT without WebGL",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "reason": "compact-viewport",
+        "canvas": false,
+        "webglRequests": 0,
+        "parent": "monitor-glass",
+        "glass": "none",
+        "scanlines": "block",
+        "effects": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "1000x599 dark: native content and scrolling",
+      "pass": true
+    },
+    {
+      "name": "1000x599 dark: no script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "1000x599 light: flat CRT without WebGL",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "reason": "compact-viewport",
+        "canvas": false,
+        "webglRequests": 0,
+        "parent": "monitor-glass",
+        "glass": "none",
+        "scanlines": "block",
+        "effects": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "1000x599 light: native content and scrolling",
+      "pass": true
+    },
+    {
+      "name": "1000x599 light: no script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "390x844: resize preserves DOM and state",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "canvas": false,
+        "count": 1,
+        "section": "#about",
+        "input": "unfinished",
+        "scroll": 20,
+        "focus": "terminal-content",
+        "power": false
+      }
+    },
+    {
+      "name": "1440x1000: resize preserves DOM and state",
+      "pass": true,
+      "detail": {
+        "mode": "curved",
+        "canvas": true,
+        "count": 1,
+        "section": "#about",
+        "input": "unfinished",
+        "scroll": 20,
+        "focus": "terminal-content",
+        "power": false
+      }
+    },
+    {
+      "name": "999x800: resize preserves DOM and state",
+      "pass": true,
+      "detail": {
+        "mode": "flat",
+        "canvas": false,
+        "count": 1,
+        "section": "#about",
+        "input": "unfinished",
+        "scroll": 20,
+        "focus": "terminal-content",
+        "power": false
+      }
+    },
+    {
+      "name": "1000x600: resize preserves DOM and state",
+      "pass": true,
+      "detail": {
+        "mode": "curved",
+        "canvas": true,
+        "count": 1,
+        "section": "#about",
+        "input": "unfinished",
+        "scroll": 20,
+        "focus": "terminal-content",
+        "power": false
+      }
+    },
+    {
+      "name": "quality level survives resize",
+      "pass": true
+    },
+    {
+      "name": "render failure stays flat across resize",
+      "pass": true
+    },
+    {
+      "name": "Web 1.0 remains sticky across resize",
+      "pass": true
+    },
+    {
+      "name": "resize during startup never initializes mobile WebGL",
+      "pass": true
+    }
+  ],
+  "performance": [
+    {
+      "browser": "chrome157",
+      "version": "157.0.8103.38",
+      "label": "mobile-retina",
+      "mode": "curved",
+      "fps": 60.0026593976464,
+      "p95": 16.799999999999272,
+      "endMode": "flat",
+      "resolution": 1,
+      "samples": [
+        {
+          "fps": 60.001983536645845,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "flat",
+          "resolution": 1
+        },
+        {
+          "fps": 60.00198353664585,
+          "p95": 16.800000000000182,
+          "slow": false,
+          "mode": "flat",
+          "resolution": 1
+        }
+      ],
+      "before": {},
+      "after": null
+    }
+  ],
+  "desktopRendererUnchanged": true,
+  "physicalMobileDeviceTested": false
+}

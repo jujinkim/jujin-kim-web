@@ -23,7 +23,8 @@ fs.mkdirSync(dir, { recursive: true });
                 });
                 await page.route(/^https:/, (r) => r.abort());
                 await page.goto(base + '?crt-preview=1' + (mode === 'flat' ? '&crt-mode=flat' : ''));
-                await page.waitForFunction((expected) => crtDiagnostics.mode === expected, mode);
+                const expected = mode === 'curved' && (width < 1000 || height < 600) ? 'flat' : mode;
+                await page.waitForFunction((expected) => crtDiagnostics.mode === expected, expected);
                 await page.evaluate(() => document.fonts.ready);
                 const state = await page.evaluate(() => {
                     const shell = document.querySelector('#monitor-shell');

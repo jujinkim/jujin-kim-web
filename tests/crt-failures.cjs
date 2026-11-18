@@ -151,7 +151,7 @@ const url = (process.env.CRT_BASE_URL || 'http://127.0.0.1:8000/') + '?crt-previ
             reducedMotion: 'reduce'
         });
         await p.goto(url, { waitUntil: 'domcontentloaded' });
-        await p.waitForFunction(() => crtDiagnostics.mode === 'curved');
+        await p.waitForFunction(() => crtDiagnostics.mode === 'flat');
         await p.locator('[data-section=about]').tap();
         const cdp = await p.context().newCDPSession(p);
         await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 200, y: 650 }] });
@@ -159,7 +159,7 @@ const url = (process.env.CRT_BASE_URL || 'http://127.0.0.1:8000/') + '?crt-previ
             await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 200, y }] });
         await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
         check(
-            'native touch scroll through curve',
+            'native touch scroll on flat mobile',
             await p.evaluate(() => document.querySelector('#terminal-content').scrollTop > 200)
         );
         await p.close();
