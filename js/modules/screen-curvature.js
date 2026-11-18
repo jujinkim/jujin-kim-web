@@ -2,24 +2,36 @@ const TILE_HEIGHT = 512;
 const MAX_TILES = 24;
 const MAX_CACHE_PIXELS = 16 * 1024 * 1024;
 
-// Shared inverse barrel transform for pixels and pointer coordinates.
+// Pin all four edges while magnifying the interior.
 export function screenToSource(x, y, width, height, strength) {
+    const nx = (x / width) * 2 - 1,
+        ny = (y / height) * 2 - 1;
+    const scale = 1 - strength * (1 - nx * nx) * (1 - ny * ny);
+    return [
+        ((nx * scale + 1) * width) / 2,
+        ((ny * scale + 1) * height) / 2
+    ];
+}
+function invertPoint(transform, x, y, width, height, strength) {
+    let px = x,
+        py = y;
+    for (let i = 0; i < 8; i++) {
+        const p = transform(px, py, width, height, strength);
+        px += x - p[0];
+        py += y - p[1];
+    }
+    return [px, py];
+}
+export function sourceToScreen(x, y, width, height, strength) {
+    return invertPoint(screenToSource, x, y, width, height, strength);
+}
+function mobileScreenToSource(x, y, width, height, strength) {
     const nx = (x / width) * 2 - 1,
         ny = (y / height) * 2 - 1;
     return [
         ((nx * (1 + strength * ny * ny) + 1) * width) / 2,
         ((ny * (1 + strength * nx * nx) + 1) * height) / 2
     ];
-}
-export function sourceToScreen(x, y, width, height, strength) {
-    let px = x,
-        py = y;
-    for (let i = 0; i < 8; i++) {
-        const p = screenToSource(px, py, width, height, strength);
-        px += x - p[0];
-        py += y - p[1];
-    }
-    return [px, py];
 }
 
 export function createCurvature(viewport, onFailure) {
@@ -61,7 +73,8 @@ export function createCurvature(viewport, onFailure) {
     let width = 0,
         height = 0,
         resolution = 1,
-        strength = 0.055,
+        strength = 0.04,
+        rectangular = false,
         stamp = 0;
     let program, buffer, observer, mutationObserver, watchdog;
     function listen(target, type, handler, options = {}) {
@@ -112,7 +125,8 @@ export function createCurvature(viewport, onFailure) {
         if (disposed) return;
         width = glass.clientWidth;
         height = glass.clientHeight;
-        strength = width <= 768 ? 0.025 : 0.055;
+        rectangular = matchMedia('(min-width: 1000px) and (min-height: 600px)').matches;
+        strength = width <= 768 ? 0.025 : rectangular ? 0.04 : 0.055;
         glass.style.setProperty('--screen-width', `${width}px`);
         glass.style.setProperty('--screen-height', `${height}px`);
         const ratio = Math.min(devicePixelRatio, 2) * resolution;
@@ -120,6 +134,12 @@ export function createCurvature(viewport, onFailure) {
         canvas.height = Math.max(1, Math.round(height * ratio));
         layers.forEach(clearTiles);
         request();
+    }
+    function toSource(x, y) {
+        return (rectangular ? screenToSource : mobileScreenToSource)(x, y, width, height, strength);
+    }
+    function toScreen(x, y) {
+        return invertPoint(rectangular ? screenToSource : mobileScreenToSource, x, y, width, height, strength);
     }
     function box(element) {
         let x = 0,
@@ -166,9 +186,9 @@ export function createCurvature(viewport, onFailure) {
             else {
                 const anchorX = r.w / 2;
                 const anchorY = Math.max(0, Math.min(r.h, height / 2 - r.y));
-                const [cx, cy] = sourceToScreen(r.x + anchorX, r.y + anchorY, width, height, strength);
-                const [lx, ly] = sourceToScreen(r.x + anchorX + 1, r.y + anchorY, width, height, strength);
-                const [tx, ty] = sourceToScreen(r.x + anchorX, r.y + anchorY + 1, width, height, strength);
+                const [cx, cy] = toScreen(r.x + anchorX, r.y + anchorY);
+                const [lx, ly] = toScreen(r.x + anchorX + 1, r.y + anchorY);
+                const [tx, ty] = toScreen(r.x + anchorX, r.y + anchorY + 1);
                 matrix = new DOMMatrix([
                     lx - cx,
                     ly - cy,
@@ -213,10 +233,12 @@ export function createCurvature(viewport, onFailure) {
             precision highp float;
             in vec2 uv; out vec4 color;
             uniform sampler2D image; uniform vec2 screen; uniform float bend;
+            uniform bool rectangular;
             uniform vec4 tile; uniform vec4 clip;
             void main() {
                 vec2 p = uv * 2.0 - 1.0;
-                vec2 source = (p * (1.0 + bend * p.yx * p.yx) + 1.0) * .5 * screen;
+                float scale = 1.0 - bend * (1.0 - p.x * p.x) * (1.0 - p.y * p.y);
+                vec2 source = (p * (rectangular ? vec2(scale) : 1.0 + bend * p.yx * p.yx) + 1.0) * .5 * screen;
                 if (any(lessThan(source, clip.xy)) || any(greaterThanEqual(source, clip.xy + clip.zw))) discard;
                 vec2 t = (source - tile.xy) / tile.zw;
                 if (any(lessThan(t, vec2(0))) || any(greaterThanEqual(t, vec2(1)))) discard;
@@ -328,8 +350,15 @@ export function createCurvature(viewport, onFailure) {
         const points = [];
         for (const px of [x, x + w, Math.max(x, Math.min(x + w, width / 2))]) {
             for (const py of [y, y + h, Math.max(y, Math.min(y + h, height / 2))]) {
-                points.push(sourceToScreen(px, py, width, height, strength));
+                points.push(toScreen(px, py));
             }
+        }
+        // |p.x * (1 - p.x^2) * (1 - p.y^2)| <= 2 / (3 * sqrt(3)).
+        // Conservative interior bounds avoid clipping expanded tiles between samples.
+        if (rectangular) {
+            const padding = strength / (3 * Math.sqrt(3));
+            points.push([x - width * padding, y - height * padding],
+                [x + w + width * padding, y + h + height * padding]);
         }
         const ratioX = canvas.width / width,
             ratioY = canvas.height / height;
@@ -358,6 +387,7 @@ export function createCurvature(viewport, onFailure) {
             gl.clear(gl.COLOR_BUFFER_BIT);
             gl.uniform2f(gl.getUniformLocation(program, 'screen'), width, height);
             gl.uniform1f(gl.getUniformLocation(program, 'bend'), strength);
+            gl.uniform1i(gl.getUniformLocation(program, 'rectangular'), rectangular);
             for (const layer of layers) {
                 if (layer.dirty) for (const tile of layer.tiles.values()) tile.dirty = true;
                 layer.dirty = false;
@@ -418,7 +448,7 @@ export function createCurvature(viewport, onFailure) {
         const rect = canvas.getBoundingClientRect(),
             x = event.clientX - rect.left,
             y = event.clientY - rect.top;
-        const [sx, sy] = screenToSource(x, y, width, height, strength);
+        const [sx, sy] = toSource(x, y);
         syncGeometry({ dx: x - sx, dy: y - sy });
         try {
             return callback(document.elementFromPoint(event.clientX, event.clientY));
@@ -642,7 +672,7 @@ export function createCurvature(viewport, onFailure) {
             resize();
         },
         toScreen(x, y) {
-            return sourceToScreen(x, y, width, height, strength);
+            return toScreen(x, y);
         },
         get ready() {
             return ready;

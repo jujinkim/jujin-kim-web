@@ -24,6 +24,8 @@ fs.mkdirSync('/tmp/jujin-crt-results', { recursive: true });
         try {
             for (const [label, width, height, dpr] of [
                 ['desktop', 1440, 1000, 1],
+                ['desktop-dpr-1.25', 1440, 1000, 1.25],
+                ['desktop-retina', 1440, 1000, 2],
                 ['mobile-retina', 390, 844, 3]
             ])
                 for (const mode of name === 'chrome157' ? ['curved', 'flat', 'web1'] : ['flat', 'web1']) {
@@ -35,6 +37,11 @@ fs.mkdirSync('/tmp/jujin-crt-results', { recursive: true });
                         colorScheme: 'dark'
                     });
                     await p.route(/^https:/, (r) => r.abort());
+                    if (process.env.CRT_CURVATURE_SOURCE) {
+                        const source = fs.readFileSync(process.env.CRT_CURVATURE_SOURCE, 'utf8');
+                        await p.route('**/screen-curvature.js?*', (route) =>
+                            route.fulfill({ contentType: 'text/javascript', body: source }));
+                    }
                     await p.goto(
                         (process.env.CRT_BASE_URL || 'http://127.0.0.1:8000/') +
                             '?crt-preview=1' +
