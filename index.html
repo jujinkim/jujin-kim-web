@@ -2,260 +2,290 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Jujin Kim - Software Engineer</title>
-        <meta name="description" content="Personal portfolio of Jujin Kim, Software Engineer" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+        <meta name="color-scheme" content="dark" />
+        <meta name="theme-color" content="#05060a" />
+        <title>Jujin Kim — Android / Product Engineer</title>
+        <meta
+            name="description"
+            content="Jujin Kim, Android engineer at Samsung Electronics in Suwon. This page is a swarm that evolves while you move."
+        />
         <script>
+            // Marks the page as script-driven before first paint so the swarm can
+            // reveal the content. Released on a timer in case the module fails.
             (() => {
-                try {
-                    const query = new URLSearchParams(location.search);
-                    const forced = query.get('crt-preview') === '1' ? query.get('crt-mode') : null;
-                    if (
-                        matchMedia('(prefers-reduced-motion: reduce)').matches ||
-                        sessionStorage.getItem('crt-power-seen') ||
-                        forced === 'web1' ||
-                        (!forced && sessionStorage.getItem('crt-display-mode') === 'web1')
-                    )
-                        return;
-                    const root = document.documentElement;
-                    root.dataset.crtStartup = 'pending';
-                    const reveal = () => {
-                        delete root.dataset.crtStartup;
-                    };
-                    setTimeout(reveal, 1500);
-                    window.addEventListener('load', reveal, { once: true });
-                } catch {}
+                const root = document.documentElement;
+                root.dataset.mode = 'pending';
+                setTimeout(() => {
+                    if (root.dataset.mode === 'pending') root.dataset.mode = 'static';
+                }, 2500);
             })();
         </script>
-        <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261118.2" />
-        <link rel="alternate icon" href="favicon.ico?v=20261118.2" />
-        <link rel="stylesheet" href="css/reset.css?v=20261118.2" />
-        <link rel="stylesheet" href="css/site.css?v=20261118.2" />
-        <link rel="stylesheet" href="css/animations.css?v=20261118.2" />
-        <link rel="stylesheet" href="css/modal.css?v=20261118.2" />
-        <link rel="stylesheet" href="css/responsive.css?v=20261118.2" />
+        <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261119.1" />
+        <link rel="stylesheet" href="css/reset.css?v=20261119.1" />
+        <link rel="stylesheet" href="css/site.css?v=20261119.1" />
     </head>
-    <body class="crt-effects-enabled">
-        <div id="room-scene" aria-hidden="true" inert>
-            <div class="room-backdrop">
-                <div class="room-architecture"><i></i><i></i><i></i></div>
-                <div class="room-wall-left">
-                    <div class="room-window">
-                        <div class="room-skyline"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                        <div class="room-window-bars"><i></i><i></i><i></i></div>
-                        <div class="room-curtain"><i></i><i></i><i></i></div>
-                        <div class="room-window-latch"></div>
-                    </div>
-                </div>
-                <div class="room-wall-right">
-                    <div class="room-conduit"></div>
-                    <div class="room-neon"><i></i></div>
-                    <div class="room-shelf">
-                        <div class="room-books"><i></i><i></i><i></i><i></i><i></i></div>
-                        <div class="room-storage"><i></i><i></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="room-foreground">
-                <div class="room-desk">
-                    <div class="room-desk-grid"><i></i><i></i><i></i></div>
-                    <div class="room-keyboard"><i></i><i></i><i></i><i></i><i></i></div>
-                    <div class="room-cable"></div>
-                </div>
-                <div class="room-speaker"><i></i><i></i></div>
-                <div class="room-lamp">
-                    <div class="lamp-base"></div>
-                    <div class="lamp-arm lamp-arm-lower"></div>
-                    <div class="lamp-arm lamp-arm-upper"></div>
-                    <div class="lamp-joint"></div>
-                    <div class="lamp-shade"></div>
-                </div>
-                <div class="room-rack">
-                    <div class="rack-rails"></div>
-                    <div class="rack-meter"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                    <div class="rack-patch"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                    <div class="rack-fans"><i></i><i></i></div>
-                    <div class="rack-drives"><i></i><i></i><i></i></div>
-                    <div class="rack-feet"></div>
-                </div>
-            </div>
-        </div>
-        <div id="monitor-rig">
-            <div class="monitor-depth monitor-depth-left" aria-hidden="true"></div>
-            <div class="monitor-depth monitor-depth-right" aria-hidden="true"></div>
-            <div class="monitor-depth monitor-depth-top" aria-hidden="true"></div>
-            <div class="monitor-depth monitor-depth-bottom" aria-hidden="true"></div>
-            <div id="monitor-shell">
-                <div class="monitor-face" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-                <div id="monitor-glass">
-                    <div id="crt-viewport">
-                        <canvas id="starfield" class="background-animation" aria-hidden="true"></canvas>
-                        <div id="terminal-container">
-                            <header id="terminal-header">
-                                <pre id="ascii-title">JUJIN KIM</pre>
-                                <nav id="terminal-menu" role="navigation" aria-label="Main navigation">
-                                    <div class="menu-border">
-                                        <ul class="menu-list">
-                                            <li>
-                                                <a class="menu-item" data-section="home" href="#home">Home</a>
-                                            </li>
-                                            <li>
-                                                <a class="menu-item" data-section="about" href="#about"
-                                                    >About &amp; Career</a
-                                                >
-                                            </li>
-                                            <li>
-                                                <a class="menu-item" data-section="projects" href="#projects"
-                                                    >Projects &amp; Skills</a
-                                                >
-                                            </li>
-                                            <li>
-                                                <a
-                                                    class="menu-item"
-                                                    data-section="technologies"
-                                                    href="#technologies"
-                                                    aria-label="Tech &amp; Experiences"
-                                                    >Tech &amp; Exp.</a
-                                                >
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </nav>
-                            </header>
+    <body>
+        <canvas id="swarm" aria-hidden="true"></canvas>
 
-                            <main id="terminal-content" tabindex="0" aria-label="Portfolio content">
-                                <div class="content-border">
-                                    <section id="home" class="content-section">
-                                        <h2>&gt; Welcome</h2>
-                                        <div class="section-content">
-                                            <p>
-                                                Jujin Kim — Software Engineer. App development, game development,
-                                                and software engineering.
-                                            </p>
-                                            <p>
-                                                <a href="mailto:jk@jujin.kim">jk@jujin.kim</a> ·
-                                                <a href="https://github.com/jujinkim">GitHub</a>
-                                            </p>
-                                        </div>
-                                    </section>
+        <header id="chrome">
+            <nav id="nav" aria-label="Sections">
+                <a href="#home" data-section="home"><span class="key">1</span>Home</a>
+                <a href="#work" data-section="work"><span class="key">2</span>Work</a>
+                <a href="#projects" data-section="projects"><span class="key">3</span>Projects</a>
+                <a href="#lab" data-section="lab"><span class="key">4</span>Lab</a>
+                <a href="#about" data-section="about"><span class="key">5</span>About</a>
+            </nav>
+        </header>
 
-                                    <section id="about" class="content-section">
-                                        <h2>&gt; About &amp; Career</h2>
-                                        <div class="section-content">
-                                            <p>
-                                                Welcome to my terminal. I'm a software engineer passionate about
-                                                creating elegant solutions to complex problems.
-                                            </p>
-                                        </div>
-                                    </section>
-
-                                    <section id="projects" class="content-section">
-                                        <h2>&gt; Projects &amp; Skills</h2>
-                                        <div class="section-content">
-                                            <p>
-                                                Explore my projects and source code on
-                                                <a href="https://github.com/jujinkim">GitHub</a>.
-                                            </p>
-                                        </div>
-                                    </section>
-
-                                    <section id="technologies" class="content-section">
-                                        <h2>&gt; Tech &amp; Experiences</h2>
-                                        <div class="section-content">
-                                            <p>Experience areas: mobile apps, games, and AI.</p>
-                                        </div>
-                                    </section>
-                                </div>
-                            </main>
-
-                            <footer id="terminal-footer">
-                                <div class="footer-content">
-                                    <div class="keyboard-guide">
-                                        <span class="quick-menu-hint"><span>1~4</span> Quick Menu |</span>
-                                        Theme:
-                                        <a
-                                            href="#"
-                                            onclick="
-                                                event.preventDefault();
-                                                window.setTheme('light');
-                                                return false;
-                                            "
-                                            >Light</a
-                                        >/<a
-                                            href="#"
-                                            onclick="
-                                                event.preventDefault();
-                                                window.setTheme('dark');
-                                                return false;
-                                            "
-                                            >Dark</a
-                                        >/<a
-                                            href="#"
-                                            onclick="
-                                                event.preventDefault();
-                                                window.setTheme('system');
-                                                return false;
-                                            "
-                                            >System</a
-                                        >
-                                    </div>
-                                    <div class="footer-actions">
-                                        <button
-                                            id="terminal-toggle"
-                                            type="button"
-                                            aria-controls="terminal-panel"
-                                            aria-expanded="false"
-                                            aria-label="Toggle terminal"
-                                        >
-                                            &gt;_
-                                        </button>
-                                    </div>
-                                </div>
-                            </footer>
-                        </div>
-                        <div id="terminal-panel" aria-hidden="true">
-                            <div class="terminal-panel-header">
-                                <span>Terminal</span>
-                                <button class="terminal-panel-close" type="button" aria-label="Close terminal">
-                                    Close
-                                </button>
-                            </div>
-                            <div class="terminal-panel-body">
-                                <div class="terminal-output"></div>
-                                <div class="terminal-input-line">
-                                    <span class="terminal-prompt">&gt;</span>
-                                    <span class="terminal-input"></span>
-                                    <span class="cursor-blink">█</span>
-                                    <span class="terminal-placeholder">(type "help" for commands)</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="screen-notices" aria-live="polite"></div>
-                    </div>
-                    <div id="crt-screen" data-noise="retro" aria-hidden="true">
-                        <div class="crt-glass"></div>
-                        <div class="crt-scanlines"></div>
-                        <div class="crt-noise"></div>
-                        <div class="crt-sweep"></div>
-                    </div>
-                    <span class="screen-corner screen-corner-tl" aria-hidden="true"></span>
-                    <span class="screen-corner screen-corner-tr" aria-hidden="true"></span>
-                    <span class="screen-corner screen-corner-br" aria-hidden="true"></span>
-                    <span class="screen-corner screen-corner-bl" aria-hidden="true"></span>
+        <main id="content">
+            <section id="home" class="section" data-heading="JUJIN KIM">
+                <h1 class="heading">Jujin Kim</h1>
+                <div class="reading" data-reading>
+                    <p class="role">Android / Product Engineer</p>
+                    <p>
+                        Android engineer at Samsung Electronics in Suwon. I work on Samsung Weather. On my own time I
+                        build small apps, games, and things that generate themselves.
+                    </p>
+                    <p class="aside live-only">
+                        This page is a swarm. It evolves while you move. Press and hold to test it.
+                    </p>
+                    <ul class="links">
+                        <li><span>Email</span><a href="mailto:jk@jujin.kim">jk@jujin.kim</a></li>
+                        <li>
+                            <span>GitHub</span
+                            ><a href="https://github.com/jujinkim" target="_blank" rel="noopener">github.com/jujinkim</a>
+                        </li>
+                        <li>
+                            <span>LinkedIn</span
+                            ><a href="https://linkedin.com/in/jujinkim" target="_blank" rel="noopener"
+                                >linkedin.com/in/jujinkim</a
+                            >
+                        </li>
+                        <li>
+                            <span>Blog</span><a href="https://jujin.dev" target="_blank" rel="noopener">jujin.dev</a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="monitor-chin" aria-hidden="true">
-                    <span>JK / TERMINAL</span>
-                    <span class="monitor-vents"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-                    <span class="monitor-hardware">
-                        <i class="monitor-dial"></i>
-                        <i class="monitor-dial"></i>
-                        <i class="monitor-rocker"></i>
-                    </span>
-                    <span class="power-led"></span>
+            </section>
+
+            <section id="work" class="section" data-heading="WORK">
+                <h2 class="heading">Work</h2>
+                <div class="reading" data-reading>
+                    <article class="entry" data-condense="WEATHER">
+                        <p class="meta">2020 — Present · Samsung Electronics</p>
+                        <h3>Samsung Weather</h3>
+                        <p>The weather application for Samsung devices, used by millions of people.</p>
+                        <p class="tech">Kotlin · Android</p>
+                    </article>
+                    <article class="entry" data-condense="GALAXY STORE">
+                        <p class="meta">2017 — 2020 · Samsung Electronics</p>
+                        <h3>Samsung Galaxy Store</h3>
+                        <p>The app marketplace for Samsung devices.</p>
+                        <p class="tech">Java · Android</p>
+                    </article>
+                    <h3 class="group">Before</h3>
+                    <article class="entry">
+                        <p class="meta">2015 — 2016 · Namseoul University</p>
+                        <h3>VR/AR Student Researcher</h3>
+                        <p class="tech">Unity · Eon · VR · AR</p>
+                    </article>
+                    <article class="entry">
+                        <p class="meta">2015 — 2016</p>
+                        <h3>Microsoft Student Partners</h3>
+                        <p>9th batch. A student developer community.</p>
+                    </article>
+                    <article class="entry">
+                        <p class="meta">2014 — 2016</p>
+                        <h3>Freelance Developer</h3>
+                        <p>Web and application development.</p>
+                        <p class="tech">HTML · JavaScript · PHP · C#</p>
+                    </article>
+                    <h3 class="group">Education</h3>
+                    <article class="entry">
+                        <p class="meta">2011 — 2016 · Namseoul University</p>
+                        <h3>B.S. in Computer Science &amp; VR/AR Media Convergence</h3>
+                    </article>
                 </div>
-            </div>
-        </div>
-        <script type="module" src="js/main.js?v=20261118.2"></script>
+            </section>
+
+            <section id="projects" class="section" data-heading="PROJECTS">
+                <h2 class="heading">Projects</h2>
+                <div class="reading" data-reading>
+                    <p class="aside">Things I build on my own time. Entries marked ✦ were built with AI-assisted coding.</p>
+                    <article class="entry" data-condense="GOKSORRY">
+                        <p class="meta">2026 ✦</p>
+                        <h3>Goksorry.com</h3>
+                        <p>
+                            A stock sentiment aggregator. It collects posts from Korean stock communities and reads the
+                            market's mood with AI.
+                        </p>
+                        <p><a href="https://goksorry.com" target="_blank" rel="noopener">goksorry.com</a></p>
+                    </article>
+                    <article class="entry" data-condense="CRYPTIC WIKI">
+                        <p class="meta">2026 ✦</p>
+                        <h3>CrypticWiki Network</h3>
+                        <p>
+                            A collaborative mystery fiction platform where people and AIs co-write the records of cryptic
+                            objects, then argue about them.
+                        </p>
+                        <p><a href="https://crypticwiki.net" target="_blank" rel="noopener">crypticwiki.net</a></p>
+                    </article>
+                    <article class="entry" data-condense="FREQUAW">
+                        <p class="meta">2021</p>
+                        <h3>Frequaw</h3>
+                        <p>An Android widget that keeps the apps you use most within reach.</p>
+                        <p>
+                            <a
+                                href="https://play.google.com/store/apps/details?id=kim.jujin.frequaw"
+                                target="_blank"
+                                rel="noopener"
+                                >Play Store ✦</a
+                            >
+                            ·
+                            <a
+                                href="https://play.google.com/store/apps/details?id=com.jujinkim.frequaw"
+                                target="_blank"
+                                rel="noopener"
+                                >Play Store (legacy)</a
+                            >
+                        </p>
+                    </article>
+                    <article class="entry" data-condense="TURNIPISM">
+                        <p class="meta">2020</p>
+                        <h3>Turnipism</h3>
+                        <p>A turnip price calculator for Animal Crossing: New Horizons.</p>
+                        <p>
+                            <a
+                                href="https://play.google.com/store/apps/details?id=com.jujinkim.acturnip"
+                                target="_blank"
+                                rel="noopener"
+                                >Play Store</a
+                            >
+                        </p>
+                    </article>
+                    <article class="entry" data-condense="WEATHERBEAR">
+                        <p class="meta">2018 · Team Olaf at Mash-up</p>
+                        <h3>WeatherBear</h3>
+                        <p>Weather and fine dust information, delivered by a bear.</p>
+                        <p>
+                            <a
+                                href="https://play.google.com/store/apps/details?id=com.mashupgroup.weatherbear"
+                                target="_blank"
+                                rel="noopener"
+                                >Play Store</a
+                            >
+                        </p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="lab" class="section" data-heading="LAB">
+                <h2 class="heading">Lab</h2>
+                <div class="reading" data-reading>
+                    <p class="aside">
+                        In 2016 I wrote a genetic algorithm that learned to dodge missiles, and a Kinect piece that put a
+                        dancer's movement on a library wall at the Seoul Luci Festival. This site is those two ideas
+                        again, ten years later.
+                    </p>
+                    <article class="entry" data-condense="LUCI">
+                        <p class="meta">2016</p>
+                        <h3>Seoul Luci Festival Project</h3>
+                        <p>
+                            A media facade driven by Kinect. Dance movements were captured and projected onto a library
+                            building for a public event.
+                        </p>
+                        <p class="echo live-only">Here, your pointer is the dancer.</p>
+                        <p class="tech">Kinect V2 · Unity3D</p>
+                    </article>
+                    <article class="entry" data-condense="GENERATIONS">
+                        <p class="meta">2016</p>
+                        <h3>AI Game Learning Project</h3>
+                        <p>A genetic algorithm that learns to dodge missiles, improving generation by generation.</p>
+                        <p class="echo live-only">Here, pressing is the missile, and the counter in the corner is the generation.</p>
+                        <p>
+                            <a href="https://youtu.be/yISf3vsUQpc" target="_blank" rel="noopener">Watch on YouTube</a>
+                        </p>
+                        <p class="tech">C# · Genetic Algorithm</p>
+                    </article>
+                    <article class="entry" data-condense="BILLIARDS">
+                        <p class="meta">2015</p>
+                        <h3>Billiards Visual Effect Project</h3>
+                        <p>Real-time visual effects for pocket billiards, tracked with OpenCV.</p>
+                        <p>
+                            <a href="https://youtu.be/DUXIdIJ6ylM" target="_blank" rel="noopener">Watch on YouTube</a>
+                        </p>
+                        <p class="tech">C++ · OpenCV</p>
+                    </article>
+                    <article class="entry" data-condense="FLEE OR FACE">
+                        <p class="meta">2016</p>
+                        <h3>"Flee or Face" VR Game</h3>
+                        <p>A multiplayer first-person shooter in VR.</p>
+                        <p class="tech">VR · Unity · Multiplayer</p>
+                    </article>
+                    <article class="entry">
+                        <p class="meta">2015</p>
+                        <h3>AR Photozone for Kids</h3>
+                        <p>An educational AR photo zone featuring King Sejong and his inventions.</p>
+                        <p class="tech">AR · Unity</p>
+                    </article>
+                    <article class="entry">
+                        <p class="meta">2012</p>
+                        <h3>Automatic Game Bot</h3>
+                        <p>A bot that played a 2D puzzle game by reading RGB values off the screen.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="about" class="section" data-heading="ABOUT">
+                <h2 class="heading">About</h2>
+                <div class="reading" data-reading>
+                    <img class="portrait" src="img/profile.jpg" alt="Jujin Kim" width="96" height="96" loading="lazy" />
+                    <p>
+                        Software engineer based in Suwon, Republic of Korea. Android development since 2017, in Kotlin
+                        and Java. Former Android team leader at Mash-up.
+                    </p>
+                    <h3 class="group">Also</h3>
+                    <ul class="plain">
+                        <li><strong>Game development</strong> — Unity, multiplayer, AI game agents</li>
+                        <li>
+                            <strong>AI and agentic workflows</strong> — MLPs, genetic algorithms, small models, and
+                            AI-assisted development for personal projects
+                        </li>
+                    </ul>
+                    <h3 class="group">Achievements and communities</h3>
+                    <ul class="plain">
+                        <li><span class="meta">2021</span> Startup Pivoting Hackathon at KITA — 2nd place</li>
+                        <li>
+                            <span class="meta">2018 — 2020</span>
+                            <a href="https://mash-up.kr" target="_blank" rel="noopener">Mash-up</a> — Android team leader,
+                            7th batch
+                        </li>
+                        <li><span class="meta">2015</span> Nexon NOS 7th — 3rd place, game programming</li>
+                        <li><span class="meta">2015 — 2016</span> Microsoft Student Partners — 9th batch</li>
+                        <li>GitHub Arctic Code Vault — code preserved in the Arctic for 1000 years</li>
+                    </ul>
+                    <h3 class="group">Contact</h3>
+                    <ul class="links">
+                        <li><span>Email</span><a href="mailto:jk@jujin.kim">jk@jujin.kim</a></li>
+                        <li>
+                            <span>GitHub</span
+                            ><a href="https://github.com/jujinkim" target="_blank" rel="noopener">github.com/jujinkim</a>
+                        </li>
+                        <li>
+                            <span>LinkedIn</span
+                            ><a href="https://linkedin.com/in/jujinkim" target="_blank" rel="noopener"
+                                >linkedin.com/in/jujinkim</a
+                            >
+                        </li>
+                        <li>
+                            <span>Blog</span><a href="https://jujin.dev" target="_blank" rel="noopener">jujin.dev</a>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <script type="module" src="js/main.js?v=20261119.1"></script>
     </body>
 </html>
