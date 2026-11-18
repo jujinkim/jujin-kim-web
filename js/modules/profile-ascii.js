@@ -1,4 +1,4 @@
-import { PROFILE_IMAGE_URL } from '../constants.js?v=20261118.1';
+import { PROFILE_IMAGE_URL } from '../constants.js?v=20261118.2';
 
 // Profile picture loader (photo only)
 export function initProfilePicture() {

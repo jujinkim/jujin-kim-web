@@ -1,6 +1,7 @@
-import { createCurvature } from './screen-curvature.js?v=20261118.1';
-import { monitorPerformance } from './display-performance.js?v=20261118.1';
-import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261118.1';
+import { createCurvature } from './screen-curvature.js?v=20261118.2';
+import { monitorPerformance } from './display-performance.js?v=20261118.2';
+import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261118.2';
+import { initDesktopScene } from './desktop-scene.js?v=20261118.2';
 
 const VISIT_MODE = 'crt-display-mode';
 const POWER_SEEN = 'crt-power-seen';
@@ -88,6 +89,7 @@ export function initCRTEffects() {
         web1(forced ? 'preview' : 'visit-preference');
         return;
     }
+    const scene = initDesktopScene(glass, events.signal);
     function startCurvature() {
         if (diagnostics.mode === 'web1' || curvatureFailed || renderer || glass.classList.contains('power-on')) return;
         if (forced === 'flat') {
@@ -109,7 +111,7 @@ export function initCRTEffects() {
     performanceMonitor = monitorPerformance(degrade, (sample) => {
         samples.push({ ...sample, mode: diagnostics.mode, resolution: resolutions[level] });
         if (samples.length > 30) samples.shift();
-    });
+    }, scene);
     desktop.addEventListener('change', () => {
         if (diagnostics.mode === 'web1') return;
         if (!desktop.matches) {

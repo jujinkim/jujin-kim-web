@@ -45,7 +45,7 @@ html {
 
 @font-face {
     font-family: 'JetBrains Mono Local';
-    src: url('../fonts/JetBrainsMono-Regular.woff2?v=20261118.1') format('woff2');
+    src: url('../fonts/JetBrainsMono-Regular.woff2?v=20261118.2') format('woff2');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -808,7 +808,8 @@ body {
     background: var(--scene-bg);
     color: var(--scene-line);
 }
-.room-backdrop {
+.room-backdrop,
+.room-foreground {
     position: absolute;
     inset: 0;
 }
@@ -1361,6 +1362,13 @@ body {
     bottom: -7px;
     height: 6px;
     border-inline: 12px solid var(--scene-line);
+}
+#monitor-rig {
+    display: contents;
+}
+.monitor-depth,
+.screen-corner {
+    display: none;
 }
 #monitor-shell {
     position: relative;

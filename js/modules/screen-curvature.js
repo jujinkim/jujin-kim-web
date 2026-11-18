@@ -34,6 +34,29 @@ function mobileScreenToSource(x, y, width, height, strength) {
     ];
 }
 
+function unprojectPoint(corners, x, y, width, height) {
+    const [topLeft, topRight, bottomRight, bottomLeft] = Array.from(corners, (corner) =>
+        corner.getBoundingClientRect()
+    );
+    const rightX = topRight.x - bottomRight.x, rightY = topRight.y - bottomRight.y;
+    const bottomX = bottomLeft.x - bottomRight.x, bottomY = bottomLeft.y - bottomRight.y;
+    const skewX = topLeft.x - topRight.x - bottomX, skewY = topLeft.y - topRight.y - bottomY;
+    const cross = rightX * bottomY - bottomX * rightY;
+    if (!cross) return null;
+
+    // Map the unit square to the projected corners, then solve for its local x and y.
+    const perspectiveX = (skewX * bottomY - bottomX * skewY) / cross;
+    const perspectiveY = (rightX * skewY - skewX * rightY) / cross;
+    const ax = topRight.x - topLeft.x + perspectiveX * (topRight.x - x);
+    const ay = topRight.y - topLeft.y + perspectiveX * (topRight.y - y);
+    const bx = bottomLeft.x - topLeft.x + perspectiveY * (bottomLeft.x - x);
+    const by = bottomLeft.y - topLeft.y + perspectiveY * (bottomLeft.y - y);
+    const dx = x - topLeft.x, dy = y - topLeft.y;
+    const determinant = ax * by - bx * ay;
+    if (!determinant) return null;
+    return [width * (dx * by - bx * dy) / determinant, height * (ax * dy - dx * ay) / determinant];
+}
+
 export function createCurvature(viewport, onFailure) {
     const canvas = document.createElement('canvas');
     canvas.setAttribute('content', 'drawable');
@@ -44,6 +67,8 @@ export function createCurvature(viewport, onFailure) {
         return null;
     }
     const glass = viewport.parentElement;
+    const rig = glass.closest('#monitor-rig');
+    const corners = glass.querySelectorAll('.screen-corner');
     const main = document.getElementById('terminal-content');
     const elements = [
         viewport,
@@ -443,11 +468,18 @@ export function createCurvature(viewport, onFailure) {
             fail(`render: ${error.message}`);
         }
     }
+    function canvasPoint(clientX, clientY) {
+        if (rig?.hasAttribute('data-scene-tilted')) {
+            const point = unprojectPoint(corners, clientX, clientY, width, height);
+            if (point) return point;
+        }
+        const rect = canvas.getBoundingClientRect();
+        return [clientX - rect.left, clientY - rect.top];
+    }
+
     // Native Range selection preserves browser copy/find and a single text source.
     function atPointer(event, callback) {
-        const rect = canvas.getBoundingClientRect(),
-            x = event.clientX - rect.left,
-            y = event.clientY - rect.top;
+        const [x, y] = canvasPoint(event.clientX, event.clientY);
         const [sx, sy] = toSource(x, y);
         syncGeometry({ dx: x - sx, dy: y - sy });
         try {

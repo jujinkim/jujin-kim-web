@@ -6,7 +6,7 @@ export function summarizeFrames(frames) {
     return { fps, p95, slow: fps < 55 || p95 > 25 };
 }
 
-export function monitorPerformance(onSlow, onSample) {
+export function monitorPerformance(onSlow, onSample, scene) {
     const controller = new AbortController();
     let raf,
         previous,
@@ -27,6 +27,10 @@ export function monitorPerformance(onSlow, onSample) {
     }
     function submit(sample) {
         onSample(sample);
+        if (sample.slow && scene.disableOnSlowFrame()) {
+            exclude();
+            return;
+        }
         consecutive = sample.slow ? consecutive + 1 : 0;
         if (consecutive >= 2) {
             consecutive = 0;
@@ -54,7 +58,8 @@ export function monitorPerformance(onSlow, onSample) {
         if (!stopped) raf = requestAnimationFrame(frame);
     }
     function interact(event) {
-        if (event.type === 'pointermove' && !event.buttons) return;
+        if (event.type === 'pointermove' && !event.buttons &&
+            (event.pointerType !== 'mouse' || !scene.isTilted())) return;
         activeUntil = performance.now() + 650;
         if (raf == null && !document.hidden) raf = requestAnimationFrame(frame);
     }
