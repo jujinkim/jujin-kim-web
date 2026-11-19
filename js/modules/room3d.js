@@ -10,9 +10,9 @@
 // World units are metres. The origin is the viewport centre on the screen
 // plane, +y is up and +z points at the viewer.
 
-import { BOOK_LINKS } from '../constants.js?v=20261120.3';
+import { BOOK_LINKS } from '../constants.js?v=20261120.4';
 
-const VENDOR = '../vendor/three.min.js?v=20261120.3';
+const VENDOR = '../vendor/three.min.js?v=20261120.4';
 const OFF_KEY = 'room3d-off';
 const SCREEN_HEIGHT = 0.33;
 const CAMERA_DISTANCE = 1.15; // in viewport heights
@@ -274,6 +274,19 @@ function buildRoom(scene) {
     span(room, darkWood, 0.72, 1.2, -0.74, -0.04, -0.46, 0.5);
     for (let i = 0; i < 3; i++) span(room, metal, 0.9, 1.02, -0.2 - i * 0.2, -0.185 - i * 0.2, 0.5, 0.51, false);
     span(room, black, -0.42, 0.42, 0, 0.003, 0.13, 0.46, false).receiveShadow = true;
+
+    // The computer itself: a beige tower on the floor under the desk.
+    const TX0 = -1.1, TX1 = -0.9, TY0 = -0.74, TY1 = -0.3, TZ = 0.32;
+    span(room, beige, TX0, TX1, TY0, TY1, TZ - 0.45, TZ);
+    const bay = std(0x8d8674, 0.7);
+    for (let i = 0; i < 2; i++) span(room, bay, TX0 + 0.02, TX1 - 0.02, TY1 - 0.085 - i * 0.055, TY1 - 0.04 - i * 0.055, TZ, TZ + 0.003, false);
+    span(room, bay, TX0 + 0.04, TX1 - 0.04, TY1 - 0.19, TY1 - 0.16, TZ, TZ + 0.003, false);
+    span(room, black, TX0 + 0.05, TX1 - 0.05, TY1 - 0.178, TY1 - 0.172, TZ + 0.003, TZ + 0.004, false);
+    span(room, bay, TX0 + 0.03, TX0 + 0.06, TY1 - 0.27, TY1 - 0.24, TZ, TZ + 0.006, false);
+    for (let i = 0; i < 6; i++) span(room, bay, TX0 + 0.03, TX1 - 0.03, TY0 + 0.04 + i * 0.018, TY0 + 0.046 + i * 0.018, TZ, TZ + 0.002, false);
+    span(room, glowMaterial(0.2, 1.4, 0.5), TX1 - 0.07, TX1 - 0.058, TY1 - 0.262, TY1 - 0.25, TZ, TZ + 0.003, false);
+    // Disk light: lit while any drive in the rack is busy.
+    parts.towerLed = span(room, glowMaterial(0.3, 0.12, 0.05), TX1 - 0.045, TX1 - 0.033, TY1 - 0.262, TY1 - 0.25, TZ, TZ + 0.003, false);
 
     // Keyboard.
     span(room, std(0x8c8676, 0.7), -0.22, 0.22, 0.003, 0.02, 0.19, 0.34);
@@ -1060,11 +1073,14 @@ function tick(now) {
     S.materials.power.color.setRGB(0.1, fx('power') ? 4 : 0.5 + 1.2 * power, fx('power') ? 2 : 0.4);
     S.powerHalo.material.opacity = fx('power') ? 1 : 0.2 + 0.4 * power;
 
+    let disk = false;
     p.drives.forEach((drive, i) => {
         const on = fx(`drive${i}`) ? Math.floor(now / 50) % 2 === 0 : false;
+        disk ||= on;
         drive.led.material.color.setRGB(on ? 2.4 : 0.1, on ? 4 : 0.7, on ? 2.6 : 0.3);
         drive.halo.material.opacity = on ? 1 : 0.3;
     });
+    p.towerLed.material.color.setRGB(disk ? 3 : 0.3, disk ? 1.4 : 0.12, disk ? 0.3 : 0.05);
     const thump = fx('speaker') ? 1 + 0.12 * Math.sin(((S.fx.speaker - now) / 360) * Math.PI) : 1;
     p.cones.forEach((cone) => cone.scale.setScalar(thump));
     if (Object.keys(S.fx).some(fx)) busy = true;

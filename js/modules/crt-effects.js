@@ -1,10 +1,10 @@
-import { createCurvature } from './screen-curvature.js?v=20261120.3';
-import { monitorPerformance } from './display-performance.js?v=20261120.3';
-import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261120.3';
-import { initDesktopScene } from './desktop-scene.js?v=20261120.3';
-import { runEntrance, cancelEntrance, entranceActive } from './entrance.js?v=20261120.3';
-import { stillRoom } from './room-life.js?v=20261120.3';
-import { room3d } from './room3d.js?v=20261120.3';
+import { createCurvature } from './screen-curvature.js?v=20261120.4';
+import { monitorPerformance } from './display-performance.js?v=20261120.4';
+import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261120.4';
+import { initDesktopScene } from './desktop-scene.js?v=20261120.4';
+import { runEntrance, cancelEntrance, entranceActive } from './entrance.js?v=20261120.4';
+import { stillRoom } from './room-life.js?v=20261120.4';
+import { room3d } from './room3d.js?v=20261120.4';
 
 // How long a first visit waits in the dark for the 3D room before the CSS
 // room takes the entrance instead.

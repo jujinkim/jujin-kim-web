@@ -1,5 +1,5 @@
-import { onSwarm, swarmEnergy } from './animations.js?v=20261120.3';
-import { room3d } from './room3d.js?v=20261120.3';
+import { onSwarm, swarmEnergy } from './animations.js?v=20261120.4';
+import { room3d } from './room3d.js?v=20261120.4';
 
 // Ties the room's objects to real signals: the swarm's generations and energy,
 // terminal commands, section changes and the visitor's local time. Nothing here

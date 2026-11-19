@@ -1,4 +1,4 @@
-import { room3d } from './room3d.js?v=20261120.3';
+import { room3d } from './room3d.js?v=20261120.4';
 
 const TRACKING_TIME = 90;
 const WHEEL_HOLD = 120;
