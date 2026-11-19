@@ -1,4 +1,4 @@
-import { TUNING as T, GENOMES, GENE_COUNT } from './config.js?v=20261119.1';
+import { TUNING as T, GENOMES, GENE_COUNT } from './config.js?v=20261119.3';
 
 const MAX_PULSES = 4;
 const TAU = Math.PI * 2;

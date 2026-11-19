@@ -1,10 +1,10 @@
-import { TUNING as T, COUNT_LADDER, PIXEL_BUDGET, GENOMES, GENE_COUNT } from './config.js?v=20261119.1';
-import { createSim } from './sim.js?v=20261119.1';
-import { createRenderer } from './renderer.js?v=20261119.1';
-import { createInput } from './input.js?v=20261119.1';
-import { sampleText, sampleKnot } from './text-targets.js?v=20261119.1';
-import { createQuality } from './quality.js?v=20261119.1';
-import { decode, evolve, loadState, saveState, clearState, seedPopulation } from './evolution.js?v=20261119.1';
+import { TUNING as T, COUNT_LADDER, PIXEL_BUDGET, GENOMES, GENE_COUNT } from './config.js?v=20261119.3';
+import { createSim } from './sim.js?v=20261119.3';
+import { createRenderer } from './renderer.js?v=20261119.3';
+import { createInput } from './input.js?v=20261119.3';
+import { sampleText, sampleKnot } from './text-targets.js?v=20261119.3';
+import { createQuality } from './quality.js?v=20261119.3';
+import { decode, evolve, loadState, saveState, clearState, seedPopulation } from './evolution.js?v=20261119.3';
 
 // Owns the frame loop and the state machine:
 //
@@ -40,6 +40,10 @@ export function createWorld(canvas, hooks = {}) {
 
     let width = 0;
     let height = 0;
+    // Top-left of the canvas in client coordinates; pointer positions are
+    // client-space, the simulation is canvas-space.
+    let originX = 0;
+    let originY = 0;
     let scale = 1;
     let raf = 0;
     let last = 0;
@@ -103,8 +107,8 @@ export function createWorld(canvas, hooks = {}) {
     function wake() {
         if (state !== 'dormant') return;
         wokeAt = time;
-        const aimX = input.state.seen ? input.state.x : width / 2;
-        const aimY = input.state.seen ? input.state.y : height / 2;
+        const aimX = input.state.seen ? input.state.x - originX : width / 2;
+        const aimY = input.state.seen ? input.state.y - originY : height / 2;
         sim.burst(width / 2, height * 0.46, T.dormantCount, aimX, aimY);
         sim.setCount(count);
         sim.scatter(0, 0, 260);
@@ -139,7 +143,7 @@ export function createWorld(canvas, hooks = {}) {
     const input = createInput({
         onPress(x, y, charge) {
             if (state === 'dormant') return wake();
-            sim.emitPulse(x, y, charge);
+            sim.emitPulse(x - originX, y - originY, charge);
             hooks.onPulse?.(charge);
         },
         onActivity(kind, travelled) {
@@ -149,8 +153,12 @@ export function createWorld(canvas, hooks = {}) {
     });
 
     function resize() {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
+        const bounds = hooks.bounds?.();
+        const w = Math.round(bounds ? bounds.width : window.innerWidth);
+        const h = Math.round(bounds ? bounds.height : window.innerHeight);
+        originX = bounds ? bounds.left : 0;
+        originY = bounds ? bounds.top : 0;
+        if (w < 2 || h < 2) return;
         // Mobile URL bars change the height constantly; don't rebuild for that.
         if (w === width && Math.abs(h - height) < height * 0.15) return;
         const first = width === 0;
@@ -159,7 +167,7 @@ export function createWorld(canvas, hooks = {}) {
         scale = Math.min(w, h) / 900;
         let dpr = Math.min(window.devicePixelRatio || 1, 2);
         if (w * h * dpr * dpr > budget) dpr = Math.sqrt(budget / (w * h));
-        canvas.style.height = `${h}px`;
+        if (!bounds) canvas.style.height = `${h}px`;
         renderer.resize(w, h, dpr);
         sim.resize(w, h);
         if (first) {
@@ -237,8 +245,14 @@ export function createWorld(canvas, hooks = {}) {
         presence += ((driven ? 1 : 0) - presence) * (1 - Math.exp(-dt * 1.6));
         const ghostX = width * (0.5 + 0.3 * Math.sin(time * 0.19));
         const ghostY = height * (0.5 + 0.26 * Math.sin(time * 0.27 + 1.3));
-        const targetX = ghostX + (input.state.x - ghostX) * presence;
-        const targetY = ghostY + (input.state.y - ghostY) * presence;
+        // The canvas can drift with the monitor; re-anchor a few times a second.
+        if (hooks.bounds && frames % 20 === 0) {
+            const bounds = hooks.bounds();
+            originX = bounds.left;
+            originY = bounds.top;
+        }
+        const targetX = ghostX + (input.state.x - originX - ghostX) * presence;
+        const targetY = ghostY + (input.state.y - originY - ghostY) * presence;
         const follow = 1 - Math.exp(-dt * T.lightFollow);
         const nx = lightX + (targetX - lightX) * follow;
         const ny = lightY + (targetY - lightY) * follow;
@@ -309,6 +323,7 @@ export function createWorld(canvas, hooks = {}) {
     return {
         start,
         stop,
+        resize,
         wake,
         sim,
         renderer,

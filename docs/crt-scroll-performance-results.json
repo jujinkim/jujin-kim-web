@@ -1,0 +1,304 @@
+{
+  "date": "2026-11-10",
+  "origin": "http://127.0.0.1:8000/",
+  "baselineDurationMs": 6000,
+  "durationMs": 24000,
+  "baseline": [
+    {
+      "browser": "chrome157",
+      "version": "157.0.8103.38",
+      "label": "desktop",
+      "mode": "curved",
+      "fps": 60.00365673254322,
+      "p95": 16.700000000000728,
+      "endMode": "curved",
+      "resolution": 1,
+      "samples": [
+        {
+          "fps": 59.99900828085485,
+          "p95": 16.700000000000728,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 60.004959087527894,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        }
+      ],
+      "before": {
+        "uploads": 71,
+        "uploadedPixels": 43454320,
+        "contentUploads": 6,
+        "frames": 55,
+        "tiles": 7,
+        "resolution": 1
+      },
+      "after": {
+        "uploads": 878,
+        "uploadedPixels": 138367840,
+        "contentUploads": 6,
+        "frames": 412,
+        "tiles": 7,
+        "resolution": 1
+      }
+    },
+    {
+      "browser": "chrome157",
+      "version": "157.0.8103.38",
+      "label": "mobile-retina",
+      "mode": "curved",
+      "fps": 60.0026593976464,
+      "p95": 16.700000000000728,
+      "endMode": "curved",
+      "resolution": 1,
+      "samples": [
+        {
+          "fps": 60.00198353664583,
+          "p95": 16.700000000000273,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 60.00198353664585,
+          "p95": 16.700000000000728,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        }
+      ],
+      "before": {
+        "uploads": 25,
+        "uploadedPixels": 7492224,
+        "contentUploads": 6,
+        "frames": 13,
+        "tiles": 7,
+        "resolution": 1
+      },
+      "after": {
+        "uploads": 715,
+        "uploadedPixels": 20673984,
+        "contentUploads": 6,
+        "frames": 366,
+        "tiles": 7,
+        "resolution": 1
+      }
+    }
+  ],
+  "after": [
+    {
+      "browser": "chrome157",
+      "version": "157.0.8103.38",
+      "label": "desktop",
+      "mode": "curved",
+      "fps": 60.00266493445894,
+      "p95": 16.799999999999272,
+      "endMode": "curved",
+      "resolution": 1,
+      "samples": [
+        {
+          "fps": 60.00198353664583,
+          "p95": 16.700000000000728,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 60.004959087527894,
+          "p95": 16.700000000000728,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 60,
+          "p95": 16.800000000000182,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 60.004959087527894,
+          "p95": 16.700000000000728,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 60.00198353664583,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 60.004959087527894,
+          "p95": 16.700000000000728,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 60.004959087527844,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 60,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 60.00198353664588,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 60,
+          "p95": 16.700000000000728,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 60,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        }
+      ],
+      "before": {
+        "uploads": 80,
+        "uploadedPixels": 45166160,
+        "contentUploads": 6,
+        "frames": 58,
+        "tiles": 9,
+        "resolution": 1
+      },
+      "after": {
+        "uploads": 4758,
+        "uploadedPixels": 449489360,
+        "contentUploads": 1415,
+        "frames": 1476,
+        "tiles": 9,
+        "resolution": 1
+      }
+    },
+    {
+      "browser": "chrome157",
+      "version": "157.0.8103.38",
+      "label": "mobile-retina",
+      "mode": "curved",
+      "fps": 59.16987291593769,
+      "p95": 16.799999999999272,
+      "endMode": "curved",
+      "resolution": 1,
+      "samples": [
+        {
+          "fps": 58.499999999999986,
+          "p95": 16.800000000000182,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 59.50905033473841,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 59.01021521372606,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 59.506099375186,
+          "p95": 16.80000000000109,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 59.5,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 59,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 59.50609937518595,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 58.51723282915943,
+          "p95": 16.80000000000291,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 59.01314158194892,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 59.5,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        },
+        {
+          "fps": 59.5,
+          "p95": 16.799999999999272,
+          "slow": false,
+          "mode": "curved",
+          "resolution": 1
+        }
+      ],
+      "before": {
+        "uploads": 31,
+        "uploadedPixels": 6519896,
+        "contentUploads": 6,
+        "frames": 13,
+        "tiles": 9,
+        "resolution": 1
+      },
+      "after": {
+        "uploads": 4196,
+        "uploadedPixels": 96495128,
+        "contentUploads": 1395,
+        "frames": 1401,
+        "tiles": 9,
+        "resolution": 1
+      }
+    }
+  ]
+}

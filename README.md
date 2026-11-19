@@ -1,68 +1,84 @@
-# Jujin Kim — Swarm Portfolio
+# Jujin Kim Terminal Portfolio
 
-Personal site at [jujin.kim](https://jujin.kim), built with HTML, CSS, and vanilla ES modules with hand-written WebGL2. No framework, bundler, or runtime dependency.
-
-The page is a swarm of light particles. It follows the visitor's pointer or finger, evolves by a genetic algorithm while they move, and settles into the section heading when they stop. It grew out of two 2016 projects listed under Lab: a Kinect media facade for the Seoul Luci Festival, and a genetic algorithm that learned to dodge missiles.
-
-## What a visit looks like
-
-1. **Dormant.** A small knot of light in the dark. Moving the pointer, pressing, touching, any key, or waiting 10 seconds wakes it.
-2. **Roaming.** The swarm follows the light the visitor carries. With no visitor input the light wanders by itself.
-3. **Condensed.** After about a second of stillness, most particles settle into the heading ("JUJIN KIM", "WORK", ...). The text fades in after the first condensation.
-4. **Pulse.** A press that stays in place sends out a ring; holding longer makes it larger. Particles the ring passes are struck, turn ember, and return from the edge.
-5. **Generations.** Every 6 seconds of active play the 24 genomes are ranked, the weakest half replaced by children of the fittest, and `GEN` in the corner counts up. The lineage is saved, so a returning visitor resumes at their generation.
-
-Hovering or focusing a project makes the swarm spell its name.
+Personal portfolio at [jujin.kim](https://jujin.kim), built with HTML, CSS, and vanilla ES modules. No framework, bundler, or runtime dependency.
 
 ## Display modes
 
-| Situation | Result |
+| Environment | Display |
 | --- | --- |
-| WebGL2 available | Live swarm |
-| `prefers-reduced-motion`, no WebGL2, lost context, or sustained slow frames at the lowest quality | One still frame on a 2D canvas, all content visible |
-| JavaScript disabled or the module fails to load | Plain page, every section listed |
+| Desktop viewport at least 1000 x 600, native HTML-in-Canvas and WebGL2 available | Curved CRT content |
+| Smaller viewport, including mobile portrait/landscape | Flat CRT with native DOM input and scrolling; no curvature renderer |
+| API unavailable, rendering/interaction error, or context loss | Flat CRT content; monitor and effects retained |
+| Two consecutive slow interaction windows at the lowest resolution, or in flat CRT | Web 1.0 |
 
-Content is static HTML in `index.html`, so all three modes show the same text.
+The same DOM supplies all three modes: Home, About & Career, Projects & Skills, and Tech & Experiences. Theme choices remain Light, Dark, and System. The monitor and surrounding room combine CSS line geometry with flat green fills. A large city window and articulated task lamp occupy the left; a wall shelf, terminal-shaped neon sign, and equipment rack occupy the right. The desk connects them around the central monitor, with a keyboard, speaker, and routed cable. The entire exterior shares exactly three authored colors: `#101c15` (ground), `#304d3b` (surfaces and structure), and `#86b493` (accents). Broad surfaces are solid colors, with no gradients, blur, or cast shadows. At viewport sizes of at least 1000 x 600, its 4:3 screen fills the available space without a fixed width cap, reserving room for a low stand on the desk. Outer clearance on the limiting axis equals the bezel thickness (24–56px). The stand stays near the bottom desk surface, including tall viewports; wider or taller viewports retain the extra space required by 4:3. Smaller viewports use thin bezels and available height. Layout breakpoints use the monitor's internal width. Home stays left; the other three menu links stay grouped on the right.
 
-## How it is built
+The first visit in each tab plays a silent 600ms power sequence. A small head script keeps screen content hidden before the modules initialize, preventing a fully lit frame before startup. Reload and navigation do not repeat the effect. Reduced motion or inaccessible session storage skips it. CSS finishes the reveal without depending on a cleanup callback. The initial guard releases on load or after 1500ms if startup fails; late modules skip the effect instead of hiding an already visible screen. JavaScript or module-network failure leaves static introductory content, contact links, and four section anchors visible.
 
-- **Simulation** (`js/modules/sim.js`): up to 16,000 particles (7,000 on touch devices) in flat typed arrays on the CPU. Neighbour effects use a coarse density/velocity grid instead of pairwise search. The light's velocity is also written into that grid and decays over about 1.5 seconds, which is the wake particles get carried by. The field wraps at the edges.
-- **Evolution** (`js/modules/evolution.js`): 8 genes per genome (speed, turn, attract, orbit, cohesion, wander, flee, hue). Fitness is time spent near the light, divided among crowded particles so a single blob does not win, times a survival factor for avoiding pulses. Selection keeps 4 elites, replaces the 12 weakest using tournament selection, BLX crossover and gaussian mutation, and injects random genomes if diversity collapses. The module is pure and runs under node.
-- **Rendering** (`js/modules/renderer.js`, `shaders.js`): particles are drawn as additive points into a trail buffer that fades and bleeds each frame, followed by two bloom levels and a tone-mapped composite. Trails use `RGBA16F` when the browser can render to it and fall back to `RGBA8` otherwise. The composite also dims the swarm behind the reading column and draws pulse rings analytically.
-- **Headings** (`js/modules/text-targets.js`): text is rasterized to an offscreen canvas and sampled on a jittered grid; bound particles spring to those points. The real headings remain in the DOM, transparent, for layout and screen readers.
-- **Quality** (`js/modules/quality.js`): frame intervals are sampled in 2-second windows. Two slow windows in a row (under 55fps or p95 over 25ms) step down trail resolution, then particle count, then the far bloom, and finally switch to the still frame. A steady 30Hz display is not treated as slow.
-- **Sound** (`js/modules/audio.js`): off by default. The toggle or `S` creates an `AudioContext` and a fully synthesized drone, a movement voice, a tick per generation and a thump per pulse. There are no audio files.
+## Renderer and input
 
-Tuning constants are collected in `js/modules/config.js`.
+`js/modules/screen-curvature.js` uses Chrome 157's native `content="drawable"`, `drawable`, `paint`, `texElementSubImage2D`, and `updateElementGeometry` APIs. No experimental feature flags, DOM screenshot library, live SVG displacement filter, or duplicate content tree.
+
+Edge 156 (Chromium 156) does not provide this API by default and therefore shows flat CRT. Capability checks decide the mode, rather than browser-name/version checks. HTTP on the LAN works with the prepared Chrome 157 build; HTTPS is not the cause of the Edge 156 fallback. See [Chrome's API documentation](https://developer.chrome.com/docs/web-platform/html-in-canvas).
+
+- Header, title, text, images, background, footer, and terminal share one transform. At desktop viewports of at least 1000 x 600, the rectangular aperture and all four pixel edges stay fixed while the interior gently expands. The source mapping is `p * (1 - k * (1 - p.x²) * (1 - p.y²))`, with `k=0.04` for large internal screens and `0.025` at internal widths up to 768px. Smaller viewports use the native DOM directly, without WebGL curvature or curved-glass shading; the thin frame, scanlines, noise, and themes remain.
+- 512px texture tiles and a 24-tile / 64MiB LRU limit bound GPU storage. Scrollable content is captured from its native scrollport, so snapshots include newly exposed rows. Tiles track which rows have actually been captured; scrolling uploads only uncached visible bands and refreshes a separate narrow scrollbar strip. Scroll events request a coalesced paint even when `changedElements` omits them. Source edits, loading, focus, selection, and theme changes invalidate cached pixels. GPU scissor rectangles limit drawing to each tile's visible area without uploading the full document.
+- The swarm canvas (`#starfield`) uploads its existing canvas bitmap directly to its own texture and passes through the same barrel shader. It shares the cache budget with DOM tiles, and its raster resolution follows measured quality changes.
+- Pointer coordinates use the shader's inverse transform. Mouse selection stays a native DOM Range for copying and browser find. Touch scrolling, momentum, pinch zoom, and long-press selection use native browser gestures. Keyboard and accessibility geometry use a local affine approximation of the curve; the visible focus ring travels through the same shader as the content.
+- Context loss or an input/rendering exception restores the original DOM in place. Section, scroll offsets, terminal input/history, and focus survive. Curvature setup follows the power sequence, avoiding clipped initial canvas snapshots.
+- Hidden tabs stop rendering. Visibility restoration and `pageshow` refresh cached layers and reset pending paint requests. Decorative motion continues during scrolling; only measured sustained frame degradation lowers quality. Reduced motion retains the chosen display mode with stationary effects. With reduced motion the swarm does not run.
+- Crossing the desktop viewport breakpoint destroys or recreates the curvature renderer while preserving the same DOM, current section, scroll position, input, and quality level. Rendering failures and Web 1.0 remain sticky across resizing.
+
+`js/modules/display-performance.js` samples actual interaction rAF intervals over 2-second windows after a 3-second startup grace period. Resize and visibility changes exclude another 1.5 seconds. Idle periods do not contribute. Target: average >=55fps and p95 <=25ms on a 60Hz display. Two consecutive failing windows lower resolution through 1.0, 0.8, and 0.6 (initial DPR capped at 2). Continued failure selects Web 1.0 for the remainder of the tab session. No automatic oscillation back to CRT.
+
+Web 1.0 uses a gray surface, system font, blue underlined links, purple visited links, and simple borders/buttons; Dark and System choices still work. It destroys WebGL resources, stops effect listeners/timers, releases the background canvas, and removes CRT overlays and the room background. Mobile, reduced motion, or unsupported curvature alone never select this mode.
 
 ## Navigation
 
-- Five sections with hash URLs: `#home`, `#work`, `#projects`, `#lab`, `#about`. Reload and back/forward work. The old `#technologies` hash maps to `#about`.
-- Keys: `1`-`5` select a section, `ArrowLeft`/`ArrowRight` step, `Escape` returns home, `S` toggles sound.
-- Hover or focus the `GEN` readout for the mean genes of the current population and a lineage reset.
+- Four menu links support hashes, reload, and browser back/forward.
+- Desktop: `1`-`4` (also `Shift+1`-`4`) select a section; `Escape` returns Home.
+- `/` or the footer terminal button opens the terminal. `ArrowUp`/`ArrowDown` recall command history. Terminal typing does not trigger menu shortcuts.
+- Existing commands: `help`, `clear`, `about`, `skills`, `contact`, `date`, `ls`, `cat`, `swarm`, `gen`, `reset`, `sound`.
+- The existing compact/coarse-pointer terminal restriction is retained.
+- `window.setTheme(mode)` and `navigateToSection(sectionId)` remain available through their existing interfaces.
 
 ## Local preview and checks
 
-```bash
+Serve over HTTP so ES modules load:
+
+```sh
 python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-```bash
-node --test tests/evolution.test.mjs
-for f in js/main.js js/modules/*.js; do node --check "$f"; done
-SWARM_PLAYWRIGHT=/path/to/playwright node tests/swarm-smoke.cjs
+Open `http://127.0.0.1:8000/`. Diagnostic routes:
+
+- `/?crt-preview=1`: native curve when supported.
+- `/?crt-preview=1&crt-mode=flat`: flat CRT.
+- `/?crt-preview=1&crt-mode=web1`: Web 1.0.
+
+`window.crtDiagnostics` exposes mode, reason, recent frame windows, texture counters, and resolution. Only preview URLs expose `forceFlat()`, `forceWeb1()`, `submitSample()`, and `toScreen()` for verification. Forced preview modes override the saved visit choice; a normal visit respects it.
+
+Run `node tests/crt-scene.cjs` for desktop camera motion and projected input checks. Browser verification scripts in `tests/` use an external Playwright installation; they do not add a build pipeline or runtime package. See [flat compact-screen verification](docs/crt-compact.md), [screen-corner alignment](docs/crt-screen-edge.md), [desktop curvature/input verification](docs/crt-desktop-curvature.md), [startup verification](docs/crt-startup.md), [scroll rendering verification](docs/crt-scroll-rendering.md), [current CSS room/monitor verification](docs/crt-css-scene.md), [initial implementation verification](docs/crt-verification.md), and [layout/motion follow-up](docs/crt-feedback-verification.md) for commands, measured results, and limits. Earlier [room/monitor](docs/crt-room-refinement.md), [room depth/neon](docs/crt-room-depth.md), [material/color](docs/crt-material-refinement.md), [office background](docs/crt-office-background.md), and [painted room](docs/crt-painted-room.md) notes describe superseded image-based designs.
+
+```sh
+for file in js/main.js js/modules/*.js; do node --check "$file" || exit; done
+git diff --check
 ```
 
-The smoke test accepts `SWARM_BASE_URL`, `SWARM_BROWSER` (`chromium`, `firefox`, `webkit`) and `SWARM_EXECUTABLE`. Headless browsers without WebGL2 skip the live checks and still verify the fallbacks.
+## Assets and release cache
 
-URL parameters for debugging: `?debug=1` (exposes `window.swarmDebug`), `?enter=0` (skip the entrance), `?quality=off`, `?rgba8=1`, `?static=1`.
+`#room-scene` is a decorative sibling of the monitor, outside the curved content DOM. The composition separates distant wall fixtures from equipment resting on the foreground desk. Left and right wall planes use matching shallow oblique projections drawn with 2D CSS transforms, keeping their line composition consistent across browser engines. A large mullioned window, curtain folds, and skyline balance a shelf and terminal-prompt neon sign. An articulated lamp and speaker sit opposite a rack with meters, patch sockets, cooling fans, and drive bays. The keyboard and cable follow the desktop. Main silhouettes use accent outlines; internal details use quieter structure lines. Curtains, selected skyline blocks, window bars, furniture, lamp, keyboard, and equipment cases use solid muted green fills. Walls, the desktop, and recessed equipment panels retain the dark ground so the outlines remain legible. The three opaque colors live in `--scene-bg`, `--scene-line`, and `--scene-accent`. No gradients, translucency, or surface shading adds colors. Desk height is `clamp(112px, 20dvh, 320px)`. The scenery stays dark in both content themes. It is inert, hidden from accessibility APIs, and ignores pointer input.
 
-## Release cache
+The bezel uses a solid green body with nested outlines, corner seams, dark vents, and a separate dark control strip around an unpainted center. The stand, round adjustment knobs, rocker, and LED share the same three-color palette, with no simulated bevels or material shading. The room and case geometry use CSS. At viewport sizes of at least 1000×600, mouse movement shifts and tilts the monitor and moves the room in layers. Reduced-motion settings and sustained slow frames restore the straight-on view. Existing profile/title assets and screen effects remain. Compact layouts hide the room and retain thin CSS bezels. Web 1.0 and print hide the room, decorative frame, and stand. No settings or public JavaScript interfaces were added.
 
-Local entrypoints, module imports, and the font URL use `v=20261119.1`. Bump the key everywhere together for a release.
+Local entrypoints, module imports, fonts, and favicons use `v=20261119.3`. Bump the release key together for runtime releases.
 
 ## Author
 
 Jujin Kim · [GitHub](https://github.com/jujinkim) · [LinkedIn](https://linkedin.com/in/jujinkim) · [jk@jujin.kim](mailto:jk@jujin.kim)
 
 Personal portfolio — all rights reserved.
+
+## Swarm background
+
+The terminal screen's background (`#starfield`) is a particle swarm drawn with hand-written WebGL2. It follows the pointer, a still press sends a pulse through it, and 24 genomes evolve by a genetic algorithm while the visitor moves (`GEN` in the footer; the lineage persists in `localStorage["swarm.v1"]`). It is a background: tuning in `js/modules/config.js` keeps it dim so the terminal text stays easy to read. Terminal commands: `swarm` (toggle), `gen`, `reset`, `sound`. `node --test tests/evolution.test.mjs` covers the genetic algorithm; `?debug=1` exposes `window.swarmDebug`.

@@ -1,4 +1,4 @@
-import { TUNING as T, RAMP, GROUND } from './config.js?v=20261119.1';
+import { TUNING as T, RAMP } from './config.js?v=20261119.3';
 import {
     SCREEN_VERT,
     POINT_VERT,
@@ -7,10 +7,11 @@ import {
     DOWN_FRAG,
     BLUR_FRAG,
     COMPOSITE_FRAG
-} from './shaders.js?v=20261119.1';
+} from './shaders.js?v=20261119.3';
 
 const CONTEXT_OPTIONS = {
-    alpha: false,
+    alpha: true,
+    premultipliedAlpha: true,
     antialias: false,
     depth: false,
     stencil: false,
@@ -110,7 +111,6 @@ export function createRenderer(canvas, maxN, options = {}) {
                 'uBloom',
                 'uExposure',
                 'uAspect',
-                'uGround',
                 'uRes',
                 'uShade',
                 'uShadeK',
@@ -262,7 +262,6 @@ export function createRenderer(canvas, maxN, options = {}) {
         const breath = 1 + T.breathDepth * Math.sin(frame.time * Math.PI * 2 * T.breathHz);
         gl.uniform1f(u.uExposure, (T.exposure * breath) / gainScale);
         gl.uniform1f(u.uAspect, cssW / cssH);
-        gl.uniform3f(u.uGround, GROUND[0], GROUND[1], GROUND[2]);
         gl.uniform2f(u.uRes, cssW, cssH);
         for (let i = 0; i < 4; i++) {
             const p = frame.pulses[i];

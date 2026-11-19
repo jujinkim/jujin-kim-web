@@ -1,0 +1,67 @@
+{
+  "transitions": [
+    {
+      "afterMs": 0,
+      "state": "curved:1"
+    },
+    {
+      "afterMs": 4266.6,
+      "state": "curved:0.8"
+    },
+    {
+      "afterMs": 9949.7,
+      "state": "curved:0.6"
+    },
+    {
+      "afterMs": 15632.800000000001,
+      "state": "web1:0.6"
+    }
+  ],
+  "samples": [
+    {
+      "fps": 18.347713974015676,
+      "p95": 66.70000000000073,
+      "slow": true,
+      "mode": "curved",
+      "resolution": 1
+    },
+    {
+      "fps": 18.19612471722239,
+      "p95": 66.70000000000073,
+      "slow": true,
+      "mode": "curved",
+      "resolution": 1
+    },
+    {
+      "fps": 19.835366458395317,
+      "p95": 50.100000000000364,
+      "slow": true,
+      "mode": "curved",
+      "resolution": 0.8
+    },
+    {
+      "fps": 19.673421207948074,
+      "p95": 66.69999999999891,
+      "slow": true,
+      "mode": "curved",
+      "resolution": 0.8
+    },
+    {
+      "fps": 21.147887670289684,
+      "p95": 50.100000000000364,
+      "slow": true,
+      "mode": "curved",
+      "resolution": 0.6
+    },
+    {
+      "fps": 20.976633006488107,
+      "p95": 50.099999999998545,
+      "slow": true,
+      "mode": "curved",
+      "resolution": 0.6
+    }
+  ],
+  "canvas": false,
+  "noise": false,
+  "reason": "sustained-low-performance"
+}

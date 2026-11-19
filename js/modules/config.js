@@ -1,4 +1,5 @@
-// Every number that shapes how the swarm feels lives here.
+// Every number that shapes how the swarm inside the monitor feels lives here.
+// It is a background: keep it dim enough that terminal text stays easy to read.
 
 export const GENOMES = 24;
 export const GENE_COUNT = 8;
@@ -19,8 +20,8 @@ export const GENES = [
 export const SEED_GENOME = [0.42, 0.5, 0.55, 0.4, 0.35, 0.55, 0.3, 0.5];
 
 export const COUNT_LADDER = {
-    fine: [16000, 12000, 8000, 5000],
-    coarse: [7000, 5000, 3000]
+    fine: [7000, 5000, 3500, 2200],
+    coarse: [3000, 2000, 1200]
 };
 
 export const PIXEL_BUDGET = { fine: 3.0e6, coarse: 1.5e6 };
@@ -34,8 +35,6 @@ export const RAMP = [
     [0.42, 1.0, 0.52],
     [1.0, 0.56, 0.24]
 ];
-
-export const GROUND = [5 / 255, 6 / 255, 10 / 255];
 
 export const TUNING = {
     // light
@@ -91,27 +90,27 @@ export const TUNING = {
     generationSeconds: 6,
     paramBlend: 1.5,
     // render
-    deposit: 2.0,
-    trailTau: 1.7,
+    deposit: 1.3,
+    trailTau: 1.2,
     trailTauCondensed: 0.4,
     bleed: 0.12,
-    exposure: 2.6,
-    bloomNear: 0.85,
-    bloomFar: 1.0,
+    exposure: 1.5,
+    bloomNear: 0.5,
+    bloomFar: 0.45,
     breathHz: 0.1,
-    breathDepth: 0.2,
+    breathDepth: 0.1,
     // colour: how far a lineage's hue swings across the field, and how much
     // fast particles lean toward the bright end
     hueWave: 0.2,
     hueSpeed: 0.1,
     whiteAt: 9.0,
-    glow: 2.4,
+    glow: 1.5,
     ringGlow: 0.75,
     boundDim: 0.35,
     shade: 0.86,
     shadeFeather: 240,
     pointMin: 1.5,
-    pointMax: 6.5
+    pointMax: 4.5
 };
 
 export const SECTIONS = ['home', 'work', 'projects', 'lab', 'about'];

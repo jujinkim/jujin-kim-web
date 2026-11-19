@@ -92,7 +92,6 @@ uniform sampler2D uFar;
 uniform vec2 uBloom;
 uniform float uExposure;
 uniform float uAspect;
-uniform vec3 uGround;
 uniform vec2 uRes;
 uniform vec4 uShade; // reading column in CSS px: left, top, right, bottom
 uniform vec2 uShadeK; // strength, feather in px
@@ -129,8 +128,10 @@ void main() {
     c = mix(c, vec3(mapped), 0.6 * smoothstep(uWhiteAt * 0.3, uWhiteAt, peak * uExposure));
     vec2 q = (vUv - 0.5) * vec2(max(uAspect, 1.0), max(1.0 / uAspect, 1.0));
     float vignette = smoothstep(1.05, 0.25, length(q));
-    vec3 ground = uGround * (0.55 + 0.75 * vignette);
-    c = ground + c * (0.72 + 0.28 * vignette);
-    c += (hash(gl_FragCoord.xy) - 0.5) / 255.0;
-    outColor = vec4(c, 1.0);
+    c *= 0.72 + 0.28 * vignette;
+    // Premultiplied light over a transparent ground: the terminal screen
+    // behind the canvas supplies the background.
+    float a = max(max(c.r, c.g), c.b);
+    a = max(a + (hash(gl_FragCoord.xy) - 0.5) / 255.0, 0.0);
+    outColor = vec4(c, a);
 }`;

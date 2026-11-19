@@ -1,68 +1,66 @@
-import { SECTIONS, LEGACY_HASHES } from './config.js?v=20261119.1';
-
+let menuItems = [];
 const scrollPositions = new Map();
-let links = [];
-let current = null;
-let onChange = () => {};
+let currentSection;
 
-function resolve(hash) {
-    const id = LEGACY_HASHES[hash] ?? hash;
-    return SECTIONS.includes(id) ? id : 'home';
+function isMobileInputContext() {
+    return (
+        document.getElementById('monitor-glass').clientWidth <= 768 || matchMedia('(pointer: coarse)').matches
+    );
 }
 
-function show(id) {
-    id = resolve(id);
-    if (id === current) return;
-    const previous = current;
-    if (previous) scrollPositions.set(previous, window.scrollY);
-    current = id;
-    for (const link of links) {
-        if (link.dataset.section === id) link.setAttribute('aria-current', 'page');
-        else link.removeAttribute('aria-current');
-    }
-    for (const section of document.querySelectorAll('.section')) section.hidden = section.id !== id;
-    window.scrollTo(0, scrollPositions.get(id) || 0);
-    onChange(previous, id);
-}
-
-export function navigateToSection(id) {
-    id = resolve(id);
-    show(id);
-    if (location.hash !== `#${id}`) history.pushState(null, '', `#${id}`);
-}
-
-export function currentSection() {
-    return current;
-}
-
-// change(previous, next) fires whenever the visible section changes.
-export function initNavigation(change) {
-    if (change) onChange = change;
-    links = [...document.querySelectorAll('#nav [data-section]')];
-
+export function initNavigation() {
+    menuItems = [...document.querySelectorAll('.menu-item')];
+    for (const item of menuItems)
+        item.addEventListener('click', (event) => {
+            if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            navigateToSection(item.dataset.section);
+        });
     document.addEventListener('click', (event) => {
-        if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-        const link = event.target.closest('[data-section], [data-section-link]');
+        const link = event.target.closest('[data-section-link]');
         if (!link) return;
         event.preventDefault();
-        navigateToSection(link.dataset.section ?? link.dataset.sectionLink);
+        navigateToSection(link.dataset.sectionLink);
     });
-
     document.addEventListener('keydown', (event) => {
-        if (event.ctrlKey || event.metaKey || event.altKey) return;
-        if (event.target.closest('input, textarea, select, [contenteditable]')) return;
-        const index = ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5'].indexOf(event.code);
-        const at = SECTIONS.indexOf(current);
-        let next = null;
-        if (index >= 0) next = SECTIONS[index];
-        else if (event.key === 'Escape') next = 'home';
-        else if (event.key === 'ArrowRight') next = SECTIONS[Math.min(SECTIONS.length - 1, at + 1)];
-        else if (event.key === 'ArrowLeft') next = SECTIONS[Math.max(0, at - 1)];
-        if (!next) return;
-        event.preventDefault();
-        navigateToSection(next);
+        if (
+            isMobileInputContext() ||
+            event.ctrlKey ||
+            event.metaKey ||
+            event.altKey ||
+            (event.key !== 'Escape' && document.body.classList.contains('terminal-open')) ||
+            event.target.closest('input, textarea, select, [contenteditable]')
+        )
+            return;
+        const index = ['Digit1', 'Digit2', 'Digit3', 'Digit4'].indexOf(event.code);
+        if (index >= 0 || event.key === 'Escape') {
+            event.preventDefault();
+            navigateToSection(index >= 0 ? menuItems[index].dataset.section : 'home');
+        }
     });
+    window.addEventListener('hashchange', () => showSection(location.hash.slice(1)));
+    showSection(location.hash.slice(1));
+}
 
-    window.addEventListener('hashchange', () => show(location.hash.slice(1)));
-    show(location.hash.slice(1));
+export function navigateToSection(sectionId) {
+    if (!menuItems.some((item) => item.dataset.section === sectionId)) return;
+    showSection(sectionId);
+    if (location.hash !== `#${sectionId}`) history.pushState(null, '', `#${sectionId}`);
+}
+
+function showSection(sectionId) {
+    if (!menuItems.some((item) => item.dataset.section === sectionId)) sectionId = 'home';
+    const scroller = document.getElementById('terminal-content');
+    if (currentSection) scrollPositions.set(currentSection, scroller.scrollTop);
+    for (const item of menuItems) {
+        const active = item.dataset.section === sectionId;
+        item.classList.toggle('active', active);
+        if (active) item.setAttribute('aria-current', 'page');
+        else item.removeAttribute('aria-current');
+    }
+    for (const section of document.querySelectorAll('.content-section')) {
+        section.style.display = section.id === sectionId ? '' : 'none';
+    }
+    currentSection = sectionId;
+    scroller.scrollTop = scrollPositions.get(sectionId) || 0;
 }

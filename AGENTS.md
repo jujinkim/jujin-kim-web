@@ -1,99 +1,104 @@
 # Project Agent Guide
 
 ## Snapshot
-- **Swarm portfolio**: Jujin Kim's personal site. The whole viewport is a swarm of light particles that follows the visitor, evolves by a genetic algorithm while they move, and settles into the section heading when they stop.
-- **Tech stack**: HTML, CSS and vanilla JS (ES6 modules) with hand-written WebGL2. No framework, no libraries, no build step.
-- **Entry point**: `index.html` -> `js/main.js` -> modules in `js/modules/`.
-- **Content**: static HTML in `index.html`. It must stay readable with scripts off.
+- **Terminal Portfolio**: A terminal-inspired, single-page portfolio website for Jujin Kim mimicking a CLI interface.
+- **Tech Stack**: Pure HTML5, CSS3 (custom variables + custom styling), and vanilla JS (ES6 modules) with no framework or build tooling.
+- **Entry Point**: `index.html` -> `js/main.js` -> modules in `js/modules/`.
+- **Shared Constants**: Live in `js/constants.js` (e.g., `CONTACT_EMAIL`).
 
 ---
 
 ## Project Structure
 ```
-jujin-kim-web/
-├── index.html            # All content, five sections
+jujin_kim_web/
+├── index.html
 ├── css/
 │   ├── reset.css
-│   └── site.css          # Everything else, including print and narrow screens
+│   ├── site.css          # Main terminal styles
+│   ├── animations.css    # Starfield background & other transitions
+│   ├── modal.css         # Modal dialog styling
+│   └── responsive.css    # Responsive layouts for mobile/tablet/desktop
 ├── js/
-│   ├── main.js           # Wires DOM, world, HUD, audio; picks live or static
+│   ├── main.js           # App initialization
+│   ├── constants.js      # Global/shared constants (e.g. CONTACT_EMAIL)
 │   └── modules/
-│       ├── config.js         # TUNING and every other constant
-│       ├── sim.js            # Particle simulation (typed arrays, no DOM/GL)
-│       ├── evolution.js      # Genetic algorithm and persistence (pure)
-│       ├── renderer.js       # WebGL2 passes and framebuffers
-│       ├── shaders.js        # GLSL ES 3.00 sources
-│       ├── world.js          # State machine and frame loop
-│       ├── input.js          # Pointer/touch/key -> light and press
-│       ├── text-targets.js   # Text -> points for the swarm to form
-│       ├── quality.js        # Frame timing and the degrade ladder
-│       ├── static-frame.js   # 2D still frame fallback
-│       ├── hud.js            # GEN readout, lineage bars, sound toggle, hint
-│       ├── audio.js          # Synthesized sound (Web Audio)
-│       └── navigation.js     # Sections, hash URLs, keys
-├── tests/
-│   ├── evolution.test.mjs    # node --test
-│   └── swarm-smoke.cjs       # Playwright
-├── img/profile.jpg
-├── fonts/JetBrainsMono-Regular.woff2
-└── favicon.svg
+│       ├── ascii-art.js        # Home ASCII title & art helpers
+│       ├── navigation.js       # Section navigation & key shortcuts
+│       ├── animations.js       # Swarm background on #starfield (drives world.js)
+│       ├── world.js, sim.js, evolution.js, renderer.js, shaders.js,
+│       │   input.js, quality.js, text-targets.js, audio.js, config.js   # Swarm internals
+│       ├── theme.js            # Theme switching mechanics (light/dark/system)
+│       ├── theme-export.js     # Helper functions for exporting themes
+│       ├── content.js          # Main content templates for all sections
+│       ├── terminal-input.js   # Terminal command parser & input logic
+│       └── profile-ascii.js    # Profile picture loader (photo-only)
+├── img/
+│   ├── ascii-title.svg
+│   ├── ascii-title-light.svg
+│   ├── ascii-title-dark.svg
+│   └── profile.jpg       # Profile picture (JPEG format)
+├── fonts/
+│   └── JetBrainsMono-Regular.woff2
+├── favicon.ico
+├── favicon.svg
+├── README.md
+└── AGENTS.md             # This guide
 ```
 
 ---
 
-## How It Works
+## Active Focus & Key Behavior
 
-### States (`world.js`)
-`dormant -> waking -> roaming <-> condensed`, with `transit` on section change.
-- **dormant**: a small sleeping knot. Pointer movement, a press, any key, the wheel, or a 10s timeout wakes it. Skipped on deep links, on a repeat visit in the same tab, and with `?enter=0`.
-- **roaming**: the swarm follows the light. Fitness only accrues here, and only while the visitor is driving.
-- **condensed**: the visitor is still, so about 65% of particles settle into the heading. Text is revealed after the first condensation and never hidden again.
-- **static**: no simulation. Used for reduced motion, no WebGL2, a lost context, and the bottom of the quality ladder. `html[data-mode]` is `pending`, `live` or `static`.
+### 1. Style & Theme Mechanics
+- **Monospace Terminal Aesthetic**: Monospace typography, green accent palette, and customized ASCII styling.
+- **CSS Variables**: Core theme variables (colors, fonts, etc.) are declared in `:root` inside `css/site.css` and adjusted dynamically via `js/modules/theme.js`.
+- **Theme Selection**: Driven by `window.setTheme` (exposed globally in `js/main.js`) and triggered by the footer links.
 
-### Evolution (`evolution.js`, `sim.js`)
-- 24 genomes of 8 genes, stored normalized to [0, 1]; ranges are in `config.js` (`GENES`).
-- A stationary press emits a pulse. Particles the front passes are struck and return from the edge.
-- Fitness rewards being near the light, shared among crowded particles, and penalizes being struck.
-- A generation is 6 seconds of active time. The lineage persists in `localStorage["swarm.v1"]`.
+### 2. Navigation & Commands
+- **Keyboard Navigation**:
+  - `Shift+1~4`: Instantly switch between corresponding sections.
+  - `ESC`: Return directly to the Home section.
+- **Terminal Input (Home section only)**:
+  - Command handling resides in `js/modules/terminal-input.js`.
+  - Supported commands: `help`, `clear`, `about`, `skills`, `contact`, `date`, `ls`, `cat`, `swarm`, `gen`, `reset`, `sound`.
 
-### Headings
-The DOM headings stay in the page for layout and screen readers but are transparent in live mode; the swarm draws them at the same spot. `data-condense="WORD"` on an entry makes the swarm spell that word on hover or focus.
+### 3. Content & Shared Values
+- **Content Rendering**: All section contents (HTML templates) are rendered dynamically via `load*Section` helpers in `js/modules/content.js`.
+- **Authoritative Constants**: Keep key contact details (like email address) authoritative by consuming `CONTACT_EMAIL` from `js/constants.js`.
+- **Contact Links**: Contact details are integrated into the Home section; there is no separate Contact page.
+
+---
+
+## Coordination Checklist
+
+1. **Content updates** -> edit the relevant `load*Section` function in `js/modules/content.js`.
+2. **Shared values** -> prefer adding to/consuming from `js/constants.js`.
+3. **Terminal commands** -> adjust command handlers or prompt behaviors in `js/modules/terminal-input.js`.
+4. **Navigation & section switching** -> check `js/modules/navigation.js`.
+5. **Swarm background** -> `js/modules/animations.js` wires it to the screen; tuning lives in `TUNING` in `js/modules/config.js`. The room, monitor and terminal are the base; the swarm is only the screen's background and must stay dim enough that text is easy to read. The owner is an engineer: do not call them an artist in copy.
+6. **Theme behavior** -> update color variables or toggle states in `js/modules/theme.js` (along with `window.setTheme` handling).
+7. **Visual styling** -> touch only the relevant scoped CSS files (`css/site.css` for main styles, `css/responsive.css` for media queries).
 
 ---
 
 ## Coding Guidelines
 
-- **Tuning**: every number that shapes the feel lives in `TUNING` in `js/modules/config.js`. Change it there, not inline.
-- **No allocation in the frame loop**: `sim.step`, `renderer.draw` and the `world.js` frame function must not create arrays or objects. Preallocate.
-- **Frame-rate independence**: every rate uses `dt`. Do not add per-frame constants.
-- **Ember is reserved**: the warm colour (`RAMP[4]`, `--ember`) means "struck by a pulse". Genome hues stop at 0.75 of the ramp (violet, blue, cyan, green). Do not use ember for decoration.
-- **Dark only**: there is no light theme.
-- **Copy**: the owner is an engineer. Do not call them an artist or write an art statement. State only facts already on the page. Lines that describe the live swarm carry `class="live-only"` so they disappear in static mode.
-- **Fallbacks are part of the feature**: anything new must still work in static mode and with scripts disabled.
-- **Release caching**: `index.html` asset links, every module `import`, and the font URL in `css/site.css` carry the same `v=20261119.1` key. Bump them together. Check with `grep -rn "v=2026" . --exclude-dir=.git | grep -v 20261119.1` (should print nothing).
-- **Vanilla ES6 modules**: no frameworks, compilers or build pipelines.
-- **Inline comments**: minimal and purposeful.
+- **Visual scope**: Preserve the terminal layout, ASCII title, green palette, four tabs, and monitor frame. Refine requested effects inside this shell unless the user explicitly requests a structural redesign.
 
----
+- **Compact screens**: Enable curvature only at viewport sizes of at least 1000x600. Smaller viewports use flat CRT with native DOM input/scrolling and no curved-glass shading. Preserve state when crossing the breakpoint.
 
-## Testing
+- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261119.3` release key. Bump the key together for runtime releases.
 
-```bash
-node --test tests/evolution.test.mjs
-for f in js/main.js js/modules/*.js; do node --check "$f"; done
-
-python3 -m http.server 8000 --bind 127.0.0.1
-SWARM_PLAYWRIGHT=/path/to/playwright node tests/swarm-smoke.cjs
-```
-
-Debug URL parameters:
-- `?debug=1` exposes `window.swarmDebug` (`stats()`, `tuning`, `forceGeneration(n)`, `resetLineage()`).
-- `?enter=0` skips the dormant entrance.
-- `?quality=off` disables the degrade ladder (needed under software GL).
-- `?rgba8=1` forces the 8-bit trail path.
-- `?static=1` forces static mode.
-
-Headless Firefox and WebKit may have no WebGL2; the smoke test then skips the live checks. Check those browsers, and a real phone, by hand.
+- **Vanilla ES6 Modules**: Stick strictly to ES6 modules and template literals. Avoid introducing frameworks, compiler steps, or external build pipelines.
+- **ASCII & Text**: Use ASCII characters unless a file already mixes in Unicode (such as emoji in content templates).
+- **Inline Comments**: Keep inline comments minimal, purposeful, and clean.
+- **Adding Files**: When creating new modules, favor descriptive names and export clean module-scoped functions/constants.
+- **Manual Testing**:
+  - Open `index.html` directly in the browser, or
+  - Start a static local server via Python:
+    ```bash
+    python3 -m http.server 8000
+    ```
 
 ---
 
