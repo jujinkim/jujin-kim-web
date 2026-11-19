@@ -7,13 +7,20 @@
 // World units are metres. The origin is the viewport centre on the screen
 // plane, +y is up and +z points at the viewer.
 
-const VENDOR = '../vendor/three.min.js?v=20261119.6';
+const VENDOR = '../vendor/three.min.js?v=20261119.11';
 const OFF_KEY = 'room3d-off';
 const SCREEN_HEIGHT = 0.33;
 const CAMERA_DISTANCE = 1.15; // in viewport heights
 const NEAR = 0.05;
 const FAR = 30;
 const LOOK_MS = 1100;
+// The room is drawn in chunky pixels: one rendered pixel per PIXEL CSS pixels.
+const PIXEL = 2;
+const PIXEL_LEAN = 4;
+// Window opening in room coordinates.
+const WINDOW = { x0: -1.6, x1: -0.55, y0: 0.3, y1: 1.3, z: -0.85 };
+// Look-around orbit limits: yaw and pitch in radians, distance in rest distances.
+const ORBIT = { yaw: 1.1, pitchMin: 0.03, pitchMax: 1.0, distMin: 1.5, distMax: 5.5 };
 
 const root = document.documentElement;
 const desktop = matchMedia('(min-width: 1000px) and (min-height: 600px)');
@@ -27,10 +34,12 @@ let S = null; // everything the running scene owns
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-function fail() {
+let gpuName = '';
+
+function fail(reason) {
     delete root.dataset.room3d;
     try {
-        sessionStorage.setItem(OFF_KEY, '1');
+        sessionStorage.setItem(OFF_KEY, reason || 'unavailable');
     } catch {}
 }
 
@@ -134,17 +143,11 @@ function buildCity() {
         ctx.fillStyle = pane.lit ? (pane.warm ? '#ffd68a' : '#a8e6ff') : sky.tower;
         ctx.fillRect(pane.x, pane.y, 6, 7);
     };
-    const gradient = ctx.createLinearGradient(0, 0, 0, 512);
-    gradient.addColorStop(0, sky.top);
-    gradient.addColorStop(0.85, sky.low);
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 1024, 512);
+    // No sky is painted: it stays transparent (see the window in buildRoom).
     for (const tower of towers) {
         ctx.fillStyle = sky.tower;
-        ctx.globalAlpha = tower.layer ? 1 : 0.7;
         ctx.fillRect(tower.x, 512 - tower.h, tower.w, tower.h);
     }
-    ctx.globalAlpha = 1;
     panes.forEach(drawPane);
     const texture = new T.CanvasTexture(canvas);
     texture.colorSpace = T.SRGBColorSpace;
@@ -217,7 +220,13 @@ function buildRoom(scene) {
     span(room, frame, WX0, WX1, 0.88, 0.904, WZ - 0.06, WZ - 0.03);
     const city = buildCity();
     parts.city = city;
-    const outside = new T.Mesh(new T.PlaneGeometry(13, 7), new T.MeshBasicMaterial({ map: city.texture }));
+    // The sky part of the texture is transparent and written as it is (no
+    // blending), which leaves a hole in this canvas: the page behind it
+    // supplies the sky and the swarm.
+    const outside = new T.Mesh(
+        new T.PlaneGeometry(13, 7),
+        new T.MeshBasicMaterial({ map: city.texture, transparent: true, blending: 0, premultipliedAlpha: true, depthWrite: false })
+    );
     outside.position.set(-1.0, 2.3, -5);
     room.add(outside);
     const curtainGeometry = new T.PlaneGeometry(0.5, 1.3, 30, 1);
@@ -249,7 +258,7 @@ function buildRoom(scene) {
     for (let i = 0; i < 3; i++) span(room, metal, 0.9, 1.02, -0.2 - i * 0.2, -0.185 - i * 0.2, 0.5, 0.51, false);
     span(room, black, -0.42, 0.42, 0, 0.003, 0.13, 0.46, false).receiveShadow = true;
 
-    // Keyboard, mouse, mug.
+    // Keyboard.
     span(room, std(0x8c8676, 0.7), -0.22, 0.22, 0.003, 0.02, 0.19, 0.34);
     const keys = canvasTexture(512, 160, (ctx) => {
         ctx.fillStyle = '#8c8676';
@@ -268,11 +277,57 @@ function buildRoom(scene) {
     keyTop.position.set(0, 0.0205, 0.265);
     keyTop.receiveShadow = true;
     room.add(keyTop);
-    span(room, std(0x9a9483, 0.6), 0.3, 0.355, 0.003, 0.03, 0.23, 0.32);
-    const mug = new T.Mesh(new T.CylinderGeometry(0.038, 0.034, 0.09, 20), std(0xd8d2c4, 0.4));
-    mug.position.set(-0.56, 0.045, 0.2);
-    mug.castShadow = true;
-    room.add(mug);
+    // Trackball: a low square base with a large ball in the middle.
+    span(room, std(0x17191d, 0.5), 0.265, 0.395, 0.003, 0.02, 0.2, 0.33);
+    span(room, std(0x2a2d33, 0.4, 0.5), 0.3, 0.36, 0.02, 0.022, 0.235, 0.295, false);
+    const ball = new T.Mesh(new T.SphereGeometry(0.028, 20, 14), std(0xb3161f, 0.18, 0.1));
+    ball.position.set(0.33, 0.034, 0.265);
+    ball.castShadow = true;
+    room.add(ball);
+
+    // A drink: a bottle and a poured glass with ice.
+    const glassy = (color, opacity) => std(color, 0.08, 0, { transparent: true, opacity });
+    const turned = (radiusTop, radiusBottom, height, material, x, y, z) => {
+        const mesh = new T.Mesh(new T.CylinderGeometry(radiusTop, radiusBottom, height, 18), material);
+        mesh.position.set(x, y + height / 2, z);
+        mesh.castShadow = true;
+        room.add(mesh);
+        return mesh;
+    };
+    const BX = -0.7, BZ = 0.06;
+    turned(0.034, 0.034, 0.15, glassy(0x8a4a12, 0.8), BX, 0, BZ);
+    turned(0.012, 0.034, 0.035, glassy(0x8a4a12, 0.8), BX, 0.15, BZ);
+    turned(0.012, 0.012, 0.045, glassy(0x8a4a12, 0.8), BX, 0.185, BZ);
+    turned(0.014, 0.014, 0.016, std(0x15130f, 0.5), BX, 0.23, BZ);
+    turned(0.0345, 0.0345, 0.06, std(0xe6dcc0, 0.8), BX, 0.045, BZ).castShadow = false;
+    const GX = -0.56, GZ = 0.2;
+    turned(0.036, 0.031, 0.075, glassy(0xdfeaf0, 0.28), GX, 0, GZ);
+    turned(0.031, 0.028, 0.03, glassy(0xc47a1e, 0.85), GX, 0.006, GZ).castShadow = false;
+    const ice = span(room, glassy(0xf2fbff, 0.6), GX - 0.014, GX + 0.012, 0.022, 0.046, GZ - 0.012, GZ + 0.014, false);
+    ice.rotation.set(0.3, 0.6, 0.2);
+
+    // A sky-blue clamshell handheld, left open on the desk.
+    const handheld = new T.Group();
+    handheld.position.set(0.62, 0, 0.3);
+    handheld.rotation.y = -0.45;
+    room.add(handheld);
+    const shellBlue = std(0x8fd0f0, 0.35);
+    const lcd = glowMaterial(0.5, 0.75, 0.9);
+    const inner = std(0xd8eef8, 0.5);
+    span(handheld, shellBlue, -0.066, 0.066, 0, 0.011, -0.037, 0.037);
+    span(handheld, inner, -0.062, 0.062, 0.011, 0.0118, -0.034, 0.034, false);
+    span(handheld, lcd, -0.031, 0.031, 0.0118, 0.0124, -0.024, 0.022, false);
+    span(handheld, std(0x3a4046, 0.6), -0.054, -0.04, 0.0118, 0.0135, -0.004, 0.002, false);
+    span(handheld, std(0x3a4046, 0.6), -0.05, -0.044, 0.0118, 0.0135, -0.008, 0.006, false);
+    for (const [x, z] of [[0.047, -0.008], [0.054, -0.001], [0.04, -0.001], [0.047, 0.006]])
+        span(handheld, std(0x3a4046, 0.6), x - 0.003, x + 0.003, 0.0118, 0.0135, z - 0.003, z + 0.003, false);
+    const lid = new T.Group();
+    lid.position.set(0, 0.011, -0.037);
+    lid.rotation.x = -1.95;
+    handheld.add(lid);
+    span(lid, shellBlue, -0.066, 0.066, -0.01, 0, 0, 0.074);
+    span(lid, inner, -0.062, 0.062, -0.0108, -0.01, 0.003, 0.071, false);
+    span(lid, lcd, -0.031, 0.031, -0.0114, -0.0108, 0.012, 0.06, false);
 
     // Lamp: base, two arms, shade, bulb and the light it throws on the desk.
     const lamp = new T.Group();
@@ -411,6 +466,24 @@ function buildRoom(scene) {
     span(shelf, metal, 0.12, 0.3, 0, 0.07, 0.02, 0.14);
     parts.shelf = shelf;
 
+    // Front wall with the door the visitor comes in through, and a dim
+    // light in the hallway behind it that is only on during the entrance.
+    const DOOR = { x0: -0.45, x1: 0.45, top: 1.26, z: 3.4 };
+    span(room, wall, -2.2, DOOR.x0, -0.74, 1.9, DOOR.z, DOOR.z + 0.1);
+    span(room, wall, DOOR.x1, 2.2, -0.74, 1.9, DOOR.z, DOOR.z + 0.1);
+    span(room, wall, DOOR.x0, DOOR.x1, DOOR.top, 1.9, DOOR.z, DOOR.z + 0.1);
+    span(room, wall, -2.2, 2.2, 1.9, 1.96, WZ - 0.1, DOOR.z + 0.1);
+    const hinge = new T.Group();
+    hinge.position.set(DOOR.x0, 0, DOOR.z + 0.05);
+    span(hinge, darkWood, 0, DOOR.x1 - DOOR.x0, -0.74, DOOR.top, -0.02, 0.02);
+    span(hinge, metal, 0.76, 0.84, 0.2, 0.23, -0.06, 0.06, false);
+    room.add(hinge);
+    parts.door = hinge;
+    const hall = new T.PointLight(0xffd9a8, 0, 3.2, 1.6);
+    hall.position.set(0.2, 1.3, DOOR.z + 1.3);
+    room.add(hall);
+    parts.hall = hall;
+
     return parts;
 }
 
@@ -530,12 +603,22 @@ function layout() {
         );
         return { position, quaternion, target };
     };
+    const lookX = wide ? 0.5 : 0.4, lookY = 0.36;
+    // The entrance starts in the hallway, facing the closed door.
+    const doorway = new T.Vector3(0, 0.6, 4.3).add(room.position);
     S.poses = {
-        entrance: pose(wide ? -0.6 : -0.42, 0.34, wide ? 3.1 : 3.0, wide ? 0.1 : 0, 0.02),
-        look: pose(wide ? 0.5 : 0.4, 0.36, wide ? 3.5 : 3.2, wide ? 0.06 : 0, 0.06)
+        entrance: {
+            position: doorway,
+            target: S.centre.clone(),
+            quaternion: new T.Quaternion().setFromRotationMatrix(new T.Matrix4().lookAt(doorway, S.centre, new T.Vector3(0, 1, 0)))
+        },
+        look: pose(lookX, lookY, wide ? 3.5 : 3.2, wide ? 0.06 : 0, 0.06)
     };
+    // The look-around starts from the same framing and orbits from there.
+    S.orbitHome = { yaw: Math.atan2(lookX, 1), pitch: Math.atan2(lookY, Math.hypot(lookX, 1)), dist: wide ? 3.5 : 3.2 };
+    if (!S.lookTarget && !S.lookT) resetOrbit();
 
-    const ratio = S.lean ? 0.7 : Math.min(window.devicePixelRatio || 1, S.still ? 1 : wide ? 2 : 1.5);
+    const ratio = 1 / (S.lean ? PIXEL_LEAN : PIXEL);
     S.renderer.setPixelRatio(ratio);
     S.renderer.setSize(W, H, false);
     S.renderer.shadowMap.needsUpdate = true;
@@ -543,6 +626,19 @@ function layout() {
 }
 
 // ---------- camera ----------
+
+function resetOrbit() {
+    S.orbit = { ...S.orbitHome };
+    S.orbitTarget = { ...S.orbitHome };
+}
+
+function orbitBy(yaw, pitch, zoom = 1) {
+    const t = S.orbitTarget;
+    t.yaw = clamp(t.yaw + yaw, -ORBIT.yaw, ORBIT.yaw);
+    t.pitch = clamp(t.pitch + pitch, ORBIT.pitchMin, ORBIT.pitchMax);
+    t.dist = clamp(t.dist * zoom, ORBIT.distMin, ORBIT.distMax);
+    invalidate();
+}
 
 // k = 1 is the reading position. Below 1 the camera sits between a pose and
 // rest and the shell is carried along with a matrix3d.
@@ -561,9 +657,15 @@ function placeCamera() {
     if (pose) {
         camera.position.copy(pose.position);
         if (S.lookT > 0) {
-            // Look-around: the pointer swings the camera a little.
-            camera.position.x += S.px * 0.28;
-            camera.position.y -= S.py * 0.14;
+            // Look-around: the visitor orbits the monitor; stay inside the walls.
+            const o = S.orbit, flat = Math.cos(o.pitch), r = S.parts.room.position;
+            camera.position
+                .set(Math.sin(o.yaw) * flat, Math.sin(o.pitch), Math.cos(o.yaw) * flat)
+                .multiplyScalar(dm * o.dist)
+                .add(pose.target);
+            camera.position.x = clamp(camera.position.x, r.x - 1.95, r.x + 1.95);
+            camera.position.y = clamp(camera.position.y, r.y - 0.6, r.y + 1.75);
+            camera.position.z = Math.min(camera.position.z, 3.2);
             camera.quaternion.setFromRotationMatrix(
                 S.matrix.lookAt(camera.position, pose.target, camera.up)
             );
@@ -645,6 +747,12 @@ function tick(now) {
         busy = true;
         if (S.lookT === 0) delete root.dataset.roomLook;
     }
+    if (S.lookT > 0)
+        for (const axis of ['yaw', 'pitch', 'dist']) {
+            const next = reduced.matches ? S.orbitTarget[axis] : approach(S.orbit[axis], S.orbitTarget[axis], dt, 0.09);
+            if (next !== S.orbit[axis]) busy = true;
+            S.orbit[axis] = next;
+        }
 
     // Light mood: the monitor's glow and the room lights fade toward targets.
     const power = approach(S.power, S.powerTarget, dt, 0.18);
@@ -660,21 +768,21 @@ function tick(now) {
     const stutter = striking ? (Math.floor(now / 45) * 7919) % 5 < 2 ? 0.15 : 1 : 1;
     const neonLevel = lights * stutter;
     const blink = S.ambient ? (Math.floor(now / 550) % 2 ? 0.2 : 1) : 1;
-    p.chevron.color.setRGB(3.2 * neonLevel + 0.06, 0.5 * neonLevel + 0.02, 3.6 * neonLevel + 0.07);
-    p.underscore.color.setRGB(0.4 * neonLevel * blink + 0.02, 3.2 * neonLevel * blink + 0.06, 3.4 * neonLevel * blink + 0.07);
-    p.neonGlowA.material.opacity = 0.75 * neonLevel;
-    p.neonGlowB.material.opacity = 0.7 * neonLevel * blink;
-    p.neonLight.intensity = 0.42 * neonLevel;
+    p.chevron.color.setRGB(1.5 * neonLevel + 0.06, 0.25 * neonLevel + 0.02, 1.7 * neonLevel + 0.07);
+    p.underscore.color.setRGB(0.2 * neonLevel * blink + 0.02, 1.5 * neonLevel * blink + 0.06, 1.6 * neonLevel * blink + 0.07);
+    p.neonGlowA.material.opacity = 0.28 * neonLevel;
+    p.neonGlowB.material.opacity = 0.26 * neonLevel * blink;
+    p.neonLight.intensity = 0.2 * neonLevel;
 
     const lamp = S.lamp ? lights : 0;
-    p.lampLight.intensity = 0.8 * lamp;
-    p.bulb.material.color.setRGB(4 * lamp + 0.08, 3 * lamp + 0.07, 1.6 * lamp + 0.05);
-    p.bulbGlow.material.opacity = 0.8 * lamp;
+    p.lampLight.intensity = 0.42 * lamp;
+    p.bulb.material.color.setRGB(2 * lamp + 0.08, 1.5 * lamp + 0.07, 0.8 * lamp + 0.05);
+    p.bulbGlow.material.opacity = 0.3 * lamp;
 
     const pulse = fx('pulse') ? 1 + 0.9 * ((S.fx.pulse - now) / 600) : 1;
     S.screenLight.intensity = S.screenBase * 2.2 * power * pulse;
     S.screenSpill.intensity = S.screenBase * 0.16 * power * pulse;
-    S.ambientLight.intensity = S.ambientBase * (0.35 + 0.65 * lights);
+    S.ambientLight.intensity = S.ambientBase * (0.45 + 0.55 * lights);
     S.fill.intensity = S.ambientBase * 1.3 * lights;
     S.materials.power.color.setRGB(0.1, fx('power') ? 4 : 0.5 + 1.2 * power, fx('power') ? 2 : 0.4);
     S.powerHalo.material.opacity = fx('power') ? 1 : 0.2 + 0.4 * power;
@@ -692,6 +800,11 @@ function tick(now) {
     S.ambient = !S.still && !reduced.matches && visible();
     if (S.ambient) for (const fan of p.fans) fan.rotation.z += fan.userData.direction * S.fanRate * 5 * dt;
 
+    // The door swings in ahead of the camera; the hallway light fades behind it.
+    p.door.rotation.y = 1.75 * ease(clamp(S.entrance / 0.14, 0, 1));
+    p.hall.intensity = 2.4 * (1 - S.entrance);
+    S.materials.screen.color.copy(S.screenColor).multiplyScalar(0.06 + 0.94 * power);
+
     const k = placeCamera();
     if (S.px !== S.pxDrawn || S.py !== S.pyDrawn || k !== S.kDrawn) S.dirty = true;
     const ambientFrame = S.ambient && (S.frame = (S.frame + 1) % 2) === 0;
@@ -708,7 +821,7 @@ function tick(now) {
 // ---------- lifecycle ----------
 
 function build(canvas, gl) {
-    const renderer = new T.WebGLRenderer({ canvas, context: gl, antialias: true });
+    const renderer = new T.WebGLRenderer({ canvas, context: gl, antialias: false });
     renderer.outputColorSpace = T.SRGBColorSpace;
     renderer.toneMapping = T.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.25;
@@ -751,7 +864,7 @@ function build(canvas, gl) {
         ambientBase: sky.ambient, screenBase: 0.5,
         entrance: 1, lookT: 0, lookTarget: 0, px: 0, py: 0,
         power: 1, powerTarget: 1, lights: 1, lightsTarget: 1, lamp: true,
-        fanRate: 0.25, fx: {}, frame: 0, last: 0, raf: 0, dirty: true, still: false, ambient: false, carried: false,
+        screenColor: new T.Color(0x050607), fanRate: 0.25, fx: {}, frame: 0, last: 0, raf: 0, dirty: true, still: false, ambient: false, carried: false,
         tmp: new T.Vector3(), target: new T.Vector3(), matrix: new T.Matrix4(),
         identity: new T.Quaternion(), poseQuaternion: new T.Quaternion(),
         events: new AbortController()
@@ -774,13 +887,70 @@ function build(canvas, gl) {
         invalidate();
     }, 9000);
 
-    // Pressing the room (anything outside the monitor) steps back to look at it.
+    // Pressing the room (anything outside the monitor) steps back to look at
+    // it. There a drag orbits, the wheel or a pinch zooms, and a plain press
+    // or any other key returns.
+    const pointers = new Map();
+    let drag = null;
+    const spread = () => {
+        const [a, b] = [...pointers.values()];
+        return Math.hypot(a.x - b.x, a.y - b.y) || 1;
+    };
+    const capture = { signal, capture: true };
     window.addEventListener('pointerdown', (event) => {
-        if (S.lookTarget) return;
-        if (event.target !== document.body && event.target !== root) return;
-        if (!desktop.matches || event.button !== 0) return;
-        room3d.look(true);
+        let opening = false;
+        if (!S.lookTarget) {
+            if (event.target !== document.body && event.target !== root) return;
+            if (!desktop.matches || event.button !== 0 || !room3d.look(true, { x: event.clientX, y: event.clientY })) return;
+            opening = true;
+        }
+        pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        if (pointers.size === 1) drag = { moved: 0, opening };
+        else if (drag) drag.moved = Infinity;
+    }, capture);
+    window.addEventListener('pointermove', (event) => {
+        const point = pointers.get(event.pointerId);
+        if (!point || !S.lookTarget || !drag) return;
+        const before = pointers.size === 2 ? spread() : 0;
+        const dx = event.clientX - point.x, dy = event.clientY - point.y;
+        point.x = event.clientX;
+        point.y = event.clientY;
+        if (pointers.size === 2) return orbitBy(0, 0, before / spread());
+        drag.moved += Math.abs(dx) + Math.abs(dy);
+        if (drag.moved < 5) return;
+        root.dataset.roomLook = 'drag';
+        orbitBy(-dx * 0.006, dy * 0.005);
+    }, capture);
+    const release = (event) => {
+        if (!pointers.delete(event.pointerId) || pointers.size) return;
+        const pressed = drag && drag.moved < 5 && !drag.opening && event.type === 'pointerup';
+        drag = null;
+        if ('roomLook' in root.dataset) root.dataset.roomLook = '';
+        if (pressed) endLook();
+    };
+    window.addEventListener('pointerup', release, capture);
+    window.addEventListener('pointercancel', release, capture);
+    window.addEventListener('blur', () => {
+        pointers.clear();
+        drag = null;
     }, { signal });
+    window.addEventListener('wheel', (event) => {
+        if (!S.lookTarget) return;
+        event.preventDefault();
+        orbitBy(0, 0, Math.exp(clamp(event.deltaY, -120, 120) * 0.0015));
+    }, { signal, capture: true, passive: false });
+    const KEYS = {
+        ArrowLeft: [0.14, 0, 1], ArrowRight: [-0.14, 0, 1], ArrowUp: [0, 0.1, 1], ArrowDown: [0, -0.1, 1],
+        '+': [0, 0, 0.88], '=': [0, 0, 0.88], '-': [0, 0, 1.14]
+    };
+    window.addEventListener('keydown', (event) => {
+        if (!S.lookTarget) return;
+        const move = KEYS[event.key];
+        if (!move) return endLook();
+        event.preventDefault();
+        event.stopPropagation();
+        orbitBy(...move);
+    }, capture);
 }
 
 // The screen lights the room in its own colour: green on the dark theme,
@@ -793,7 +963,7 @@ function readTheme() {
     S.screenLight.color.set(light ? 0xe6efe4 : 0x63e6a4);
     S.screenSpill.color.copy(S.screenLight.color);
     S.screenBase = light ? 0.95 : 0.5;
-    S.materials.screen.color.set(light ? 0xd9ddd6 : 0x050607);
+    S.screenColor.set(light ? 0xd9ddd6 : 0x050607);
     invalidate();
 }
 
@@ -814,8 +984,8 @@ export const room3d = {
                 const canvas = document.getElementById('room3d');
                 const force = new URLSearchParams(location.search).get('room3d') === 'force';
                 const gl = canvas.getContext('webgl2', {
-                    antialias: true,
-                    alpha: false,
+                    antialias: false,
+                    alpha: true,
                     powerPreference: 'high-performance',
                     failIfMajorPerformanceCaveat: !force
                 });
@@ -823,21 +993,46 @@ export const room3d = {
                 // A software rasteriser cannot hold the frame rate; some browsers
                 // do not report it as a performance caveat.
                 const info = gl.getExtension('WEBGL_debug_renderer_info');
-                const name = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '';
+                const name = (gpuName = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '');
                 if (!force && /swiftshader|llvmpipe|software/i.test(name)) throw new Error('software renderer');
                 T = await import(VENDOR);
                 if (dead) return false;
                 build(canvas, gl);
+                root.style.setProperty('--room-sky', `linear-gradient(${S.parts.city.sky.top}, ${S.parts.city.sky.low} 62%)`);
                 root.dataset.room3d = 'on';
                 room3d.ready = true;
                 return true;
             } catch (error) {
                 console.warn('3D room unavailable:', error.message);
-                fail();
+                fail(error.message);
                 return false;
             }
         })();
         return initPromise;
+    },
+
+    // Where the window's sky is on screen (CSS px), or null when the room is
+    // not showing one. The swarm draws itself there, behind this canvas.
+    skyRect() {
+        if (!S || !desktop.matches || !visible()) return null;
+        const origin = S.parts.room.position;
+        let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+        for (const [x, y] of [[WINDOW.x0, WINDOW.y0], [WINDOW.x1, WINDOW.y0], [WINDOW.x0, WINDOW.y1], [WINDOW.x1, WINDOW.y1]]) {
+            const v = S.tmp.set(x, y, WINDOW.z).add(origin).project(S.camera);
+            const px = (v.x * 0.5 + 0.5) * S.W, py = (0.5 - v.y * 0.5) * S.H;
+            x0 = Math.min(x0, px); x1 = Math.max(x1, px);
+            y0 = Math.min(y0, py); y1 = Math.max(y1, py);
+        }
+        // At the reading position the monitor hides the window's right side.
+        if (S.entrance >= 1 && !S.lookT && S.shellLeft - x0 > 60) x1 = Math.min(x1, S.shellLeft);
+        x0 = clamp(x0, 0, S.W); x1 = clamp(x1, 0, S.W);
+        y0 = clamp(y0, 0, S.H); y1 = clamp(y1, 0, S.H);
+        return { left: x0, top: y0, width: Math.max(x1 - x0, 40), height: Math.max(y1 - y0, 40) };
+    },
+
+    // Rendered pixels per CSS pixel.
+    pixelRatio() {
+        return 1 / (S?.lean ? PIXEL_LEAN : PIXEL);
     },
 
     // Entrance progress: 0 is the wide shot, 1 is the reading position.
@@ -894,18 +1089,25 @@ export const room3d = {
         invalidate();
     },
 
-    // Step back to see the whole room; any key or press returns.
-    look(on = !S?.lookTarget) {
+    // Step back to see the whole room and orbit it; a press or key returns.
+    // at: where the visitor pressed; the camera steps back toward the side
+    // that shows that part of the room.
+    look(on = !S?.lookTarget, at = null) {
         if (!S || S.entrance < 1) return false;
         if (on && document.body.dataset.displayMode !== 'flat') return false;
         S.lookTarget = on ? 1 : 0;
         if (on) {
+            if (!S.lookT) {
+                resetOrbit();
+                if (at) {
+                    const nx = (at.x / S.W) * 2 - 1, ny = (at.y / S.H) * 2 - 1;
+                    const yaw = clamp(-nx * 0.95, -ORBIT.yaw, ORBIT.yaw);
+                    const pitch = clamp(S.orbitHome.pitch + ny * 0.42, ORBIT.pitchMin, ORBIT.pitchMax);
+                    Object.assign(S.orbit, { yaw, pitch });
+                    Object.assign(S.orbitTarget, { yaw, pitch });
+                }
+            }
             root.dataset.roomLook = '';
-            setTimeout(() => {
-                if (!S?.lookTarget) return;
-                for (const type of ['keydown', 'pointerdown'])
-                    window.addEventListener(type, endLook, { capture: true, once: true, signal: S.events.signal });
-            }, 0);
         }
         invalidate();
         return true;
@@ -915,7 +1117,7 @@ export const room3d = {
         return !!S?.lookTarget;
     },
 
-    // Frames ran slow: stop ambient motion and drop to one sample per pixel.
+    // Frames ran slow: stop ambient motion.
     still() {
         if (!S || S.still) return false;
         S.still = true;
@@ -927,17 +1129,37 @@ export const room3d = {
     abandon() {
         if (!S) return false;
         room3d.destroy();
-        fail();
+        fail('slow frames');
         return true;
     },
 
     // One rung down the performance ladder; false when nothing is left to give.
-    step() {
+    // The room is only given up when frames are severely slow: a slightly
+    // choppy 3D room is still better than none.
+    step(severe = true) {
         if (!S) return false;
         if (room3d.still()) return true;
-        // Second rung: render below native resolution before giving the room up.
+        // Second rung: coarser pixels before giving the room up.
         if (!S.lean) return (S.lean = true), layout(), true;
-        return room3d.abandon();
+        return severe ? room3d.abandon() : true;
+    },
+
+    // One line for the `perf` command.
+    status() {
+        let off = null;
+        try {
+            off = sessionStorage.getItem(OFF_KEY);
+        } catch {}
+        const state = S ? (S.lean ? 'on, coarse pixels, ambient motion off' : S.still ? 'on, ambient motion off' : 'on') : `off (${off || 'not started'})`;
+        return `3D room: ${state}\nGPU: ${gpuName || 'unknown'}`;
+    },
+
+    // Forget that 3D was dropped in this tab and start over.
+    retry() {
+        try {
+            sessionStorage.removeItem(OFF_KEY);
+        } catch {}
+        location.reload();
     },
 
     destroy() {

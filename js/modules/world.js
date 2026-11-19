@@ -1,10 +1,10 @@
-import { TUNING as T, COUNT_LADDER, PIXEL_BUDGET, GENOMES, GENE_COUNT } from './config.js?v=20261119.6';
-import { createSim } from './sim.js?v=20261119.6';
-import { createRenderer } from './renderer.js?v=20261119.6';
-import { createInput } from './input.js?v=20261119.6';
-import { sampleText, sampleKnot } from './text-targets.js?v=20261119.6';
-import { createQuality } from './quality.js?v=20261119.6';
-import { decode, evolve, loadState, saveState, clearState, seedPopulation } from './evolution.js?v=20261119.6';
+import { TUNING as T, COUNT_LADDER, PIXEL_BUDGET, GENOMES, GENE_COUNT } from './config.js?v=20261119.11';
+import { createSim } from './sim.js?v=20261119.11';
+import { createRenderer } from './renderer.js?v=20261119.11';
+import { createInput } from './input.js?v=20261119.11';
+import { sampleText, sampleKnot } from './text-targets.js?v=20261119.11';
+import { createQuality } from './quality.js?v=20261119.11';
+import { decode, evolve, loadState, saveState, clearState, seedPopulation } from './evolution.js?v=20261119.11';
 
 // Owns the frame loop and the state machine:
 //
@@ -77,6 +77,10 @@ export function createWorld(canvas, hooks = {}) {
     // Where the text is; the renderer dims the swarm there.
     const shade = { left: 0, top: 0, right: 0, bottom: 0, strength: 0 };
     let shadeOn = false;
+    // Set while the swarm is the sky outside the room's window: the part of
+    // the canvas (CSS px) that can be seen through it.
+    let sky = null;
+    const focus = () => (sky ? [sky.left + sky.width / 2, sky.top + sky.height * 0.45] : [width / 2, height * 0.46]);
     const frameInfo = { dt: 0, time: 0, tau: T.trailTau, gain: 1, pulses: sim.pulses, shade };
 
     function enter(next) {
@@ -101,15 +105,16 @@ export function createWorld(canvas, hooks = {}) {
 
     function formKnot() {
         sim.setCount(T.dormantCount);
-        sim.setTargets(sampleKnot(width / 2, height * 0.46, 38 * scale, T.dormantCount), 1);
+        sim.setTargets(sampleKnot(...focus(), 38 * scale, T.dormantCount), 1);
     }
 
     function wake() {
         if (state !== 'dormant') return;
         wokeAt = time;
-        const aimX = input.state.seen ? input.state.x - originX : width / 2;
-        const aimY = input.state.seen ? input.state.y - originY : height / 2;
-        sim.burst(width / 2, height * 0.46, T.dormantCount, aimX, aimY);
+        const [fx, fy] = focus();
+        const aimX = input.state.seen && !sky ? input.state.x - originX : sky ? fx : width / 2;
+        const aimY = input.state.seen && !sky ? input.state.y - originY : sky ? fy - 40 : height / 2;
+        sim.burst(fx, fy, T.dormantCount, aimX, aimY);
         sim.setCount(count);
         sim.scatter(0, 0, 260);
         formHeading();
@@ -143,7 +148,8 @@ export function createWorld(canvas, hooks = {}) {
     const input = createInput({
         onPress(x, y, charge) {
             if (state === 'dormant') return wake();
-            sim.emitPulse(x - originX, y - originY, charge);
+            if (sky) sim.emitPulse(lightX, lightY, charge);
+            else sim.emitPulse(x - originX, y - originY, charge);
             hooks.onPulse?.(charge);
         },
         onActivity(kind, travelled) {
@@ -160,12 +166,12 @@ export function createWorld(canvas, hooks = {}) {
         originY = bounds ? bounds.top : 0;
         if (w < 2 || h < 2) return;
         // Mobile URL bars change the height constantly; don't rebuild for that.
-        if (w === width && Math.abs(h - height) < height * 0.15) return;
+        if (w === width && Math.abs(h - height) < height * 0.15 && !hooks.dpr?.()) return;
         const first = width === 0;
         width = w;
         height = h;
         scale = Math.min(w, h) / 900;
-        let dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let dpr = hooks.dpr?.() || Math.min(window.devicePixelRatio || 1, 2);
         if (w * h * dpr * dpr > budget) dpr = Math.sqrt(budget / (w * h));
         if (!bounds) canvas.style.height = `${h}px`;
         renderer.resize(w, h, dpr);
@@ -251,8 +257,18 @@ export function createWorld(canvas, hooks = {}) {
             originX = bounds.left;
             originY = bounds.top;
         }
-        const targetX = ghostX + (input.state.x - originX - ghostX) * presence;
-        const targetY = ghostY + (input.state.y - originY - ghostY) * presence;
+        let targetX = ghostX + (input.state.x - originX - ghostX) * presence;
+        let targetY = ghostY + (input.state.y - originY - ghostY) * presence;
+        if (sky) {
+            // The whole viewport maps onto the window, so the flock the
+            // visitor steers stays where it can be seen.
+            const cx = sky.left + sky.width / 2, cy = sky.top + sky.height / 2;
+            const gx = cx + sky.width * 0.3 * Math.sin(time * 0.19), gy = cy + sky.height * 0.3 * Math.sin(time * 0.27 + 1.3);
+            const px = cx + sky.width * 0.84 * (input.state.x / window.innerWidth - 0.5);
+            const py = cy + sky.height * 0.84 * (input.state.y / window.innerHeight - 0.5);
+            targetX = gx + (px - gx) * presence;
+            targetY = gy + (py - gy) * presence;
+        }
         const follow = 1 - Math.exp(-dt * T.lightFollow);
         const nx = lightX + (targetX - lightX) * follow;
         const ny = lightY + (targetY - lightY) * follow;
@@ -263,7 +279,7 @@ export function createWorld(canvas, hooks = {}) {
         energy += (Math.hypot(lightVx, lightVy) - energy) * (1 - Math.exp(-dt * 4));
 
         const dormant = state === 'dormant';
-        const lightGoal = dormant ? 0 : input.state.overContent && driven ? T.contentLight : 1;
+        const lightGoal = dormant ? 0 : !sky && input.state.overContent && driven ? T.contentLight : 1;
         lightK += (lightGoal - lightK) * (1 - Math.exp(-dt * 3));
 
         const settle = dormant || state === 'condensed' || (state === 'transit' && !pending);
@@ -274,7 +290,7 @@ export function createWorld(canvas, hooks = {}) {
         sim.step(dt, lightX, lightY, lightVx, lightVy, lightK, condense, accrue);
         if (sim.activeTime >= T.generationSeconds) nextGeneration();
 
-        shade.strength += ((shadeOn && revealed ? T.shade : 0) - shade.strength) * (1 - Math.exp(-dt * 3));
+        shade.strength += ((shadeOn && revealed && !sky ? T.shade : 0) - shade.strength) * (1 - Math.exp(-dt * 3));
         frameInfo.dt = dt;
         frameInfo.time = time;
         frameInfo.tau = T.trailTau + (T.trailTauCondensed - T.trailTau) * condense * (dormant ? 0.4 : 1);
@@ -324,6 +340,18 @@ export function createWorld(canvas, hooks = {}) {
         start,
         stop,
         resize,
+        // Drawn in the sky outside the window instead of behind text: nothing
+        // to keep readable, so the swarm is not dimmed anywhere.
+        // A pulse at canvas coordinates; in the sky it starts where the flock is.
+        pulse(x, y, charge) {
+            if (sky) sim.emitPulse(lightX, lightY, charge);
+            else sim.emitPulse(x, y, charge);
+        },
+        setSky(rect) {
+            const moved = !sky !== !rect;
+            sky = rect;
+            if (moved && state === 'dormant') formKnot();
+        },
         wake,
         sim,
         renderer,

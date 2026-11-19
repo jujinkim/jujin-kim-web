@@ -1,5 +1,6 @@
-import { createWorld } from './world.js?v=20261119.6';
-import { createAudio } from './audio.js?v=20261119.6';
+import { createWorld } from './world.js?v=20261119.11';
+import { createAudio } from './audio.js?v=20261119.11';
+import { room3d } from './room3d.js?v=20261119.11';
 
 // The background of the terminal screen: an evolving particle swarm drawn on
 // the #starfield canvas. It follows the pointer, evolves by a genetic
@@ -28,7 +29,7 @@ export function swarmEnergy() {
 export function swarmPulse() {
     if (!world || !enabled) return false;
     const glass = document.getElementById('monitor-glass');
-    world.sim.emitPulse(glass.clientWidth / 2, glass.clientHeight / 2, 0.8);
+    world.pulse(glass.clientWidth / 2, glass.clientHeight / 2, 0.8);
     audio?.thump(0.8);
     emit('pulse', 0.8);
     return true;
@@ -73,6 +74,30 @@ export function toggleSound() {
     return audio.enabled;
 }
 
+// With the 3D room on a desktop the swarm is the sky outside the window: its
+// canvas leaves the monitor and sits full-viewport behind the room canvas,
+// which is transparent where the window shows sky. Otherwise it is the
+// screen's background.
+let inSky = false;
+let skyCheck = 0;
+let home = null;
+
+function followSky(canvas) {
+    const rect = room3d.skyRect();
+    if (!rect !== !inSky) {
+        inSky = !!rect;
+        if (inSky) {
+            home ??= canvas.parentNode;
+            document.body.insertBefore(canvas, document.getElementById('room3d'));
+        } else home.prepend(canvas);
+        canvas.classList.toggle('in-sky', inSky);
+        world.setSky(rect);
+        world.resize();
+        return;
+    }
+    if (inSky) world.setSky(rect);
+}
+
 export function setAnimationResolution(value) {
     world?.renderer.setQuality({ trailScale: Math.max(0.5, Math.min(1, value)) });
 }
@@ -93,7 +118,9 @@ export function initAnimations() {
         showGeneration(0);
     };
     world = createWorld(canvas, {
-        bounds: () => glass.getBoundingClientRect(),
+        bounds: () => (inSky ? { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight } : glass.getBoundingClientRect()),
+        // In the sky it is drawn in the room's chunky pixels.
+        dpr: () => (inSky ? room3d.pixelRatio() : 0),
         onGeneration: (gen, genomes, fitness) => {
             showGeneration(gen);
             audio?.tick(gen);
@@ -103,7 +130,10 @@ export function initAnimations() {
             audio?.thump(charge);
             emit('pulse', charge);
         },
-        onFrame: () => audio?.enabled && audio.update(world.energy, world.breath),
+        onFrame: () => {
+            if (audio?.enabled) audio.update(world.energy, world.breath);
+            if (++skyCheck % 12 === 0) followSky(canvas);
+        },
         onGiveUp: giveUp,
         onContextLost: giveUp
     });

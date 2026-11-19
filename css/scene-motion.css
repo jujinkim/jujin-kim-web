@@ -243,9 +243,25 @@ body[data-display-mode='web1'] .command-line {
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.7s;
+    image-rendering: pixelated;
 }
 html[data-room3d] body:not([data-display-mode='web1']) {
     background: #020306;
+}
+/* The sky seen through the room's window: the room canvas is transparent there. */
+html[data-room3d='on'] body:not([data-display-mode='web1']) {
+    background: var(--room-sky, #020306) fixed;
+}
+html body #starfield.in-sky {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    filter: none;
+    visibility: visible;
+    image-rendering: pixelated;
 }
 html[data-room3d] #room-scene {
     visibility: hidden;
@@ -258,9 +274,52 @@ html[data-room3d='on'][data-room-look] #room3d {
 html[data-room-look] #monitor-shell {
     pointer-events: none;
 }
+html[data-room-look],
+html[data-room-look] body {
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+#room-hint {
+    position: fixed;
+    left: 50%;
+    bottom: max(18px, env(safe-area-inset-bottom));
+    z-index: 5;
+    transform: translateX(-50%);
+    padding: 6px 12px;
+    border: 1px solid rgba(120, 255, 170, 0.25);
+    background: rgba(4, 8, 10, 0.72);
+    color: rgba(150, 255, 190, 0.85);
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s, visibility 0.4s;
+}
+html[data-room-look] #room-hint {
+    opacity: 1;
+    visibility: visible;
+}
+#room-hint .hint-touch,
+html[data-room-look='drag'] #room-hint {
+    display: none;
+}
+@media (pointer: coarse) {
+    #room-hint .hint-touch {
+        display: inline;
+    }
+    #room-hint .hint-mouse {
+        display: none;
+    }
+}
 html[data-room3d][data-entrance] #monitor-shell,
 html[data-room-look] #monitor-shell {
     will-change: transform;
+}
+/* Walking in: the screen is off, and the DOM would show through the door. */
+html[data-entrance-walk] #monitor-shell {
+    visibility: hidden;
 }
 /* While the room loads on a first visit the screen stays dark. */
 html[data-room3d='loading'][data-entrance] #monitor-shell {
@@ -295,7 +354,10 @@ html[data-room3d='loading'][data-entrance] #monitor-shell {
         cursor: auto;
     }
     html[data-room-look] body {
-        cursor: zoom-in;
+        cursor: grab;
+    }
+    html[data-room-look='drag'] body {
+        cursor: grabbing;
     }
     /* Reading size: leave the room some width beside the monitor. */
     body:not([data-display-mode='web1']) #monitor-rig {
@@ -311,7 +373,8 @@ html[data-room3d='loading'][data-entrance] #monitor-shell {
     }
 }
 @media print {
-    #room3d {
+    #room3d,
+    #room-hint {
         display: none !important;
     }
 }

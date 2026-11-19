@@ -133,14 +133,34 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
     await check('3D room: pressing the room steps back, any key returns', async () => {
         const page = await open(browser, { path: FORCED });
         await room3dOn(page);
-        await page.mouse.click(6, 6);
-        await page.waitForFunction(() => getComputedStyle(document.getElementById('monitor-shell')).transform.startsWith('matrix3d'), null, { timeout: 8000 });
-        assert.ok(await page.evaluate(() => 'roomLook' in document.documentElement.dataset));
-        await page.keyboard.press('Shift');
-        await page.waitForFunction(() => !('roomLook' in document.documentElement.dataset), null, { timeout: 15000 });
-        assert.equal(await shellTransform(page), 'none');
+        // Where the room is pressed decides which side the camera steps back to.
+        const views = [];
+        for (const x of [6, 1434]) {
+            await page.mouse.click(x, 300);
+            await page.waitForFunction(() => getComputedStyle(document.getElementById('monitor-shell')).transform.startsWith('matrix3d'), null, { timeout: 8000 });
+            assert.ok(await page.evaluate(() => 'roomLook' in document.documentElement.dataset));
+            await page.waitForTimeout(1800);
+            views.push(await shellTransform(page));
+            await page.keyboard.press('Shift');
+            await page.waitForFunction(() => !('roomLook' in document.documentElement.dataset), null, { timeout: 15000 });
+            assert.equal(await shellTransform(page), 'none');
+        }
+        assert.notEqual(views[0], views[1]);
         await command(page, 'room');
         await page.waitForFunction(() => 'roomLook' in document.documentElement.dataset);
+        // A drag orbits and does not leave the view; a plain press does.
+        await page.waitForTimeout(1600);
+        const before = await shellTransform(page);
+        await page.mouse.move(700, 450);
+        await page.mouse.down();
+        await page.mouse.move(400, 380, { steps: 8 });
+        await page.mouse.up();
+        await page.waitForTimeout(900);
+        assert.ok('roomLook' in (await page.evaluate(() => ({ ...document.documentElement.dataset }))));
+        assert.notEqual(await shellTransform(page), before);
+        await page.mouse.click(700, 450);
+        await page.waitForFunction(() => !('roomLook' in document.documentElement.dataset), null, { timeout: 15000 });
+        assert.equal(await shellTransform(page), 'none');
         assert.deepEqual(page.errors, []);
         await page.context().close();
     });

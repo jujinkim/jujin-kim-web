@@ -1,9 +1,9 @@
-import { room3d } from './room3d.js?v=20261119.6';
-import { CONTACT_EMAIL } from '../constants.js?v=20261119.6';
-import { toggleSwarm, toggleSound, swarmGeneration, resetSwarm, swarmPulse } from './animations.js?v=20261119.6';
-import { navigateToSection, sectionIds, activeSection } from './navigation.js?v=20261119.6';
-import { setLamp, roomPulse } from './room-life.js?v=20261119.6';
-import { setTheme } from './theme.js?v=20261119.6';
+import { room3d } from './room3d.js?v=20261119.11';
+import { CONTACT_EMAIL } from '../constants.js?v=20261119.11';
+import { toggleSwarm, toggleSound, swarmGeneration, resetSwarm, swarmPulse } from './animations.js?v=20261119.11';
+import { navigateToSection, sectionIds, activeSection } from './navigation.js?v=20261119.11';
+import { setLamp, roomPulse } from './room-life.js?v=20261119.11';
+import { setTheme } from './theme.js?v=20261119.11';
 
 let currentInput = '';
 let commandHistory = [];
@@ -90,9 +90,18 @@ registerCommand('lamp', 'Desk lamp: lamp [on|off]', (args) => {
     const on = setLamp(args[0] === 'on' ? true : args[0] === 'off' ? false : undefined);
     return `Lamp ${on ? 'on' : 'off'}`;
 });
-registerCommand('room', 'Step back and look at the room (any key returns)', () => {
-    if (!room3d.ready) return 'The 3D room is not running on this device';
-    return room3d.look(true) ? 'Looking at the room. Any key or press returns.' : 'Not available in this display mode';
+registerCommand('perf', 'Show frame timing and the state of the 3D room', () => {
+    const d = window.crtDiagnostics;
+    const frames = (d?.samples || []).slice(-4).map((s) => `${s.fps.toFixed(0)}fps p95 ${s.p95.toFixed(0)}ms${s.slow ? ' slow' : ''}`);
+    return `${room3d.status()}\nDisplay: ${d?.mode || 'unknown'}${d?.reason ? ` (${d.reason})` : ''}, ${innerWidth}x${innerHeight} @${devicePixelRatio}x\nFrames while interacting: ${frames.join(' | ') || 'no samples yet'}`;
+});
+registerCommand('room', 'Look around the room (drag, scroll; any key returns). room on: restart the 3D room', (args) => {
+    if (args[0] === 'on') {
+        room3d.retry();
+        return 'Restarting the 3D room...';
+    }
+    if (!room3d.ready) return 'The 3D room is off in this tab. Type "room on" to try again, "perf" to see why.';
+    return room3d.look(true) ? 'Looking at the room. Drag to look around, scroll to zoom, click or any key to return.' : 'Not available in this display mode';
 });
 registerCommand('pulse', 'Send a pulse through the swarm', () => {
     roomPulse();

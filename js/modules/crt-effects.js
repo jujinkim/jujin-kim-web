@@ -1,10 +1,10 @@
-import { createCurvature } from './screen-curvature.js?v=20261119.6';
-import { monitorPerformance } from './display-performance.js?v=20261119.6';
-import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261119.6';
-import { initDesktopScene } from './desktop-scene.js?v=20261119.6';
-import { runEntrance, cancelEntrance, entranceActive } from './entrance.js?v=20261119.6';
-import { stillRoom } from './room-life.js?v=20261119.6';
-import { room3d } from './room3d.js?v=20261119.6';
+import { createCurvature } from './screen-curvature.js?v=20261119.11';
+import { monitorPerformance } from './display-performance.js?v=20261119.11';
+import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261119.11';
+import { initDesktopScene } from './desktop-scene.js?v=20261119.11';
+import { runEntrance, cancelEntrance, entranceActive } from './entrance.js?v=20261119.11';
+import { stillRoom } from './room-life.js?v=20261119.11';
+import { room3d } from './room3d.js?v=20261119.11';
 
 // How long a first visit waits in the dark for the 3D room before the CSS
 // room takes the entrance instead.
@@ -93,7 +93,8 @@ export function initCRTEffects() {
         stillRoom();
         // The 3D room is the heaviest thing on the page: quiet it, then drop
         // it, before the display itself is degraded.
-        if (room3d.ready && room3d.step()) return;
+        const last = samples.at(-1);
+        if (room3d.ready && room3d.step(!last || last.fps < 30 || last.p95 > 50)) return;
         if (renderer?.ready && level < resolutions.length - 1) {
             level++;
             setAnimationResolution(resolutions[level]);
@@ -108,6 +109,12 @@ export function initCRTEffects() {
     function startCurvature() {
         if (diagnostics.mode === 'web1' || curvatureFailed || renderer || glass.classList.contains('power-on')) return;
         if (entranceActive()) return;
+        // The 3D room keeps the screen as plain DOM: sharp text, and the camera
+        // can leave the reading position. Curvature is for the CSS room only.
+        if (room3d.ready) {
+            diagnostics.reason = '3d-room';
+            return;
+        }
         if (forced === 'flat') {
             diagnostics.reason = 'preview';
             return;
@@ -151,21 +158,25 @@ export function initCRTEffects() {
     delete document.documentElement.dataset.crtStartup;
     // An expired guard skips startup; CSS still reveals content if cleanup is delayed.
     const room = room3d.init();
+    const powerOn = () => {
+        glass.classList.add('power-on');
+        clearTimeout(powerTimer);
+        powerTimer = setTimeout(() => glass.classList.remove('power-on'), 600);
+    };
     if (startupPending && !motion.matches && !readSession(POWER_SEEN) && writeSession(POWER_SEEN, '1')) {
         // Hold the dark frame until the 3D room is ready (or has given up), so
         // the entrance never swaps rooms halfway.
         document.documentElement.dataset.entranceOwned = '';
         const begin = () => {
             if (diagnostics.mode === 'web1') return;
-            glass.classList.add('power-on');
-            powerTimer = setTimeout(() => glass.classList.remove('power-on'), 600);
             runEntrance({
                 scene,
                 dolly: desktop.matches || room3d.ready,
+                power: powerOn,
                 onDone: () => {
                     clearTimeout(powerTimer);
                     glass.classList.remove('power-on');
-                    requestAnimationFrame(startCurvature);
+                    room.then(() => requestAnimationFrame(startCurvature));
                 }
             });
         };
@@ -176,18 +187,16 @@ export function initCRTEffects() {
     } else {
         delete document.documentElement.dataset.entrance;
         writeSession(POWER_SEEN, '1');
-        startCurvature();
+        room.then(startCurvature);
     }
     // `reboot` replays the entrance. A running curvature renderer mirrors DOM
     // geometry, so with it the camera stays put and only the screen restarts.
     window.addEventListener('reboot-requested', () => {
         if (diagnostics.mode === 'web1' || motion.matches || entranceActive()) return;
-        glass.classList.add('power-on');
-        clearTimeout(powerTimer);
-        powerTimer = setTimeout(() => glass.classList.remove('power-on'), 600);
         runEntrance({
             scene,
             dolly: (desktop.matches || room3d.ready) && !renderer,
+            power: powerOn,
             onDone: () => {
                 clearTimeout(powerTimer);
                 glass.classList.remove('power-on');

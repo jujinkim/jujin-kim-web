@@ -34,17 +34,21 @@
                 } catch {}
             })();
         </script>
-        <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261119.6" />
-        <link rel="alternate icon" href="favicon.ico?v=20261119.6" />
-        <link rel="stylesheet" href="css/reset.css?v=20261119.6" />
-        <link rel="stylesheet" href="css/site.css?v=20261119.6" />
-        <link rel="stylesheet" href="css/animations.css?v=20261119.6" />
-        <link rel="stylesheet" href="css/modal.css?v=20261119.6" />
-        <link rel="stylesheet" href="css/responsive.css?v=20261119.6" />
-        <link rel="stylesheet" href="css/scene-motion.css?v=20261119.6" />
+        <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261119.11" />
+        <link rel="alternate icon" href="favicon.ico?v=20261119.11" />
+        <link rel="stylesheet" href="css/reset.css?v=20261119.11" />
+        <link rel="stylesheet" href="css/site.css?v=20261119.11" />
+        <link rel="stylesheet" href="css/animations.css?v=20261119.11" />
+        <link rel="stylesheet" href="css/modal.css?v=20261119.11" />
+        <link rel="stylesheet" href="css/responsive.css?v=20261119.11" />
+        <link rel="stylesheet" href="css/scene-motion.css?v=20261119.11" />
     </head>
     <body class="crt-effects-enabled">
         <canvas id="room3d" aria-hidden="true"></canvas>
+        <div id="room-hint" aria-hidden="true">
+            <span class="hint-mouse">drag: look around | scroll: zoom | click or key: back</span>
+            <span class="hint-touch">drag: look around | pinch: zoom | tap: back</span>
+        </div>
         <div id="room-scene" aria-hidden="true" inert>
             <div class="room-backdrop">
                 <div class="room-architecture"><i></i><i></i><i></i></div>
@@ -269,6 +273,6 @@
                 </div>
             </div>
         </div>
-        <script type="module" src="js/main.js?v=20261119.6"></script>
+        <script type="module" src="js/main.js?v=20261119.11"></script>
     </body>
 </html>

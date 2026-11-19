@@ -60,7 +60,7 @@ jujin_kim_web/
   - `ESC`: Return directly to the Home section.
 - **Terminal Input (Home section only)**:
   - Command handling resides in `js/modules/terminal-input.js`.
-  - Supported commands: `help`, `clear`, `about`, `skills`, `contact`, `date`, `ls`, `cd`, `cat`, `open`, `lamp`, `pulse`, `theme`, `room`, `reboot`, `swarm`, `gen`, `reset`, `sound`.
+  - Supported commands: `help`, `clear`, `about`, `skills`, `contact`, `date`, `ls`, `cd`, `cat`, `open`, `lamp`, `pulse`, `theme`, `room`, `perf`, `reboot`, `swarm`, `gen`, `reset`, `sound`.
 
 ### 3. Content & Shared Values
 - **Content Rendering**: All section contents (HTML templates) are rendered dynamically via `load*Section` helpers in `js/modules/content.js`.
@@ -87,7 +87,7 @@ jujin_kim_web/
 
 - **Compact screens**: Enable curvature only at viewport sizes of at least 1000x600. Smaller viewports use flat CRT with native DOM input/scrolling and no curved-glass shading. Preserve state when crossing the breakpoint.
 
-- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261119.6` release key. Bump the key together for runtime releases.
+- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261119.11` release key. Bump the key together for runtime releases.
 
 - **Vanilla ES6 Modules**: Stick strictly to ES6 modules and template literals. Avoid introducing frameworks, compiler steps, or external build pipelines.
 - **ASCII & Text**: Use ASCII characters unless a file already mixes in Unicode (such as emoji in content templates).
@@ -121,9 +121,13 @@ jujin_kim_web/
 ## 3D room
 
 - **What it is** (`js/modules/room3d.js`, `js/vendor/three.min.js`): the room, desk and monitor case are a three.js scene on `canvas#room3d`. The terminal is still real DOM: the monitor model is built around the measured `#monitor-glass` rectangle, and the resting camera uses an off-axis frustum that keeps the screen plane pixel-fixed. `#monitor-shell` must compute to `transform: none` whenever the visitor is reading, including while the pointer moves the camera.
-- **Away from rest** (entrance flight, `room` command, pressing the room): `#monitor-shell` follows the camera through a `matrix3d` and takes no pointer input. Any key or press returns.
+- **Away from rest** (entrance flight, `room` command, pressing the room): `#monitor-shell` follows the camera through a `matrix3d` and takes no pointer input. Where the room was pressed sets the side the camera steps back to. In the `room` view a drag orbits the camera around the monitor (clamped inside the walls), the wheel, a pinch or `+`/`-` zooms, arrow keys orbit; a press without a drag or any other key returns.
 - **State**: `html[data-room3d]` is `loading` from the head script, `on` when the scene is ready, and removed when 3D is unavailable (no WebGL2, software renderer, context lost, slow frames). Without it the CSS room in `#room-scene` is the room, so keep both working. `?room3d=off` and `?room3d=force` override the choice.
+- **Look**: the room is rendered in chunky pixels (`PIXEL` CSS pixels per rendered pixel, `image-rendering: pixelated`, no antialiasing); the DOM screen stays sharp. This is also what keeps it cheap.
+- **Swarm in the sky**: with the 3D room on a desktop, `animations.js` moves `#starfield` out of the monitor to a full-viewport layer behind `canvas#room3d` (class `in-sky`). The room canvas has alpha and the sky part of the city texture is written transparent with no blending, so the window is a hole the swarm and the body's `--room-sky` gradient show through, correctly hidden by anything in front. `room3d.skyRect()` tells the swarm where the window is on screen; the flock's light is mapped into it. Without the 3D room (phones while reading, CSS room) the swarm stays the screen's background.
+- **Display mode**: curvature (`screen-curvature.js`) is not started while the 3D room is on; the screen is flat DOM with the CRT overlays.
+- **Entrance**: the camera starts in the hallway, the door opens, it walks to the desk in `WALK_MS` (1s), then the monitor powers on, the boot log prints and the lights come up. The DOM screen is hidden during the walk (`html[data-entrance-walk]`) because DOM cannot be occluded by the door.
 - **Phones**: the 3D room is drawn only during the entrance and the `room` view; while reading the canvas is `display: none`.
 - **Signals**: `room-life.js` stays the single source. It drives the CSS room and mirrors every signal into `room3d` (`setLevels`, `setFan`, `flash`, `setLamp`). Sky, window light and lit windows follow the visitor's clock.
-- **Performance ladder** (`crt-effects.js` `degrade`): still the room (no ambient motion, 1x pixel ratio) -> render at 0.7x -> drop 3D for the tab -> the existing display steps. Pointer tracking is never switched off while the 3D room is on; the one-slow-sample rule in `desktop-scene.js` applies only to the CSS room.
+- **Performance ladder** (`crt-effects.js` `degrade`): still the room (no ambient motion, 1x pixel ratio) -> render at 0.7x -> drop 3D for the tab (only when the last sample is under 30fps or p95 over 50ms; otherwise the ladder stops here) -> the existing display steps. Pointer tracking is never switched off while the 3D room is on; the one-slow-sample rule in `desktop-scene.js` applies only to the CSS room.
 - **Vendor**: `js/vendor/three.min.js` is a tree-shaken bundle of three r187. To change what it exports, edit `js/vendor/three.entry.js` and rebuild in a scratch folder with `npm i three@0.187.0 && npx esbuild three.entry.js --bundle --minify --format=esm --target=es2020 --outfile=three.min.js`. This is a one-off; the site still has no build step.
