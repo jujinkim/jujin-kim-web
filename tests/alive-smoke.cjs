@@ -212,6 +212,18 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
         await settled();
         assert.ok(!('roomFocus' in (await data())) && 'roomLook' in (await data()));
 
+        // The drink is pressable too, without an outline or a hand cursor.
+        const drink = await spot(page, 'drink');
+        await page.mouse.move(drink.x, drink.y);
+        await settled(300);
+        assert.ok(!('roomHover' in (await data())));
+        await page.mouse.click(drink.x, drink.y);
+        assert.equal((await data()).roomFocus, 'drink');
+        await settled();
+        assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('focus-drink')).visibility), 'visible');
+        await page.keyboard.press('Escape');
+        await settled();
+
         // Handheld: a panel on each screen.
         const handheld = await spot(page, 'console');
         await page.mouse.click(handheld.x, handheld.y);

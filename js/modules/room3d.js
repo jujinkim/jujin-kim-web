@@ -10,9 +10,9 @@
 // World units are metres. The origin is the viewport centre on the screen
 // plane, +y is up and +z points at the viewer.
 
-import { BOOK_LINKS } from '../constants.js?v=20261120.4';
+import { BOOK_LINKS } from '../constants.js?v=20261120.13';
 
-const VENDOR = '../vendor/three.min.js?v=20261120.4';
+const VENDOR = '../vendor/three.min.js?v=20261120.13';
 const OFF_KEY = 'room3d-off';
 const SCREEN_HEIGHT = 0.33;
 const CAMERA_DISTANCE = 1.15; // in viewport heights
@@ -574,7 +574,7 @@ const maskMaterial = (bit) =>
         stencilWrite: true, stencilRef: bit, stencilWriteMask: bit, stencilZPass: 7681 /* replace */
     });
 
-function addTarget(id, sources, object, min, max, { thick = 0.007, book = false, bit = 1, fillers = [] } = {}) {
+function addTarget(id, sources, object, min, max, { thick = 0.007, book = false, quiet = false, bit = 1, fillers = [] } = {}) {
     // Two layers: the line itself and a wider, fainter one around it.
     const [line, halo] = [0, 1].map(() => {
         const made = new T.MeshBasicMaterial({
@@ -620,7 +620,7 @@ function addTarget(id, sources, object, min, max, { thick = 0.007, book = false,
     }
     // Meshes that only cut this group's outlines, each under its own bit.
     for (const [source, at] of fillers) mask(source, at);
-    S.targets.push({ id, object, min, max, book, bit, extras, materials, line, halo, glow: 0, shown: false });
+    S.targets.push({ id, object, min, max, book, quiet, bit, extras, materials, line, halo, glow: 0, shown: false });
 }
 
 function buildTargets(m) {
@@ -640,6 +640,8 @@ function buildTargets(m) {
     addTarget('window', windowFrame, room, [WINDOW.x0 - 0.03, WINDOW.y0 - 0.03, WINDOW.z - 0.1], [WINDOW.x1 + 0.03, WINDOW.y1 + 0.03, WINDOW.z + 0.06], { thick: 0.009, bit: 2 });
     addTarget('console', meshes(handheld), handheld, [-0.075, 0, -0.078], [0.075, 0.085, 0.045], { thick: 0.004, bit: 4 });
     addTarget('books', meshes(shelf), shelf, [-0.35, -0.025, 0], [0.35, 0.215, 0.165], { bit: 8 });
+    // The bottle and the glass: not outlined and no hand cursor, for whoever tries.
+    addTarget('drink', [], room, [-0.74, 0, 0.02], [-0.52, 0.25, 0.24], { quiet: true });
     // A book can be pressed once the camera is at the shelf, if it has a link.
     // Every book has a stencil bit: a resting book's outline is cut by the
     // whole row, so it is not drawn across its neighbours (see tick).
@@ -821,7 +823,8 @@ function layout() {
     S.poses.focus = {
         window: aimed(pane, pane.clone().add(new T.Vector3(0, 0.36, -1))),
         books: closeUp(shelf, [0, 0.09, 0.08], [0, 0.4, 1], 0.7, 0.3, 0.62),
-        console: closeUp(S.parts.handheld, [0, 0.03, -0.015], [0, 0.75, 1], 0.15, 0.14, 0.6)
+        console: closeUp(S.parts.handheld, [0, 0.03, -0.015], [0, 0.75, 1], 0.15, 0.14, 0.6),
+        drink: closeUp(room, [-0.63, 0.11, 0.13], [0.25, 0.35, 1], 0.3, 0.27, 0.5)
     };
 
     const ratio = 1 / (S.lean ? PIXEL_LEAN : PIXEL);
@@ -1019,7 +1022,8 @@ function tick(now) {
     if (S.pointer && (S.hoverCheck || busy)) {
         S.hoverCheck = false;
         const hit = S.lookTarget ? pick(S.pointer.x, S.pointer.y) : null;
-        setHover(S.focusTarget && !hit?.startsWith('book:') ? null : hit);
+        const quiet = (S.focusTarget && !hit?.startsWith('book:')) || S.targets.find((target) => target.id === hit)?.quiet;
+        setHover(quiet ? null : hit);
     }
     // Outlines: they fade in and out faintly, and stay lit under the pointer.
     const roomLevel = ease(S.lookT) * (1 - ease(S.focusT));

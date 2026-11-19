@@ -87,7 +87,7 @@ jujin_kim_web/
 
 - **Compact screens**: Enable curvature only at viewport sizes of at least 1000x600. Smaller viewports use flat CRT with native DOM input/scrolling and no curved-glass shading. Preserve state when crossing the breakpoint.
 
-- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261120.4` release key. Bump the key together for runtime releases.
+- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261120.13` release key. Bump the key together for runtime releases.
 
 - **Vanilla ES6 Modules**: Stick strictly to ES6 modules and template literals. Avoid introducing frameworks, compiler steps, or external build pipelines.
 - **ASCII & Text**: Use ASCII characters unless a file already mixes in Unicode (such as emoji in content templates).
@@ -126,6 +126,7 @@ jujin_kim_web/
   - Targets are boxes in an object's own space (`buildTargets`); `pick()` casts the pointer ray against them by hand (the vendored bundle has no `Raycaster`). The outline follows the thing's own silhouette: mask copies of its meshes mark the stencil, slightly larger additive copies are drawn everywhere but there (`addTarget`), so it is occluded like anything else. It fades in and out faintly and is full strength under the pointer (`html[data-room-hover]`); this breathing is the one room motion that is an affordance rather than a signal. The cursor is `move` over bare room and a hand over a target.
   - `console`: `#focus-console-top` / `#focus-console-bottom` are DOM panels laid on the two LCDs with a `matrix3d` (`LCD` in `room3d.js`, `cssMatrix()` is shared with the monitor shell). Their content is still `TODO: implement` in `index.html`.
   - `books`: each spine with an entry in `BOOK_LINKS` (`js/constants.js`, left to right) can be pressed and opens its link; `#focus-books` lists the same links.
+  - `drink`: the bottle and glass are a quiet target (`quiet: true`: no outline, no hand cursor); pressing them shows `#focus-drink`.
   - `window`: the camera stands at the right-hand pane looking up, so the sky fills the view. `animations.js` passes `room3d.focused === 'window'` to `world.setSky(rect, direct)`: the pointer is then the flock's light and a press pulses where it was pressed.
 - **State**: `html[data-room3d]` is `loading` from the head script, `on` when the scene is ready, and removed when 3D is unavailable (no WebGL2, software renderer, context lost, slow frames). Without it the CSS room in `#room-scene` is the room, so keep both working. `?room3d=off` and `?room3d=force` override the choice.
 - **Look**: the room is rendered in chunky pixels (`PIXEL` CSS pixels per rendered pixel, `image-rendering: pixelated`, no antialiasing); the DOM screen stays sharp. This is also what keeps it cheap.

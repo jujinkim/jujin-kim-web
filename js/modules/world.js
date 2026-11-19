@@ -1,10 +1,10 @@
-import { TUNING as T, COUNT_LADDER, PIXEL_BUDGET, GENOMES, GENE_COUNT } from './config.js?v=20261120.4';
-import { createSim } from './sim.js?v=20261120.4';
-import { createRenderer } from './renderer.js?v=20261120.4';
-import { createInput } from './input.js?v=20261120.4';
-import { sampleText, sampleKnot } from './text-targets.js?v=20261120.4';
-import { createQuality } from './quality.js?v=20261120.4';
-import { decode, evolve, loadState, saveState, clearState, seedPopulation } from './evolution.js?v=20261120.4';
+import { TUNING as T, COUNT_LADDER, PIXEL_BUDGET, GENOMES, GENE_COUNT } from './config.js?v=20261120.13';
+import { createSim } from './sim.js?v=20261120.13';
+import { createRenderer } from './renderer.js?v=20261120.13';
+import { createInput } from './input.js?v=20261120.13';
+import { sampleText, sampleKnot } from './text-targets.js?v=20261120.13';
+import { createQuality } from './quality.js?v=20261120.13';
+import { decode, evolve, loadState, saveState, clearState, seedPopulation } from './evolution.js?v=20261120.13';
 
 // Owns the frame loop and the state machine:
 //
