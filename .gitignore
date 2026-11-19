@@ -51,4 +51,8 @@ coverage/
 # Archive files
 *.zip
 *.tar.gz
-*.rar
+*.rar!js/vendor/three.min.js
+
+
+# Vendored runtime bundle (no build step produces it)
+!js/vendor/three.min.js
