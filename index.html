@@ -10,6 +10,11 @@
                 try {
                     const query = new URLSearchParams(location.search);
                     const forced = query.get('crt-preview') === '1' ? query.get('crt-mode') : null;
+                    const root = document.documentElement;
+                    const web1 = forced === 'web1' || (!forced && sessionStorage.getItem('crt-display-mode') === 'web1');
+                    // Hide the CSS room while the 3D one loads; room3d.js clears this if it fails.
+                    if (!web1 && !sessionStorage.getItem('room3d-off') && query.get('room3d') !== 'off')
+                        root.dataset.room3d = 'loading';
                     if (
                         matchMedia('(prefers-reduced-motion: reduce)').matches ||
                         sessionStorage.getItem('crt-power-seen') ||
@@ -17,7 +22,6 @@
                         (!forced && sessionStorage.getItem('crt-display-mode') === 'web1')
                     )
                         return;
-                    const root = document.documentElement;
                     root.dataset.crtStartup = 'pending';
                     root.dataset.entrance = 'dark';
                     const reveal = () => {
@@ -25,21 +29,22 @@
                         // The entrance module claims the attribute when it starts.
                         if (!('entranceOwned' in root.dataset)) delete root.dataset.entrance;
                     };
-                    setTimeout(reveal, 1500);
+                    setTimeout(reveal, 2500);
                     window.addEventListener('load', reveal, { once: true });
                 } catch {}
             })();
         </script>
-        <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261119.4" />
-        <link rel="alternate icon" href="favicon.ico?v=20261119.4" />
-        <link rel="stylesheet" href="css/reset.css?v=20261119.4" />
-        <link rel="stylesheet" href="css/site.css?v=20261119.4" />
-        <link rel="stylesheet" href="css/animations.css?v=20261119.4" />
-        <link rel="stylesheet" href="css/modal.css?v=20261119.4" />
-        <link rel="stylesheet" href="css/responsive.css?v=20261119.4" />
-        <link rel="stylesheet" href="css/scene-motion.css?v=20261119.4" />
+        <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261119.5" />
+        <link rel="alternate icon" href="favicon.ico?v=20261119.5" />
+        <link rel="stylesheet" href="css/reset.css?v=20261119.5" />
+        <link rel="stylesheet" href="css/site.css?v=20261119.5" />
+        <link rel="stylesheet" href="css/animations.css?v=20261119.5" />
+        <link rel="stylesheet" href="css/modal.css?v=20261119.5" />
+        <link rel="stylesheet" href="css/responsive.css?v=20261119.5" />
+        <link rel="stylesheet" href="css/scene-motion.css?v=20261119.5" />
     </head>
     <body class="crt-effects-enabled">
+        <canvas id="room3d" aria-hidden="true"></canvas>
         <div id="room-scene" aria-hidden="true" inert>
             <div class="room-backdrop">
                 <div class="room-architecture"><i></i><i></i><i></i></div>
@@ -264,6 +269,6 @@
                 </div>
             </div>
         </div>
-        <script type="module" src="js/main.js?v=20261119.4"></script>
+        <script type="module" src="js/main.js?v=20261119.5"></script>
     </body>
 </html>

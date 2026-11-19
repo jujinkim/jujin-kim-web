@@ -104,6 +104,82 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
         await page.context().close();
     });
 
+    // The 3D room refuses software GL unless forced, so these runs force it.
+    const FORCED = '?debug=1&quality=off&room3d=force';
+    const shellTransform = (page) => page.evaluate(() => getComputedStyle(document.getElementById('monitor-shell')).transform);
+    const room3dOn = (page) => page.waitForFunction(() => document.documentElement.dataset.room3d === 'on', null, { timeout: 15000 });
+
+    await check('without a real GPU the CSS room is used', async () => {
+        const page = await open(browser);
+        await page.waitForFunction(() => !('room3d' in document.documentElement.dataset), null, { timeout: 5000 });
+        assert.notEqual(await page.evaluate(() => getComputedStyle(document.getElementById('room-scene')).visibility), 'hidden');
+        await page.context().close();
+    });
+
+    await check('3D room: the screen is untransformed at rest, also while the pointer moves', async () => {
+        const page = await open(browser, { path: FORCED });
+        await room3dOn(page);
+        assert.equal(await shellTransform(page), 'none');
+        assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('room3d')).display), 'block');
+        await page.mouse.move(60, 60);
+        await page.mouse.move(1300, 800, { steps: 6 });
+        await page.waitForTimeout(300);
+        assert.equal(await shellTransform(page), 'none');
+        assert.equal(await rigTransform(page), 'none');
+        assert.deepEqual(page.errors, []);
+        await page.context().close();
+    });
+
+    await check('3D room: pressing the room steps back, any key returns', async () => {
+        const page = await open(browser, { path: FORCED });
+        await room3dOn(page);
+        await page.mouse.click(6, 6);
+        await page.waitForFunction(() => getComputedStyle(document.getElementById('monitor-shell')).transform.startsWith('matrix3d'), null, { timeout: 8000 });
+        assert.ok(await page.evaluate(() => 'roomLook' in document.documentElement.dataset));
+        await page.keyboard.press('Shift');
+        await page.waitForFunction(() => !('roomLook' in document.documentElement.dataset), null, { timeout: 15000 });
+        assert.equal(await shellTransform(page), 'none');
+        await command(page, 'room');
+        await page.waitForFunction(() => 'roomLook' in document.documentElement.dataset);
+        assert.deepEqual(page.errors, []);
+        await page.context().close();
+    });
+
+    await check('3D room: the entrance flies in and leaves the screen at rest', async () => {
+        const page = await open(browser, { path: FORCED, seen: false });
+        const seen = new Set();
+        let carried = false;
+        const started = Date.now();
+        while (Date.now() - started < 25000) {
+            const phase = await entrance(page);
+            seen.add(phase);
+            if (phase && (await shellTransform(page)).startsWith('matrix3d')) carried = true;
+            if (phase === null && seen.size > 1) break;
+            await page.waitForTimeout(60);
+        }
+        assert.ok(seen.has('dolly') && seen.has(null));
+        assert.ok(carried, 'the shell follows the camera');
+        assert.equal(await shellTransform(page), 'none');
+        assert.deepEqual(page.errors, []);
+        await page.context().close();
+    });
+
+    await check('3D room on a phone: the entrance has a room, reading does not', async () => {
+        const page = await open(browser, { path: FORCED, seen: false, viewport: { width: 390, height: 844 } });
+        const seen = new Set();
+        const started = Date.now();
+        while (Date.now() - started < 25000) {
+            const phase = await entrance(page);
+            seen.add(phase);
+            if (phase === null && seen.size > 1) break;
+            await page.waitForTimeout(60);
+        }
+        assert.ok(seen.has('dolly'));
+        assert.equal(await shellTransform(page), 'none');
+        assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('room3d')).display), 'none');
+        await page.context().close();
+    });
+
     await check('a generation moves the rack meter and blinks a drive', async () => {
         const page = await open(browser);
         await page.waitForFunction(() => window.swarmDebug?.stats().frames > 5);

@@ -1,9 +1,14 @@
-import { createCurvature } from './screen-curvature.js?v=20261119.4';
-import { monitorPerformance } from './display-performance.js?v=20261119.4';
-import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261119.4';
-import { initDesktopScene } from './desktop-scene.js?v=20261119.4';
-import { runEntrance, cancelEntrance, entranceActive } from './entrance.js?v=20261119.4';
-import { stillRoom } from './room-life.js?v=20261119.4';
+import { createCurvature } from './screen-curvature.js?v=20261119.5';
+import { monitorPerformance } from './display-performance.js?v=20261119.5';
+import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261119.5';
+import { initDesktopScene } from './desktop-scene.js?v=20261119.5';
+import { runEntrance, cancelEntrance, entranceActive } from './entrance.js?v=20261119.5';
+import { stillRoom } from './room-life.js?v=20261119.5';
+import { room3d } from './room3d.js?v=20261119.5';
+
+// How long a first visit waits in the dark for the 3D room before the CSS
+// room takes the entrance instead.
+const ROOM3D_WAIT = 1400;
 
 const VISIT_MODE = 'crt-display-mode';
 const POWER_SEEN = 'crt-power-seen';
@@ -67,6 +72,8 @@ export function initCRTEffects() {
         delete document.documentElement.dataset.crtStartup;
         cancelEntrance();
         delete document.documentElement.dataset.entrance;
+        delete document.documentElement.dataset.entranceOwned;
+        room3d.destroy();
         renderer?.destroy();
         renderer = null;
         performanceMonitor?.stop();
@@ -84,6 +91,9 @@ export function initCRTEffects() {
     }
     function degrade() {
         stillRoom();
+        // The 3D room is the heaviest thing on the page: quiet it, then drop
+        // it, before the display itself is degraded.
+        if (room3d.ready && room3d.step()) return;
         if (renderer?.ready && level < resolutions.length - 1) {
             level++;
             setAnimationResolution(resolutions[level]);
@@ -140,18 +150,29 @@ export function initCRTEffects() {
     const startupPending = document.documentElement.dataset.crtStartup === 'pending';
     delete document.documentElement.dataset.crtStartup;
     // An expired guard skips startup; CSS still reveals content if cleanup is delayed.
+    const room = room3d.init();
     if (startupPending && !motion.matches && !readSession(POWER_SEEN) && writeSession(POWER_SEEN, '1')) {
-        glass.classList.add('power-on');
-        powerTimer = setTimeout(() => glass.classList.remove('power-on'), 600);
-        runEntrance({
-            scene,
-            dolly: desktop.matches,
-            onDone: () => {
-                clearTimeout(powerTimer);
-                glass.classList.remove('power-on');
-                requestAnimationFrame(startCurvature);
-            }
-        });
+        // Hold the dark frame until the 3D room is ready (or has given up), so
+        // the entrance never swaps rooms halfway.
+        document.documentElement.dataset.entranceOwned = '';
+        const begin = () => {
+            if (diagnostics.mode === 'web1') return;
+            glass.classList.add('power-on');
+            powerTimer = setTimeout(() => glass.classList.remove('power-on'), 600);
+            runEntrance({
+                scene,
+                dolly: desktop.matches || room3d.ready,
+                onDone: () => {
+                    clearTimeout(powerTimer);
+                    glass.classList.remove('power-on');
+                    requestAnimationFrame(startCurvature);
+                }
+            });
+        };
+        let begun = false;
+        const once = () => begun || ((begun = true), begin());
+        room.then(once);
+        setTimeout(once, ROOM3D_WAIT);
     } else {
         delete document.documentElement.dataset.entrance;
         writeSession(POWER_SEEN, '1');
@@ -166,7 +187,7 @@ export function initCRTEffects() {
         powerTimer = setTimeout(() => glass.classList.remove('power-on'), 600);
         runEntrance({
             scene,
-            dolly: desktop.matches && !renderer,
+            dolly: (desktop.matches || room3d.ready) && !renderer,
             onDone: () => {
                 clearTimeout(powerTimer);
                 glass.classList.remove('power-on');

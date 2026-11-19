@@ -1,8 +1,9 @@
-import { CONTACT_EMAIL } from '../constants.js?v=20261119.4';
-import { toggleSwarm, toggleSound, swarmGeneration, resetSwarm, swarmPulse } from './animations.js?v=20261119.4';
-import { navigateToSection, sectionIds, activeSection } from './navigation.js?v=20261119.4';
-import { setLamp, roomPulse } from './room-life.js?v=20261119.4';
-import { setTheme } from './theme.js?v=20261119.4';
+import { room3d } from './room3d.js?v=20261119.5';
+import { CONTACT_EMAIL } from '../constants.js?v=20261119.5';
+import { toggleSwarm, toggleSound, swarmGeneration, resetSwarm, swarmPulse } from './animations.js?v=20261119.5';
+import { navigateToSection, sectionIds, activeSection } from './navigation.js?v=20261119.5';
+import { setLamp, roomPulse } from './room-life.js?v=20261119.5';
+import { setTheme } from './theme.js?v=20261119.5';
 
 let currentInput = '';
 let commandHistory = [];
@@ -88,6 +89,10 @@ registerCommand('date', 'Show current date and time', () => new Date().toString(
 registerCommand('lamp', 'Desk lamp: lamp [on|off]', (args) => {
     const on = setLamp(args[0] === 'on' ? true : args[0] === 'off' ? false : undefined);
     return `Lamp ${on ? 'on' : 'off'}`;
+});
+registerCommand('room', 'Step back and look at the room (any key returns)', () => {
+    if (!room3d.ready) return 'The 3D room is not running on this device';
+    return room3d.look(true) ? 'Looking at the room. Any key or press returns.' : 'Not available in this display mode';
 });
 registerCommand('pulse', 'Send a pulse through the swarm', () => {
     roomPulse();

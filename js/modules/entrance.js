@@ -2,9 +2,12 @@
 // real values, then the camera moves in from a wide shot to the reading size.
 // Any key, press or wheel skips it.
 
+import { room3d } from './room3d.js?v=20261119.5';
+
 const BOOT_AT = 520;
 const LINE_EVERY = 105;
 const DOLLY_MS = 1250;
+const FLIGHT_MS = 2600; // the 3D camera has a room to cross
 const HOLD_AFTER_LOG = 180;
 
 const root = document.documentElement;
@@ -74,7 +77,10 @@ export function runEntrance({ scene, dolly, onDone }) {
     root.dataset.entrance = 'dark';
     root.style.setProperty('--entrance-dark', '1');
     if (log) log.textContent = '';
+    const flight = dolly && room3d.ready;
     if (dolly) scene?.setCamera(0);
+    if (flight) room3d.setCamera(0);
+    room3d.setMood(0, 0, true);
 
     function finish() {
         if (done) return;
@@ -84,6 +90,8 @@ export function runEntrance({ scene, dolly, onDone }) {
         cancelAnimationFrame(frame);
         for (const type of ['keydown', 'pointerdown', 'wheel']) window.removeEventListener(type, finish, true);
         scene?.setCamera(1);
+        room3d.setCamera(1);
+        room3d.setMood(1, 1);
         delete root.dataset.entrance;
         delete root.dataset.entranceOwned;
         root.style.removeProperty('--entrance-dark');
@@ -95,7 +103,12 @@ export function runEntrance({ scene, dolly, onDone }) {
     for (const type of ['keydown', 'pointerdown', 'wheel']) window.addEventListener(type, finish, { capture: true, passive: true });
 
     const lines = bootLines();
-    timers.push(setTimeout(() => (root.dataset.entrance = 'boot'), BOOT_AT));
+    timers.push(
+        setTimeout(() => {
+            root.dataset.entrance = 'boot';
+            room3d.setMood(1, 0);
+        }, BOOT_AT)
+    );
     lines.forEach((line, i) =>
         timers.push(setTimeout(() => log && (log.textContent += `${line}\n`), BOOT_AT + i * LINE_EVERY))
     );
@@ -105,11 +118,14 @@ export function runEntrance({ scene, dolly, onDone }) {
         setTimeout(() => {
             if (!dolly) return finish();
             root.dataset.entrance = 'dolly';
+            room3d.setMood(1, 1);
             const start = performance.now();
+            const duration = flight ? FLIGHT_MS : DOLLY_MS;
             const step = (now) => {
-                const t = Math.min(1, (now - start) / DOLLY_MS);
+                const t = Math.min(1, (now - start) / duration);
                 const p = ease(t);
                 scene?.setCamera(p);
+                if (flight) room3d.setCamera(p);
                 root.style.setProperty('--entrance-dark', (1 - p).toFixed(3));
                 if (t >= 1) finish();
                 else frame = requestAnimationFrame(step);

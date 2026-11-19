@@ -66,14 +66,14 @@ html[data-entrance='dolly'] #terminal-container {
 
 /* The wide shot. JS takes over these transforms once the camera starts moving. */
 @media (min-width: 1000px) and (min-height: 600px) {
-    html[data-entrance] body:not([data-display-mode='web1']) #monitor-rig {
+    html[data-entrance]:not([data-room3d]) body:not([data-display-mode='web1']) #monitor-rig {
         transform: scale(0.56);
         transform-origin: 50% calc(100% + var(--monitor-stand-height, 0px));
     }
-    html[data-entrance] .room-backdrop {
+    html[data-entrance]:not([data-room3d]) .room-backdrop {
         transform: scale(0.93);
     }
-    html[data-entrance] .room-foreground {
+    html[data-entrance]:not([data-room3d]) .room-foreground {
         transform: scale(0.88);
         transform-origin: 50% 100%;
     }
@@ -226,5 +226,92 @@ body[data-display-mode='web1'] .command-line {
     }
     .section-content > .is-pending {
         visibility: visible;
+    }
+}
+
+/* ---- the 3D room (room3d.js). html[data-room3d] is set before first paint
+   ('loading'), becomes 'on' when the scene is ready and is removed when 3D is
+   unavailable, which brings the CSS room back. ---- */
+
+#room3d {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.7s;
+}
+html[data-room3d] body:not([data-display-mode='web1']) {
+    background: #020306;
+}
+html[data-room3d] #room-scene {
+    visibility: hidden;
+}
+html[data-room3d='on'][data-entrance] #room3d,
+html[data-room3d='on'][data-room-look] #room3d {
+    display: block;
+    opacity: 1;
+}
+html[data-room-look] #monitor-shell {
+    pointer-events: none;
+}
+html[data-room3d][data-entrance] #monitor-shell,
+html[data-room-look] #monitor-shell {
+    will-change: transform;
+}
+/* While the room loads on a first visit the screen stays dark. */
+html[data-room3d='loading'][data-entrance] #monitor-shell {
+    visibility: hidden;
+}
+
+@media (min-width: 1000px) and (min-height: 600px) {
+    html[data-room3d='on'] body:not([data-display-mode='web1']) #room3d {
+        display: block;
+        opacity: 1;
+    }
+    /* The model supplies the case, stand and controls; the DOM keeps the screen. */
+    html[data-room3d] body:not([data-display-mode='web1']) #monitor-shell {
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+    html[data-room3d] body:not([data-display-mode='web1']) #monitor-shell::before,
+    html[data-room3d] body:not([data-display-mode='web1']) #monitor-shell::after,
+    html[data-room3d] body:not([data-display-mode='web1']) .monitor-face,
+    html[data-room3d] body:not([data-display-mode='web1']) .monitor-chin > *,
+    html[data-room3d] body:not([data-display-mode='web1']) .monitor-depth {
+        visibility: hidden;
+    }
+    html[data-room3d] #monitor-glass {
+        box-shadow: none;
+    }
+    html[data-room3d='on'] body:not([data-display-mode='web1']) {
+        cursor: zoom-out;
+    }
+    html[data-room3d='on'] #monitor-shell {
+        cursor: auto;
+    }
+    html[data-room-look] body {
+        cursor: zoom-in;
+    }
+    /* Reading size: leave the room some width beside the monitor. */
+    body:not([data-display-mode='web1']) #monitor-rig {
+        max-width: 66vw;
+    }
+}
+@media not all and (min-width: 1000px) and (min-height: 600px) {
+    /* On a phone the monitor in the room is the page itself. */
+    html[data-room3d='on'][data-entrance] #monitor-shell,
+    html[data-room-look] #monitor-shell {
+        border-color: transparent;
+        background: transparent;
+    }
+}
+@media print {
+    #room3d {
+        display: none !important;
     }
 }

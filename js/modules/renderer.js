@@ -1,4 +1,4 @@
-import { TUNING as T, RAMP } from './config.js?v=20261119.4';
+import { TUNING as T, RAMP } from './config.js?v=20261119.5';
 import {
     SCREEN_VERT,
     POINT_VERT,
@@ -7,7 +7,7 @@ import {
     DOWN_FRAG,
     BLUR_FRAG,
     COMPOSITE_FRAG
-} from './shaders.js?v=20261119.4';
+} from './shaders.js?v=20261119.5';
 
 const CONTEXT_OPTIONS = {
     alpha: true,

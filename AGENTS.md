@@ -60,7 +60,7 @@ jujin_kim_web/
   - `ESC`: Return directly to the Home section.
 - **Terminal Input (Home section only)**:
   - Command handling resides in `js/modules/terminal-input.js`.
-  - Supported commands: `help`, `clear`, `about`, `skills`, `contact`, `date`, `ls`, `cat`, `swarm`, `gen`, `reset`, `sound`.
+  - Supported commands: `help`, `clear`, `about`, `skills`, `contact`, `date`, `ls`, `cd`, `cat`, `open`, `lamp`, `pulse`, `theme`, `room`, `reboot`, `swarm`, `gen`, `reset`, `sound`.
 
 ### 3. Content & Shared Values
 - **Content Rendering**: All section contents (HTML templates) are rendered dynamically via `load*Section` helpers in `js/modules/content.js`.
@@ -87,7 +87,7 @@ jujin_kim_web/
 
 - **Compact screens**: Enable curvature only at viewport sizes of at least 1000x600. Smaller viewports use flat CRT with native DOM input/scrolling and no curved-glass shading. Preserve state when crossing the breakpoint.
 
-- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261119.4` release key. Bump the key together for runtime releases.
+- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261119.5` release key. Bump the key together for runtime releases.
 
 - **Vanilla ES6 Modules**: Stick strictly to ES6 modules and template literals. Avoid introducing frameworks, compiler steps, or external build pipelines.
 - **ASCII & Text**: Use ASCII characters unless a file already mixes in Unicode (such as emoji in content templates).
@@ -117,3 +117,13 @@ jujin_kim_web/
 - **Terminal presentation** (`js/modules/section-reveal.js`): `navigation.js` dispatches `section-changed`; the prompt line types the command and the section prints block by block (never per character: curved mode re-uploads tiles on every DOM change). The section is in the DOM immediately; any input finishes the printing.
 - **Commands**: add with `registerCommand(name, help, run)` in `terminal-input.js`; `help` is generated from the table.
 - **Check**: `ALIVE_PLAYWRIGHT=/path/to/playwright node tests/alive-smoke.cjs` (runs in flat mode, no HTML-in-Canvas needed).
+
+## 3D room
+
+- **What it is** (`js/modules/room3d.js`, `js/vendor/three.min.js`): the room, desk and monitor case are a three.js scene on `canvas#room3d`. The terminal is still real DOM: the monitor model is built around the measured `#monitor-glass` rectangle, and the resting camera uses an off-axis frustum that keeps the screen plane pixel-fixed. `#monitor-shell` must compute to `transform: none` whenever the visitor is reading, including while the pointer moves the camera.
+- **Away from rest** (entrance flight, `room` command, pressing the room): `#monitor-shell` follows the camera through a `matrix3d` and takes no pointer input. Any key or press returns.
+- **State**: `html[data-room3d]` is `loading` from the head script, `on` when the scene is ready, and removed when 3D is unavailable (no WebGL2, software renderer, context lost, slow frames). Without it the CSS room in `#room-scene` is the room, so keep both working. `?room3d=off` and `?room3d=force` override the choice.
+- **Phones**: the 3D room is drawn only during the entrance and the `room` view; while reading the canvas is `display: none`.
+- **Signals**: `room-life.js` stays the single source. It drives the CSS room and mirrors every signal into `room3d` (`setLevels`, `setFan`, `flash`, `setLamp`). Sky, window light and lit windows follow the visitor's clock.
+- **Performance ladder** (`crt-effects.js` `degrade`): still the room (no ambient motion, 1x pixel ratio) -> drop 3D for the tab -> the existing display steps.
+- **Vendor**: `js/vendor/three.min.js` is a tree-shaken bundle of three r187. To change what it exports, edit `js/vendor/three.entry.js` and rebuild in a scratch folder with `npm i three@0.187.0 && npx esbuild three.entry.js --bundle --minify --format=esm --target=es2020 --outfile=three.min.js`. This is a one-off; the site still has no build step.

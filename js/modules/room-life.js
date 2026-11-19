@@ -1,4 +1,5 @@
-import { onSwarm, swarmEnergy } from './animations.js?v=20261119.4';
+import { onSwarm, swarmEnergy } from './animations.js?v=20261119.5';
+import { room3d } from './room3d.js?v=20261119.5';
 
 // Ties the room's objects to real signals: the swarm's generations and energy,
 // terminal commands, section changes and the visitor's local time. Nothing here
@@ -20,10 +21,16 @@ let windows = [];
 let levels = REST_LEVELS.slice();
 let lamp = true;
 
+// DOM element -> the 3D room's name for the same object.
+const FLASH_3D = new Map();
+
 const body = () => document.body;
 
 function flash(element, className, ms) {
-    if (!element || !live) return;
+    if (!live) return;
+    const name = FLASH_3D.get(element);
+    if (name) room3d.flash(name, ms);
+    if (!element) return;
     element.classList.remove(className);
     void element.offsetWidth;
     element.classList.add(className);
@@ -65,10 +72,13 @@ function driftSkyline() {
 }
 
 function showLevels(energy) {
-    meters.forEach((bar, i) => {
+    const shown = meters.map((bar, i) => {
         const wobble = energy > 0.02 ? (Math.random() - 0.5) * 0.5 * energy : 0;
-        bar.style.setProperty('--level', Math.max(0.08, Math.min(1, levels[i] + wobble)).toFixed(3));
+        const level = Math.max(0.08, Math.min(1, levels[i] + wobble));
+        bar.style.setProperty('--level', level.toFixed(3));
+        return level;
     });
+    room3d.setLevels(shown);
 }
 
 function tick() {
@@ -76,6 +86,7 @@ function tick() {
     const energy = Math.min(1, swarmEnergy() / 600);
     showLevels(energy);
     for (const fan of fans) fan.playbackRate = 0.25 + 3 * energy;
+    room3d.setFan(0.25 + 3 * energy);
 }
 
 function run() {
@@ -92,6 +103,7 @@ function run() {
 export function setLamp(on) {
     lamp = on === undefined ? !lamp : !!on;
     body().dataset.lamp = lamp ? 'on' : 'off';
+    room3d.setLamp(lamp);
     return lamp;
 }
 
@@ -100,6 +112,7 @@ export function stillRoom() {
     if (still) return;
     still = true;
     body().dataset.roomStill = '';
+    room3d.still();
     run();
 }
 
@@ -107,6 +120,7 @@ export function roomPulse() {
     flash(document.querySelector('.room-neon'), 'is-jolted', 420);
     drives.forEach((drive, i) => setTimeout(() => flash(drive, 'is-busy', 500), i * 70));
     flash(document.querySelector('.room-speaker'), 'is-thumping', 360);
+    room3d.flash('pulse', 600);
 }
 
 export function initRoomLife() {
@@ -120,6 +134,10 @@ export function initRoomLife() {
             iterations: Infinity
         })
     );
+    drives.forEach((drive, i) => FLASH_3D.set(drive, `drive${i}`));
+    FLASH_3D.set(document.querySelector('.room-neon'), 'neon');
+    FLASH_3D.set(document.querySelector('.room-speaker'), 'speaker');
+    FLASH_3D.set(document.querySelector('.power-led'), 'power');
     buildSkyline();
     body().dataset.roomLive = '';
     setLamp(true);
@@ -140,7 +158,10 @@ export function initRoomLife() {
         flash(drives[0], 'is-busy', 500);
         flash(document.querySelector('.power-led'), 'is-beating', 700);
     });
-    onSwarm('pulse', () => flash(document.querySelector('.room-speaker'), 'is-thumping', 360));
+    onSwarm('pulse', () => {
+        flash(document.querySelector('.room-speaker'), 'is-thumping', 360);
+        room3d.flash('pulse', 600);
+    });
     window.addEventListener('section-changed', () => {
         flash(document.querySelector('.room-neon'), 'is-jolted', 420);
         flash(drives[2], 'is-busy', 500);

@@ -40,3 +40,7 @@ These results cover local Linux browser automation over HTTP, including viewport
 ## Update: the room is animated
 
 The statements above about no animation, no gradients and no opacity blending described the static room. `js/modules/room-life.js` and `css/scene-motion.css` now animate room objects from real signals, and the entrance dims the room with a veil. See `AGENTS.md`.
+
+## 3D replacement
+
+When `html[data-room3d]` is present this CSS room is hidden and `js/modules/room3d.js` draws the room instead. The CSS room remains the fallback, so changes to objects or signals should be made in both. See "3D room" in `AGENTS.md`.

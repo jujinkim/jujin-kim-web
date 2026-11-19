@@ -71,7 +71,7 @@ git diff --check
 
 The bezel uses a solid green body with nested outlines, corner seams, dark vents, and a separate dark control strip around an unpainted center. The stand, round adjustment knobs, rocker, and LED share the same three-color palette, with no simulated bevels or material shading. The room and case geometry use CSS. At viewport sizes of at least 1000×600, mouse movement shifts and tilts the monitor and moves the room in layers. Reduced-motion settings and sustained slow frames restore the straight-on view. Existing profile/title assets and screen effects remain. Compact layouts hide the room and retain thin CSS bezels. Web 1.0 and print hide the room, decorative frame, and stand. No settings or public JavaScript interfaces were added.
 
-Local entrypoints, module imports, fonts, and favicons use `v=20261119.4`. Bump the release key together for runtime releases.
+Local entrypoints, module imports, fonts, and favicons use `v=20261119.5`. Bump the release key together for runtime releases.
 
 ## Author
 
@@ -89,3 +89,7 @@ The terminal screen's background (`#starfield`) is a particle swarm drawn with h
 - **Room**: the rack meter shows the swarm's fitness per lineage, the fans follow pointer energy, drive LEDs blink on generations, commands and section changes, the skyline's lit windows follow the visitor's clock, and `lamp on|off` switches the desk lamp.
 - **Terminal**: changing section types a command at the prompt and prints the section. New commands: `ls`, `cd`/`cat`/`open <section>`, `lamp`, `pulse`, `theme`, `reboot`.
 - `tests/alive-smoke.cjs` covers these in flat display mode.
+
+## 3D room
+
+On devices with a GPU the room around the monitor is a three.js scene (`js/modules/room3d.js`). The terminal stays ordinary DOM placed exactly on the model's screen. Press the room, or type `room` in the terminal, to step back and look around; any key returns. Without WebGL2, on a software renderer, or when frames run slow, the CSS-drawn room is used instead. `?room3d=off` forces the CSS room.

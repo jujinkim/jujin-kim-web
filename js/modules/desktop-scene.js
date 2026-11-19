@@ -1,3 +1,5 @@
+import { room3d } from './room3d.js?v=20261119.5';
+
 const TRACKING_TIME = 90;
 const WHEEL_HOLD = 120;
 const SETTLED_DISTANCE = 0.001;
@@ -20,6 +22,14 @@ export function initDesktopScene(glass, signal) {
     }
 
     function render() {
+        if (room3d.ready) {
+            // The 3D room moves its own camera; the DOM stays untransformed.
+            rig.removeAttribute('data-scene-tilted');
+            for (const element of [rig, backdrop, foreground]) element.style.removeProperty('transform');
+            room3d.setCamera(camera);
+            room3d.setParallax(x, y);
+            return;
+        }
         if (camera < 1) {
             rig.removeAttribute('data-scene-tilted');
             rig.style.transformOrigin = '50% calc(100% + var(--monitor-stand-height, 0px))';
