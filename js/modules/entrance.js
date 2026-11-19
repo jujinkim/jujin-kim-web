@@ -2,7 +2,7 @@
 // real values, then the camera moves in from a wide shot to the reading size.
 // Any key, press or wheel skips it.
 
-import { room3d } from './room3d.js?v=20261119.5';
+import { room3d } from './room3d.js?v=20261119.6';
 
 const BOOT_AT = 520;
 const LINE_EVERY = 105;

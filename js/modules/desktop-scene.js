@@ -1,4 +1,4 @@
-import { room3d } from './room3d.js?v=20261119.5';
+import { room3d } from './room3d.js?v=20261119.6';
 
 const TRACKING_TIME = 90;
 const WHEEL_HOLD = 120;
@@ -164,6 +164,9 @@ export function initDesktopScene(glass, signal) {
             render();
         },
         disableOnSlowFrame() {
+            // In the 3D room the pointer only moves the camera; slow frames are
+            // handled by the room's own ladder, not by giving up tracking.
+            if (room3d.ready) return false;
             if (disabled || !isTilted()) return false;
             disabled = true;
             pause();

@@ -87,7 +87,7 @@ jujin_kim_web/
 
 - **Compact screens**: Enable curvature only at viewport sizes of at least 1000x600. Smaller viewports use flat CRT with native DOM input/scrolling and no curved-glass shading. Preserve state when crossing the breakpoint.
 
-- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261119.5` release key. Bump the key together for runtime releases.
+- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261119.6` release key. Bump the key together for runtime releases.
 
 - **Vanilla ES6 Modules**: Stick strictly to ES6 modules and template literals. Avoid introducing frameworks, compiler steps, or external build pipelines.
 - **ASCII & Text**: Use ASCII characters unless a file already mixes in Unicode (such as emoji in content templates).
@@ -125,5 +125,5 @@ jujin_kim_web/
 - **State**: `html[data-room3d]` is `loading` from the head script, `on` when the scene is ready, and removed when 3D is unavailable (no WebGL2, software renderer, context lost, slow frames). Without it the CSS room in `#room-scene` is the room, so keep both working. `?room3d=off` and `?room3d=force` override the choice.
 - **Phones**: the 3D room is drawn only during the entrance and the `room` view; while reading the canvas is `display: none`.
 - **Signals**: `room-life.js` stays the single source. It drives the CSS room and mirrors every signal into `room3d` (`setLevels`, `setFan`, `flash`, `setLamp`). Sky, window light and lit windows follow the visitor's clock.
-- **Performance ladder** (`crt-effects.js` `degrade`): still the room (no ambient motion, 1x pixel ratio) -> drop 3D for the tab -> the existing display steps.
+- **Performance ladder** (`crt-effects.js` `degrade`): still the room (no ambient motion, 1x pixel ratio) -> render at 0.7x -> drop 3D for the tab -> the existing display steps. Pointer tracking is never switched off while the 3D room is on; the one-slow-sample rule in `desktop-scene.js` applies only to the CSS room.
 - **Vendor**: `js/vendor/three.min.js` is a tree-shaken bundle of three r187. To change what it exports, edit `js/vendor/three.entry.js` and rebuild in a scratch folder with `npm i three@0.187.0 && npx esbuild three.entry.js --bundle --minify --format=esm --target=es2020 --outfile=three.min.js`. This is a one-off; the site still has no build step.

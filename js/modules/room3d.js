@@ -7,7 +7,7 @@
 // World units are metres. The origin is the viewport centre on the screen
 // plane, +y is up and +z points at the viewer.
 
-const VENDOR = '../vendor/three.min.js?v=20261119.5';
+const VENDOR = '../vendor/three.min.js?v=20261119.6';
 const OFF_KEY = 'room3d-off';
 const SCREEN_HEIGHT = 0.33;
 const CAMERA_DISTANCE = 1.15; // in viewport heights
@@ -535,7 +535,7 @@ function layout() {
         look: pose(wide ? 0.5 : 0.4, 0.36, wide ? 3.5 : 3.2, wide ? 0.06 : 0, 0.06)
     };
 
-    const ratio = Math.min(window.devicePixelRatio || 1, S.still ? 1 : wide ? 2 : 1.5);
+    const ratio = S.lean ? 0.7 : Math.min(window.devicePixelRatio || 1, S.still ? 1 : wide ? 2 : 1.5);
     S.renderer.setPixelRatio(ratio);
     S.renderer.setSize(W, H, false);
     S.renderer.shadowMap.needsUpdate = true;
@@ -934,7 +934,9 @@ export const room3d = {
     // One rung down the performance ladder; false when nothing is left to give.
     step() {
         if (!S) return false;
-        if (!S.stepped) return (S.stepped = true), room3d.still(), true;
+        if (room3d.still()) return true;
+        // Second rung: render below native resolution before giving the room up.
+        if (!S.lean) return (S.lean = true), layout(), true;
         return room3d.abandon();
     },
 

@@ -1,9 +1,9 @@
-import { room3d } from './room3d.js?v=20261119.5';
-import { CONTACT_EMAIL } from '../constants.js?v=20261119.5';
-import { toggleSwarm, toggleSound, swarmGeneration, resetSwarm, swarmPulse } from './animations.js?v=20261119.5';
-import { navigateToSection, sectionIds, activeSection } from './navigation.js?v=20261119.5';
-import { setLamp, roomPulse } from './room-life.js?v=20261119.5';
-import { setTheme } from './theme.js?v=20261119.5';
+import { room3d } from './room3d.js?v=20261119.6';
+import { CONTACT_EMAIL } from '../constants.js?v=20261119.6';
+import { toggleSwarm, toggleSound, swarmGeneration, resetSwarm, swarmPulse } from './animations.js?v=20261119.6';
+import { navigateToSection, sectionIds, activeSection } from './navigation.js?v=20261119.6';
+import { setLamp, roomPulse } from './room-life.js?v=20261119.6';
+import { setTheme } from './theme.js?v=20261119.6';
 
 let currentInput = '';
 let commandHistory = [];
