@@ -1,5 +1,8 @@
-import { CONTACT_EMAIL } from '../constants.js?v=20261119.3';
-import { toggleSwarm, toggleSound, swarmGeneration, resetSwarm } from './animations.js?v=20261119.3';
+import { CONTACT_EMAIL } from '../constants.js?v=20261119.4';
+import { toggleSwarm, toggleSound, swarmGeneration, resetSwarm, swarmPulse } from './animations.js?v=20261119.4';
+import { navigateToSection, sectionIds, activeSection } from './navigation.js?v=20261119.4';
+import { setLamp, roomPulse } from './room-life.js?v=20261119.4';
+import { setTheme } from './theme.js?v=20261119.4';
 
 let currentInput = '';
 let commandHistory = [];
@@ -42,71 +45,80 @@ function disableMobileTerminalUI() {
     document.removeEventListener('keydown', handleTerminalInput);
 }
 
-const commands = {
-    help: () => {
-        return `Available commands:
-  help     - Show this help message
-  clear    - Clear terminal output
-  about    - About Jujin Kim
-  skills   - List technical skills
-  contact  - Show contact information
-  date     - Show current date and time
-  swarm    - Toggle the particle swarm behind the text
-  gen      - Show the swarm's current generation
-  reset    - Restart the swarm's lineage
-  sound    - Toggle sound
+// name -> { help, run(args) -> text | null }. help lists them in this order.
+const commands = new Map();
 
-Use 1~4 to navigate menu
-Press / or the Terminal button to toggle`;
-    },
+export function registerCommand(name, help, run) {
+    commands.set(name, { help, run });
+}
 
-    clear: () => {
-        const outputDiv = document.querySelector('.terminal-output');
-        if (outputDiv) {
-            outputDiv.innerHTML = '';
-        }
-        return null;
-    },
+// "~/projects", "projects/", "about.md", "tech" -> a section id, or null.
+function sectionFor(arg) {
+    if (arg === undefined || arg === '~' || arg === '..' || arg === '/') return 'home';
+    const name = arg.toLowerCase().replace(/^(~\/|\.\/)/, '').replace(/\/$/, '').replace(/\.md$/, '');
+    const alias = { welcome: 'home', tech: 'technologies', career: 'about', skills: 'projects' }[name] ?? name;
+    return sectionIds().includes(alias) ? alias : null;
+}
 
-    about: () => {
-        return `Jujin Kim - Software Developer
-Building digital experiences that matter
-Located in Suwon, South Korea`;
-    },
+function go(command, arg) {
+    const target = sectionFor(arg);
+    if (!target) return `${command}: no such file or directory: ${arg}`;
+    if (target === activeSection()) return `already in ~/${target}`;
+    navigateToSection(target);
+    return null;
+}
 
-    skills: () => {
-        return `Technical Skills:
-• App Development
-• Game Development
-• Software Engineering
-• Service Builder`;
-    },
-
-    contact: () => {
-        return `Contact Information:
-Email: ${CONTACT_EMAIL}
-GitHub: github.com/jujinkim
-LinkedIn: linkedin.com/in/jujinkim`;
-    },
-
-    date: () => {
-        return new Date().toString();
-    },
-
-    swarm: () => `Swarm ${toggleSwarm() ? 'enabled' : 'disabled'}`,
-
-    gen: () => {
-        const gen = swarmGeneration();
-        return gen === null ? 'Swarm is not running' : `Generation ${gen}. It evolves while you move the pointer.`;
-    },
-
-    reset: () => (resetSwarm() ? 'Lineage reset to generation 0' : 'Swarm is not running'),
-
-    sound: () => {
-        const on = toggleSound();
-        return on === null ? 'Swarm is not running' : `Sound ${on ? 'on' : 'off'}`;
-    }
-};
+registerCommand('help', 'Show this help message', () => {
+    const width = Math.max(...[...commands.keys()].map((name) => name.length));
+    const rows = [...commands].map(([name, { help }]) => `  ${name.padEnd(width)}  ${help}`);
+    return `Available commands:\n${rows.join('\n')}\n\nUse 1~4 to navigate menu\nPress / or the Terminal button to toggle`;
+});
+registerCommand('ls', 'List sections', () => sectionIds().map((id) => `${id}/`).join('  '));
+registerCommand('cd', 'Go to a section: cd projects', (args) => go('cd', args[0]));
+registerCommand('cat', 'Print a section: cat about.md', (args) => go('cat', args[0]));
+registerCommand('open', 'Same as cd', (args) => go('open', args[0]));
+registerCommand('about', 'Go to About & Career', () => go('cd', 'about'));
+registerCommand('skills', 'Go to Projects & Skills', () => go('cd', 'projects'));
+registerCommand(
+    'contact',
+    'Show contact information',
+    () => `Contact Information:\nEmail: ${CONTACT_EMAIL}\nGitHub: github.com/jujinkim\nLinkedIn: linkedin.com/in/jujinkim`
+);
+registerCommand('date', 'Show current date and time', () => new Date().toString());
+registerCommand('lamp', 'Desk lamp: lamp [on|off]', (args) => {
+    const on = setLamp(args[0] === 'on' ? true : args[0] === 'off' ? false : undefined);
+    return `Lamp ${on ? 'on' : 'off'}`;
+});
+registerCommand('pulse', 'Send a pulse through the swarm', () => {
+    roomPulse();
+    return swarmPulse() ? 'Pulse sent. Struck particles return from the edge.' : 'Swarm is not running';
+});
+registerCommand('theme', 'Screen theme: theme light|dark|system', (args) => {
+    if (!['light', 'dark', 'system'].includes(args[0])) return 'usage: theme light|dark|system';
+    setTheme(args[0]);
+    return `Theme ${args[0]}`;
+});
+registerCommand('swarm', 'Toggle the particle swarm behind the text', () => `Swarm ${toggleSwarm() ? 'enabled' : 'disabled'}`);
+registerCommand('gen', "Show the swarm's current generation", () => {
+    const gen = swarmGeneration();
+    return gen === null ? 'Swarm is not running' : `Generation ${gen}. It evolves while you move the pointer.`;
+});
+registerCommand('reset', "Restart the swarm's lineage", () =>
+    resetSwarm() ? 'Lineage reset to generation 0' : 'Swarm is not running'
+);
+registerCommand('sound', 'Toggle sound', () => {
+    const on = toggleSound();
+    return on === null ? 'Swarm is not running' : `Sound ${on ? 'on' : 'off'}`;
+});
+registerCommand('reboot', 'Power-cycle the monitor', () => {
+    toggleTerminal(false);
+    window.dispatchEvent(new CustomEvent('reboot-requested'));
+    return null;
+});
+registerCommand('clear', 'Clear terminal output', () => {
+    if (outputDiv) outputDiv.innerHTML = '';
+    return null;
+});
 
 export function initTerminalInput() {
     panel = document.getElementById('terminal-panel');
@@ -171,8 +183,7 @@ function toggleTerminal(forceState) {
 function handleTerminalInput(e) {
     if (!isActive || !isOpen || shouldDisableTerminalInput()) return;
 
-    // Skip if modal is open or shift/ctrl is pressed
-    if (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
 
     switch(e.key) {
         case 'Enter':
@@ -239,7 +250,7 @@ function processCommand() {
     historyIndex = -1;
 
     // Parse command and arguments
-    const parts = currentInput.trim().split(' ');
+    const parts = currentInput.trim().split(/\s+/);
     const cmd = parts[0].toLowerCase();
     const args = parts.slice(1);
 
@@ -252,8 +263,9 @@ function processCommand() {
 
     // Execute command
     let result;
-    if (commands[cmd]) {
-        result = commands[cmd](args);
+    if (commands.has(cmd)) {
+        result = commands.get(cmd).run(args);
+        window.dispatchEvent(new CustomEvent('terminal-command', { detail: { name: cmd } }));
     } else {
         result = `Command not found: ${cmd}. Type 'help' for available commands.`;
     }

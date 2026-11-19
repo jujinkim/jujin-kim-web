@@ -12,12 +12,25 @@ export function initDesktopScene(glass, signal) {
     );
     let targetX = 0, targetY = 0, x = 0, y = 0;
     let frame = null, wheelTimer = null, lastFrame = 0, pressed = false, disabled = false;
+    // Entrance camera: 0 is the wide shot, 1 is the reading position.
+    let camera = 1;
 
     function isTilted() {
         return x !== 0 || y !== 0;
     }
 
     function render() {
+        if (camera < 1) {
+            rig.removeAttribute('data-scene-tilted');
+            rig.style.transformOrigin = '50% calc(100% + var(--monitor-stand-height, 0px))';
+            foreground.style.transformOrigin = '50% 100%';
+            rig.style.transform = `scale(${0.56 + 0.44 * camera})`;
+            backdrop.style.transform = `scale(${0.93 + 0.07 * camera})`;
+            foreground.style.transform = `scale(${0.88 + 0.12 * camera})`;
+            return;
+        }
+        rig.style.removeProperty('transform-origin');
+        foreground.style.removeProperty('transform-origin');
         const tilted = isTilted();
         rig.toggleAttribute('data-scene-tilted', tilted);
         if (!tilted) {
@@ -74,7 +87,9 @@ export function initDesktopScene(glass, signal) {
     }
 
     function canTrack() {
-        return !disabled && available.matches && !document.hidden && !glass.classList.contains('power-on');
+        return (
+            !disabled && camera >= 1 && available.matches && !document.hidden && !glass.classList.contains('power-on')
+        );
     }
 
     function move(event) {
@@ -130,6 +145,14 @@ export function initDesktopScene(glass, signal) {
     signal.addEventListener('abort', reset, { once: true });
     return {
         isTilted,
+        setCamera(progress) {
+            camera = Math.max(0, Math.min(1, progress));
+            if (camera < 1) {
+                pause();
+                targetX = targetY = x = y = 0;
+            }
+            render();
+        },
         disableOnSlowFrame() {
             if (disabled || !isTilted()) return false;
             disabled = true;

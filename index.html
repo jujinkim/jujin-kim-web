@@ -19,21 +19,25 @@
                         return;
                     const root = document.documentElement;
                     root.dataset.crtStartup = 'pending';
+                    root.dataset.entrance = 'dark';
                     const reveal = () => {
                         delete root.dataset.crtStartup;
+                        // The entrance module claims the attribute when it starts.
+                        if (!('entranceOwned' in root.dataset)) delete root.dataset.entrance;
                     };
                     setTimeout(reveal, 1500);
                     window.addEventListener('load', reveal, { once: true });
                 } catch {}
             })();
         </script>
-        <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261119.3" />
-        <link rel="alternate icon" href="favicon.ico?v=20261119.3" />
-        <link rel="stylesheet" href="css/reset.css?v=20261119.3" />
-        <link rel="stylesheet" href="css/site.css?v=20261119.3" />
-        <link rel="stylesheet" href="css/animations.css?v=20261119.3" />
-        <link rel="stylesheet" href="css/modal.css?v=20261119.3" />
-        <link rel="stylesheet" href="css/responsive.css?v=20261119.3" />
+        <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20261119.4" />
+        <link rel="alternate icon" href="favicon.ico?v=20261119.4" />
+        <link rel="stylesheet" href="css/reset.css?v=20261119.4" />
+        <link rel="stylesheet" href="css/site.css?v=20261119.4" />
+        <link rel="stylesheet" href="css/animations.css?v=20261119.4" />
+        <link rel="stylesheet" href="css/modal.css?v=20261119.4" />
+        <link rel="stylesheet" href="css/responsive.css?v=20261119.4" />
+        <link rel="stylesheet" href="css/scene-motion.css?v=20261119.4" />
     </head>
     <body class="crt-effects-enabled">
         <div id="room-scene" aria-hidden="true" inert>
@@ -69,6 +73,7 @@
                     <div class="lamp-arm lamp-arm-upper"></div>
                     <div class="lamp-joint"></div>
                     <div class="lamp-shade"></div>
+                    <div class="lamp-light"></div>
                 </div>
                 <div class="room-rack">
                     <div class="rack-rails"></div>
@@ -79,6 +84,7 @@
                     <div class="rack-feet"></div>
                 </div>
             </div>
+            <div id="entrance-veil"></div>
         </div>
         <div id="monitor-rig">
             <div class="monitor-depth monitor-depth-left" aria-hidden="true"></div>
@@ -233,6 +239,7 @@
                         </div>
 
                         <div id="screen-notices" aria-live="polite"></div>
+                        <pre id="boot-log" aria-hidden="true"></pre>
                     </div>
                     <div id="crt-screen" data-noise="retro" aria-hidden="true">
                         <div class="crt-glass"></div>
@@ -257,6 +264,6 @@
                 </div>
             </div>
         </div>
-        <script type="module" src="js/main.js?v=20261119.3"></script>
+        <script type="module" src="js/main.js?v=20261119.4"></script>
     </body>
 </html>

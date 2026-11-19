@@ -1,0 +1,230 @@
+/* Entrance: dark room, small monitor, boot log, then the camera moves in.
+   html[data-entrance] is set before first paint and removed when it ends. */
+
+#entrance-veil {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(ellipse at 50% 62%, rgba(4, 8, 6, 0.78) 0%, rgba(4, 8, 6, 0.9) 50%, #040806 82%);
+}
+html[data-entrance] #entrance-veil {
+    opacity: var(--entrance-dark, 1);
+}
+html[data-entrance] #monitor-rig {
+    pointer-events: none;
+}
+
+#boot-log {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 300;
+    margin: 0;
+    padding: clamp(14px, 5%, 44px);
+    overflow: hidden;
+    font: inherit;
+    font-size: clamp(11px, 1.9cqw, 17px);
+    line-height: 1.7;
+    white-space: pre-wrap;
+    color: #8fe3a5;
+    text-shadow: 0 0 8px rgba(143, 227, 165, 0.45);
+    background: #0c0d0f;
+}
+#boot-log::after {
+    content: '\2588';
+    animation: boot-cursor 0.7s steps(1) infinite;
+}
+@keyframes boot-cursor {
+    50% {
+        opacity: 0;
+    }
+}
+html[data-entrance='dark'] #boot-log,
+html[data-entrance='boot'] #boot-log {
+    display: block;
+}
+html[data-entrance='dark'] #terminal-container,
+html[data-entrance='boot'] #terminal-container,
+html[data-entrance='dark'] #starfield,
+html[data-entrance='boot'] #starfield {
+    visibility: hidden;
+}
+html[data-entrance='dark'] #monitor-glass,
+html[data-entrance='boot'] #monitor-glass {
+    background: #0c0d0f;
+}
+html[data-entrance='dolly'] #terminal-container {
+    animation: screen-settle 420ms ease-out;
+}
+@keyframes screen-settle {
+    from {
+        opacity: 0;
+    }
+}
+
+/* The wide shot. JS takes over these transforms once the camera starts moving. */
+@media (min-width: 1000px) and (min-height: 600px) {
+    html[data-entrance] body:not([data-display-mode='web1']) #monitor-rig {
+        transform: scale(0.56);
+        transform-origin: 50% calc(100% + var(--monitor-stand-height, 0px));
+    }
+    html[data-entrance] .room-backdrop {
+        transform: scale(0.93);
+    }
+    html[data-entrance] .room-foreground {
+        transform: scale(0.88);
+        transform-origin: 50% 100%;
+    }
+}
+
+@media print {
+    #entrance-veil,
+    #boot-log {
+        display: none !important;
+    }
+}
+
+/* ---- the room, alive. Everything is gated on body[data-room-live], which
+   room-life.js sets; without scripts or with reduced motion the room is still. */
+
+.lamp-light {
+    position: absolute;
+    left: -28%;
+    top: 27%;
+    width: 150%;
+    height: 80%;
+    clip-path: polygon(22% 0, 44% 0, 100% 100%, 0 100%);
+    background: linear-gradient(rgba(134, 180, 147, 0.2), rgba(134, 180, 147, 0.02));
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+}
+body[data-room-live][data-lamp='on'] .lamp-light {
+    opacity: 1;
+}
+body[data-lamp='off'] .lamp-shade::after {
+    border-color: var(--scene-line);
+    background: var(--scene-line);
+}
+html[data-entrance='dark'] .lamp-light,
+html[data-entrance='boot'] .lamp-light {
+    opacity: 0 !important;
+}
+
+.room-skyline b {
+    position: absolute;
+    width: 3px;
+    height: 4px;
+    background: var(--scene-accent);
+    opacity: 0;
+    transition: opacity 1.8s;
+}
+.room-skyline b.is-lit {
+    opacity: 0.9;
+}
+
+body[data-room-live] .rack-meter i,
+body[data-room-live] .rack-meter i:nth-child(n) {
+    height: 100%;
+    transform-origin: bottom;
+    transform: scaleY(var(--level, 0.4));
+    transition: transform 0.24s linear;
+}
+
+body[data-room-live]:not([data-room-still]) .room-curtain {
+    animation: curtain-sway 7s ease-in-out infinite alternate;
+}
+@keyframes curtain-sway {
+    to {
+        transform: skewX(-4.4deg);
+    }
+}
+
+body[data-room-live]:not([data-room-still]) .room-neon::after {
+    animation: neon-cursor 1.1s steps(1) infinite;
+}
+@keyframes neon-cursor {
+    50% {
+        opacity: 0.15;
+    }
+}
+.room-neon.is-jolted {
+    animation: neon-jolt 420ms steps(1);
+}
+@keyframes neon-jolt {
+    0%,
+    40% {
+        opacity: 0.25;
+    }
+    20%,
+    60% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 0.5;
+    }
+}
+
+.rack-drives i.is-busy::after {
+    animation: drive-busy 100ms steps(1) 5;
+}
+@keyframes drive-busy {
+    50% {
+        background: #e9fff0;
+        box-shadow: 0 0 6px #b8ffd0;
+    }
+}
+
+.power-led.is-beating {
+    animation: led-beat 700ms ease-out;
+}
+@keyframes led-beat {
+    0% {
+        background: #e9fff0;
+        box-shadow: 0 0 10px 2px #b8ffd0;
+    }
+}
+
+.room-speaker.is-thumping i {
+    animation: cone-thump 360ms ease-out;
+}
+@keyframes cone-thump {
+    25% {
+        transform: scale(1.09);
+    }
+}
+
+/* ---- section changes run as a command ---- */
+
+.command-line {
+    margin: 0 0 14px;
+    color: var(--terminal-fg);
+    white-space: nowrap;
+    overflow: hidden;
+}
+.command-prompt {
+    color: var(--terminal-dim);
+}
+.command-cursor {
+    margin-left: 1px;
+    opacity: 0;
+}
+.command-line.is-typing .command-cursor {
+    opacity: 1;
+}
+.section-content > .is-pending {
+    visibility: hidden;
+}
+body[data-display-mode='web1'] .command-line {
+    display: none;
+}
+@media print {
+    .command-line {
+        display: none;
+    }
+    .section-content > .is-pending {
+        visibility: visible;
+    }
+}

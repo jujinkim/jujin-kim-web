@@ -25,3 +25,7 @@ Total: **205** checks. Results: `/tmp/jujin-crt-results/startup.json`. The first
 Use the external browser/tooling paths in [initial verification](crt-verification.md#reproduction), serve the checkout, and run `node tests/crt-startup.cjs` plus the existing suites.
 
 These are local browser checks, including mobile viewport emulation. No physical Instagram/Android test or new steady-state FPS benchmark was performed. Earlier scroll measurements belong to release `20261110.1`. Remote Git and public deployment are verified separately.
+
+## Update: entrance
+
+The 600ms reveal is unchanged, but on a first visit it is now the first step of the entrance (`js/modules/entrance.js`): power-on, boot log, then a camera move, about 3 seconds in total and skippable by any input. `tests/crt-performance.cjs` starts measuring 3.4s after DOMContentLoaded, which leaves little margin after the entrance.

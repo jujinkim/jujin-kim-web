@@ -42,6 +42,14 @@ export function initNavigation() {
     showSection(location.hash.slice(1));
 }
 
+export function sectionIds() {
+    return menuItems.map((item) => item.dataset.section);
+}
+
+export function activeSection() {
+    return currentSection;
+}
+
 export function navigateToSection(sectionId) {
     if (!menuItems.some((item) => item.dataset.section === sectionId)) return;
     showSection(sectionId);
@@ -61,6 +69,9 @@ function showSection(sectionId) {
     for (const section of document.querySelectorAll('.content-section')) {
         section.style.display = section.id === sectionId ? '' : 'none';
     }
+    const previous = currentSection;
     currentSection = sectionId;
     scroller.scrollTop = scrollPositions.get(sectionId) || 0;
+    if (previous !== sectionId)
+        window.dispatchEvent(new CustomEvent('section-changed', { detail: { previous, next: sectionId } }));
 }

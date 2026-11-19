@@ -36,3 +36,7 @@ The approved `20261109.4` composition passed 22 `crt-feedback.cjs` layout and sc
 Existing suite commands and external browser paths remain documented in [initial verification](crt-verification.md#reproduction). The focused script is `/tmp/jujin-crt-green-fills-check.cjs`. Fresh screenshots are under `/tmp/jujin-crt-results/green-fills-*`, with focused results in `green-fills-focused.json`, palette results in `green-fills-palette.json`.
 
 These results cover local Linux browser automation over HTTP, including viewport emulation. No physical-device test or new FPS benchmark was performed. Remote Git publication and deployment are verified separately when pushing; GitHub Pages publishes only `main`. LAN preview: `http://192.168.1.111:8000/`.
+
+## Update: the room is animated
+
+The statements above about no animation, no gradients and no opacity blending described the static room. `js/modules/room-life.js` and `css/scene-motion.css` now animate room objects from real signals, and the entrance dims the room with a veil. See `AGENTS.md`.

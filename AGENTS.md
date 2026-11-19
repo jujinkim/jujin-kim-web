@@ -87,7 +87,7 @@ jujin_kim_web/
 
 - **Compact screens**: Enable curvature only at viewport sizes of at least 1000x600. Smaller viewports use flat CRT with native DOM input/scrolling and no curved-glass shading. Preserve state when crossing the breakpoint.
 
-- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261119.3` release key. Bump the key together for runtime releases.
+- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261119.4` release key. Bump the key together for runtime releases.
 
 - **Vanilla ES6 Modules**: Stick strictly to ES6 modules and template literals. Avoid introducing frameworks, compiler steps, or external build pipelines.
 - **ASCII & Text**: Use ASCII characters unless a file already mixes in Unicode (such as emoji in content templates).
@@ -106,3 +106,14 @@ jujin_kim_web/
 - **GitHub**: [@jujinkim](https://github.com/jujinkim)
 - **Website**: [jujin.kim](https://jujin.kim)
 - **Email**: [jk@jujin.kim](mailto:jk@jujin.kim)
+
+---
+
+## Entrance, living room and terminal presentation
+
+- **Base**: the room, the monitor and the terminal are the site. The owner is an engineer first; effects exist to make that base feel alive, not to replace it.
+- **Entrance** (`js/modules/entrance.js`, `css/scene-motion.css`): once per tab. `html[data-entrance]` goes `dark` -> `boot` -> `dolly` and is then removed. The existing 600ms power-on runs first, a boot log prints real values, then `desktop-scene.js` `setCamera(0..1)` moves from the wide shot to the reading position. Any key, press or wheel skips it. It is skipped for reduced motion, web1 and repeat visits. Curvature and tilt start only after it ends; the monitor must be back at `transform: none`.
+- **Room** (`js/modules/room-life.js`): every moving object is tied to a real signal (swarm generation and energy, terminal commands, section changes, local time). Do not add decorative random motion. Only `transform` and `opacity` animate. `stillRoom()` stops it when frames run slow.
+- **Terminal presentation** (`js/modules/section-reveal.js`): `navigation.js` dispatches `section-changed`; the prompt line types the command and the section prints block by block (never per character: curved mode re-uploads tiles on every DOM change). The section is in the DOM immediately; any input finishes the printing.
+- **Commands**: add with `registerCommand(name, help, run)` in `terminal-input.js`; `help` is generated from the table.
+- **Check**: `ALIVE_PLAYWRIGHT=/path/to/playwright node tests/alive-smoke.cjs` (runs in flat mode, no HTML-in-Canvas needed).

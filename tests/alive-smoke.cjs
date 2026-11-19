@@ -1,0 +1,167 @@
+// Smoke test for the entrance, the living room and the terminal presentation.
+// Serve the site first:
+//   python3 -m http.server 8000 --bind 127.0.0.1
+// then run:
+//   ALIVE_PLAYWRIGHT=/path/to/playwright node tests/alive-smoke.cjs
+// Optional: ALIVE_BASE_URL, ALIVE_EXECUTABLE. Runs in flat display mode, so it
+// does not need the HTML-in-Canvas API the curvature tests need.
+const assert = require('node:assert/strict');
+const { chromium } = require(process.env.ALIVE_PLAYWRIGHT || 'playwright');
+
+const base = process.env.ALIVE_BASE_URL || 'http://127.0.0.1:8000/';
+const args = ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
+let failures = 0;
+
+async function check(name, run) {
+    try {
+        await run();
+        console.log('PASS', name);
+    } catch (error) {
+        failures++;
+        console.log('FAIL', name, '\n    ', String(error.message).split('\n')[0]);
+    }
+}
+
+async function open(browser, { path = '?debug=1&quality=off', seen = true, ...options } = {}) {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, ...options });
+    if (seen) await context.addInitScript(() => sessionStorage.setItem('crt-power-seen', '1'));
+    const page = await context.newPage();
+    page.errors = [];
+    page.on('pageerror', (error) => page.errors.push(error.message));
+    await page.route(/^https:/, (route) => route.abort());
+    await page.goto(base + path, { waitUntil: 'domcontentloaded' });
+    return page;
+}
+
+const entrance = (page) => page.evaluate(() => document.documentElement.dataset.entrance ?? null);
+const rigTransform = (page) => page.evaluate(() => getComputedStyle(document.getElementById('monitor-rig')).transform);
+async function command(page, text) {
+    if (!(await page.evaluate(() => document.body.classList.contains('terminal-open')))) await page.keyboard.press('/');
+    await page.keyboard.type(text);
+    await page.keyboard.press('Enter');
+}
+const lastOutput = (page) => page.evaluate(() => document.querySelector('.terminal-output').lastElementChild?.textContent ?? '');
+
+(async () => {
+    const browser = await chromium.launch({ executablePath: process.env.ALIVE_EXECUTABLE || undefined, args });
+
+    await check('first visit: dark, boot log, dolly, then the monitor is back at rest', async () => {
+        const page = await open(browser, { seen: false });
+        const seen = new Set();
+        const started = Date.now();
+        let log = '';
+        while (Date.now() - started < 8000) {
+            const phase = await entrance(page);
+            seen.add(phase);
+            if (phase === 'boot') log = await page.textContent('#boot-log');
+            if (phase === null && seen.size > 1) break;
+            await page.waitForTimeout(60);
+        }
+        assert.deepEqual([...seen], ['dark', 'boot', 'dolly', null]);
+        assert.match(log, /display\s+1440x900/);
+        assert.match(log, /swarm\s+seeding generation 0000/);
+        assert.equal(await rigTransform(page), 'none');
+        assert.equal(await page.evaluate(() => document.getElementById('starfield').width), await page.evaluate(() => document.getElementById('monitor-glass').clientWidth));
+        await page.reload();
+        await page.waitForTimeout(300);
+        assert.equal(await entrance(page), null, 'no replay in the same tab');
+        assert.deepEqual(page.errors, []);
+        await page.context().close();
+    });
+
+    await check('any key skips the entrance', async () => {
+        const page = await open(browser, { seen: false });
+        await page.waitForFunction(() => 'entranceOwned' in document.documentElement.dataset);
+        await page.keyboard.press('Shift');
+        assert.equal(await entrance(page), null);
+        assert.equal(await rigTransform(page), 'none');
+        await page.context().close();
+    });
+
+    await check('reduced motion: no entrance, no room animation, sections appear at once', async () => {
+        const page = await open(browser, { seen: false, reducedMotion: 'reduce' });
+        await page.waitForTimeout(500);
+        assert.equal(await entrance(page), null);
+        assert.equal(await page.evaluate(() => 'roomLive' in document.body.dataset), false);
+        await page.keyboard.press('2');
+        assert.equal(await page.evaluate(() => document.querySelectorAll('.is-pending').length), 0);
+        assert.equal(await page.textContent('.command-typed'), 'cat about.md');
+        await page.context().close();
+    });
+
+    await check('a phone-sized screen gets power and boot log but no room and no dolly', async () => {
+        const page = await open(browser, { seen: false, viewport: { width: 390, height: 844 } });
+        const seen = new Set();
+        const started = Date.now();
+        while (Date.now() - started < 6000) {
+            const phase = await entrance(page);
+            seen.add(phase);
+            if (phase === null && seen.size > 1) break;
+            await page.waitForTimeout(60);
+        }
+        assert.ok(!seen.has('dolly'));
+        assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('room-scene')).display), 'none');
+        await page.context().close();
+    });
+
+    await check('a generation moves the rack meter and blinks a drive', async () => {
+        const page = await open(browser);
+        await page.waitForFunction(() => window.swarmDebug?.stats().frames > 5);
+        const before = await page.evaluate(() => [...document.querySelectorAll('.rack-meter i')].map((bar) => bar.style.getPropertyValue('--level')));
+        for (let i = 0; i < 30; i++) await page.mouse.move(500 + Math.cos(i / 4) * 200, 400 + Math.sin(i / 4) * 150);
+        await page.evaluate(() => window.swarmDebug.forceGeneration(1));
+        const busy = await page.evaluate(() => document.querySelector('.rack-drives i').classList.contains('is-busy'));
+        const after = await page.evaluate(() => [...document.querySelectorAll('.rack-meter i')].map((bar) => bar.style.getPropertyValue('--level')));
+        assert.ok(busy);
+        assert.notDeepEqual(after, before);
+        assert.ok((await page.evaluate(() => document.querySelectorAll('.room-skyline b').length)) > 20);
+        await page.context().close();
+    });
+
+    await check('section change runs as a typed command and prints the section', async () => {
+        const page = await open(browser);
+        await page.waitForTimeout(900);
+        await page.click('[data-section="projects"]');
+        assert.notEqual(await page.evaluate(() => getComputedStyle(document.getElementById('projects')).display), 'none');
+        assert.ok((await page.evaluate(() => document.querySelectorAll('#projects .is-pending').length)) > 0);
+        await page.waitForFunction(() => document.querySelector('.command-typed').textContent === 'ls -l projects/');
+        await page.waitForFunction(() => document.querySelectorAll('.is-pending').length === 0, null, { timeout: 3000 });
+        await page.keyboard.press('1');
+        await page.mouse.wheel(0, 10);
+        await page.waitForTimeout(80);
+        assert.equal(await page.evaluate(() => document.querySelectorAll('.is-pending').length), 0, 'input finishes printing');
+        await page.context().close();
+    });
+
+    await check('terminal commands navigate and act on the room and the swarm', async () => {
+        const page = await open(browser);
+        await page.waitForFunction(() => window.swarmDebug?.stats().frames > 5);
+        await command(page, 'cd projects');
+        assert.equal(await page.evaluate(() => location.hash), '#projects');
+        await command(page, 'cat about.md');
+        assert.equal(await page.evaluate(() => location.hash), '#about');
+        await command(page, 'cd nowhere');
+        assert.match(await lastOutput(page), /no such file/);
+        await command(page, 'lamp off');
+        assert.equal(await page.evaluate(() => document.body.dataset.lamp), 'off');
+        await command(page, 'pulse');
+        assert.match(await lastOutput(page), /Pulse sent/);
+        await command(page, 'theme light');
+        assert.equal(await page.evaluate(() => document.body.dataset.theme), 'light');
+        await command(page, 'help');
+        assert.match(await lastOutput(page), /reboot/);
+        await page.keyboard.type('LS');
+        assert.equal(await page.textContent('.terminal-input'), 'LS', 'shifted characters can be typed');
+        await page.keyboard.press('Enter');
+        await command(page, 'reboot');
+        assert.equal(await entrance(page), 'dark');
+        await page.waitForFunction(() => !('entrance' in document.documentElement.dataset), null, { timeout: 8000 });
+        assert.equal(await rigTransform(page), 'none');
+        assert.deepEqual(page.errors, []);
+        await page.context().close();
+    });
+
+    await browser.close();
+    console.log(failures ? `\n${failures} failed` : '\nall passed');
+    process.exit(failures ? 1 : 0);
+})();

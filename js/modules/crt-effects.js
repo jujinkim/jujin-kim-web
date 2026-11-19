@@ -1,7 +1,9 @@
-import { createCurvature } from './screen-curvature.js?v=20261119.3';
-import { monitorPerformance } from './display-performance.js?v=20261119.3';
-import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261119.3';
-import { initDesktopScene } from './desktop-scene.js?v=20261119.3';
+import { createCurvature } from './screen-curvature.js?v=20261119.4';
+import { monitorPerformance } from './display-performance.js?v=20261119.4';
+import { cleanup as stopAnimations, setAnimationResolution } from './animations.js?v=20261119.4';
+import { initDesktopScene } from './desktop-scene.js?v=20261119.4';
+import { runEntrance, cancelEntrance, entranceActive } from './entrance.js?v=20261119.4';
+import { stillRoom } from './room-life.js?v=20261119.4';
 
 const VISIT_MODE = 'crt-display-mode';
 const POWER_SEEN = 'crt-power-seen';
@@ -63,6 +65,8 @@ export function initCRTEffects() {
     }
     function web1(reason) {
         delete document.documentElement.dataset.crtStartup;
+        cancelEntrance();
+        delete document.documentElement.dataset.entrance;
         renderer?.destroy();
         renderer = null;
         performanceMonitor?.stop();
@@ -79,6 +83,7 @@ export function initCRTEffects() {
         writeSession(VISIT_MODE, 'web1');
     }
     function degrade() {
+        stillRoom();
         if (renderer?.ready && level < resolutions.length - 1) {
             level++;
             setAnimationResolution(resolutions[level]);
@@ -92,6 +97,7 @@ export function initCRTEffects() {
     const scene = initDesktopScene(glass, events.signal);
     function startCurvature() {
         if (diagnostics.mode === 'web1' || curvatureFailed || renderer || glass.classList.contains('power-on')) return;
+        if (entranceActive()) return;
         if (forced === 'flat') {
             diagnostics.reason = 'preview';
             return;
@@ -111,7 +117,15 @@ export function initCRTEffects() {
     performanceMonitor = monitorPerformance(degrade, (sample) => {
         samples.push({ ...sample, mode: diagnostics.mode, resolution: resolutions[level] });
         if (samples.length > 30) samples.shift();
-    }, scene);
+    }, {
+        isTilted: scene.isTilted,
+        // The first slow frame while tilted costs the tilt and the room's motion.
+        disableOnSlowFrame() {
+            const disabled = scene.disableOnSlowFrame();
+            if (disabled) stillRoom();
+            return disabled;
+        }
+    });
     desktop.addEventListener('change', () => {
         if (diagnostics.mode === 'web1') return;
         if (!desktop.matches) {
@@ -128,14 +142,37 @@ export function initCRTEffects() {
     // An expired guard skips startup; CSS still reveals content if cleanup is delayed.
     if (startupPending && !motion.matches && !readSession(POWER_SEEN) && writeSession(POWER_SEEN, '1')) {
         glass.classList.add('power-on');
-        powerTimer = setTimeout(() => {
-            glass.classList.remove('power-on');
-            requestAnimationFrame(startCurvature);
-        }, 600);
+        powerTimer = setTimeout(() => glass.classList.remove('power-on'), 600);
+        runEntrance({
+            scene,
+            dolly: desktop.matches,
+            onDone: () => {
+                clearTimeout(powerTimer);
+                glass.classList.remove('power-on');
+                requestAnimationFrame(startCurvature);
+            }
+        });
     } else {
+        delete document.documentElement.dataset.entrance;
         writeSession(POWER_SEEN, '1');
         startCurvature();
     }
+    // `reboot` replays the entrance. A running curvature renderer mirrors DOM
+    // geometry, so with it the camera stays put and only the screen restarts.
+    window.addEventListener('reboot-requested', () => {
+        if (diagnostics.mode === 'web1' || motion.matches || entranceActive()) return;
+        glass.classList.add('power-on');
+        clearTimeout(powerTimer);
+        powerTimer = setTimeout(() => glass.classList.remove('power-on'), 600);
+        runEntrance({
+            scene,
+            dolly: desktop.matches && !renderer,
+            onDone: () => {
+                clearTimeout(powerTimer);
+                glass.classList.remove('power-on');
+            }
+        });
+    }, { signal: events.signal });
     if (preview) {
         diagnostics.forceFlat = () => flat('preview-interaction-failure');
         diagnostics.forceWeb1 = () => web1('preview');
