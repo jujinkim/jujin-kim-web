@@ -302,16 +302,125 @@ html[data-room-look] #room-hint {
     visibility: visible;
 }
 #room-hint .hint-touch,
+#room-hint .hint-focus,
+html[data-room-focus] #room-hint .hint-room,
 html[data-room-look='drag'] #room-hint {
     display: none;
 }
+html[data-room-focus] #room-hint .hint-focus.hint-mouse {
+    display: inline;
+}
 @media (pointer: coarse) {
-    #room-hint .hint-touch {
+    #room-hint .hint-room.hint-touch,
+    html[data-room-focus] #room-hint .hint-focus.hint-touch {
         display: inline;
     }
-    #room-hint .hint-mouse {
+    html[data-room-focus] #room-hint .hint-room,
+    html[data-room-focus] #room-hint .hint-focus.hint-mouse,
+    html #room-hint .hint-mouse {
         display: none;
     }
+}
+@media (max-width: 700px) {
+    #room-hint {
+        box-sizing: border-box;
+        width: max-content;
+        max-width: calc(100vw - 24px);
+        white-space: normal;
+        text-align: center;
+    }
+}
+/* DOM that belongs to a close-up in the 3D room; room3d.js places it. */
+#room-focus {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    overflow: hidden;
+    pointer-events: none;
+}
+.focus-lcd {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    box-sizing: border-box;
+    padding: 12px;
+    transform-origin: 0 0;
+    background: #0b1a22;
+    color: #a8ecff;
+    font-size: 14px;
+    line-height: 1.4;
+    will-change: transform;
+}
+#focus-back {
+    position: absolute;
+    left: max(18px, env(safe-area-inset-left));
+    top: max(18px, env(safe-area-inset-top));
+    padding: 6px 12px;
+    border: 1px solid rgba(120, 255, 170, 0.25);
+    background: rgba(4, 8, 10, 0.72);
+    color: rgba(150, 255, 190, 0.85);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s, visibility 0.4s;
+}
+html[data-room-focus] #focus-back {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+#focus-back:hover,
+#focus-back:focus-visible {
+    color: #fff;
+    border-color: rgba(120, 255, 170, 0.6);
+}
+#focus-book-label {
+    display: none;
+    position: absolute;
+    transform: translate(-50%, calc(-100% - 14px));
+    padding: 3px 8px;
+    border: 1px solid rgba(120, 255, 170, 0.4);
+    background: rgba(4, 8, 10, 0.85);
+    color: rgba(170, 255, 200, 0.95);
+    font-size: 12px;
+    white-space: nowrap;
+}
+#focus-books {
+    display: flex;
+    position: absolute;
+    left: 50%;
+    bottom: calc(max(18px, env(safe-area-inset-bottom)) + 44px);
+    gap: 6px 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: calc(100vw - 32px);
+    transform: translateX(-50%);
+    padding: 8px 14px;
+    border: 1px solid rgba(120, 255, 170, 0.25);
+    background: rgba(4, 8, 10, 0.72);
+    font-size: 13px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s, visibility 0.4s;
+}
+html[data-room-focus='books'] #focus-books {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0.5s;
+}
+#focus-books a {
+    color: rgba(150, 255, 190, 0.9);
+    text-decoration: none;
+    cursor: pointer;
+}
+#focus-books a:hover,
+#focus-books a:focus-visible {
+    color: #fff;
+    text-decoration: underline;
 }
 html[data-room3d][data-entrance] #monitor-shell,
 html[data-room-look] #monitor-shell {
@@ -353,10 +462,17 @@ html[data-room3d='loading'][data-entrance] #monitor-shell {
     html[data-room3d='on'] #monitor-shell {
         cursor: auto;
     }
-    html[data-room-look] body {
-        cursor: grab;
+    /* The room view: move to look around, a hand over what can be pressed. */
+    html[data-room3d='on'][data-room-look] body:not([data-display-mode='web1']) {
+        cursor: move;
     }
-    html[data-room-look='drag'] body {
+    html[data-room3d='on'][data-room-look][data-room-focus] body:not([data-display-mode='web1']) {
+        cursor: default;
+    }
+    html[data-room3d='on'][data-room-look][data-room-hover] body:not([data-display-mode='web1']) {
+        cursor: pointer;
+    }
+    html[data-room3d='on'][data-room-look='drag'] body:not([data-display-mode='web1']) {
         cursor: grabbing;
     }
     /* Reading size: leave the room some width beside the monitor. */
@@ -374,6 +490,7 @@ html[data-room3d='loading'][data-entrance] #monitor-shell {
 }
 @media print {
     #room3d,
+    #room-focus,
     #room-hint {
         display: none !important;
     }

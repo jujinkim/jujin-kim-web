@@ -1,4 +1,4 @@
-import { TUNING as T } from './config.js?v=20261119.11';
+import { TUNING as T } from './config.js?v=20261120.3';
 
 const INTERACTIVE = 'a, button, input, textarea, select, summary, [role="button"], [contenteditable]';
 const PRESS_TRAVEL = 10;

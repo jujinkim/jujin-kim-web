@@ -1,10 +1,10 @@
-import { TUNING as T, COUNT_LADDER, PIXEL_BUDGET, GENOMES, GENE_COUNT } from './config.js?v=20261119.11';
-import { createSim } from './sim.js?v=20261119.11';
-import { createRenderer } from './renderer.js?v=20261119.11';
-import { createInput } from './input.js?v=20261119.11';
-import { sampleText, sampleKnot } from './text-targets.js?v=20261119.11';
-import { createQuality } from './quality.js?v=20261119.11';
-import { decode, evolve, loadState, saveState, clearState, seedPopulation } from './evolution.js?v=20261119.11';
+import { TUNING as T, COUNT_LADDER, PIXEL_BUDGET, GENOMES, GENE_COUNT } from './config.js?v=20261120.3';
+import { createSim } from './sim.js?v=20261120.3';
+import { createRenderer } from './renderer.js?v=20261120.3';
+import { createInput } from './input.js?v=20261120.3';
+import { sampleText, sampleKnot } from './text-targets.js?v=20261120.3';
+import { createQuality } from './quality.js?v=20261120.3';
+import { decode, evolve, loadState, saveState, clearState, seedPopulation } from './evolution.js?v=20261120.3';
 
 // Owns the frame loop and the state machine:
 //
@@ -80,6 +80,8 @@ export function createWorld(canvas, hooks = {}) {
     // Set while the swarm is the sky outside the room's window: the part of
     // the canvas (CSS px) that can be seen through it.
     let sky = null;
+    // Set while the visitor is up at the window: the pointer is the light.
+    let skyDirect = false;
     const focus = () => (sky ? [sky.left + sky.width / 2, sky.top + sky.height * 0.45] : [width / 2, height * 0.46]);
     const frameInfo = { dt: 0, time: 0, tau: T.trailTau, gain: 1, pulses: sim.pulses, shade };
 
@@ -148,7 +150,10 @@ export function createWorld(canvas, hooks = {}) {
     const input = createInput({
         onPress(x, y, charge) {
             if (state === 'dormant') return wake();
-            if (sky) sim.emitPulse(lightX, lightY, charge);
+            // In the sky a pulse starts where the flock is, unless the visitor
+            // is at the window and pressed a point in it.
+            const at = skyDirect && x >= sky.left && x <= sky.left + sky.width && y >= sky.top && y <= sky.top + sky.height;
+            if (sky && !at) sim.emitPulse(lightX, lightY, charge);
             else sim.emitPulse(x - originX, y - originY, charge);
             hooks.onPulse?.(charge);
         },
@@ -264,8 +269,12 @@ export function createWorld(canvas, hooks = {}) {
             // visitor steers stays where it can be seen.
             const cx = sky.left + sky.width / 2, cy = sky.top + sky.height / 2;
             const gx = cx + sky.width * 0.3 * Math.sin(time * 0.19), gy = cy + sky.height * 0.3 * Math.sin(time * 0.27 + 1.3);
-            const px = cx + sky.width * 0.84 * (input.state.x / window.innerWidth - 0.5);
-            const py = cy + sky.height * 0.84 * (input.state.y / window.innerHeight - 0.5);
+            let px = cx + sky.width * 0.84 * (input.state.x / window.innerWidth - 0.5);
+            let py = cy + sky.height * 0.84 * (input.state.y / window.innerHeight - 0.5);
+            if (skyDirect) {
+                px = Math.max(sky.left, Math.min(sky.left + sky.width, input.state.x));
+                py = Math.max(sky.top, Math.min(sky.top + sky.height, input.state.y));
+            }
             targetX = gx + (px - gx) * presence;
             targetY = gy + (py - gy) * presence;
         }
@@ -347,9 +356,10 @@ export function createWorld(canvas, hooks = {}) {
             if (sky) sim.emitPulse(lightX, lightY, charge);
             else sim.emitPulse(x, y, charge);
         },
-        setSky(rect) {
+        setSky(rect, direct = false) {
             const moved = !sky !== !rect;
             sky = rect;
+            skyDirect = !!rect && direct;
             if (moved && state === 'dormant') formKnot();
         },
         wake,

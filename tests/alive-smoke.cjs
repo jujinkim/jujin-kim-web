@@ -107,6 +107,7 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
     // The 3D room refuses software GL unless forced, so these runs force it.
     const FORCED = '?debug=1&quality=off&room3d=force';
     const shellTransform = (page) => page.evaluate(() => getComputedStyle(document.getElementById('monitor-shell')).transform);
+    const spot = (page, id) => page.evaluate((id) => window.roomDebug.spot(id), id);
     const room3dOn = (page) => page.waitForFunction(() => document.documentElement.dataset.room3d === 'on', null, { timeout: 15000 });
 
     await check('without a real GPU the CSS room is used', async () => {
@@ -130,7 +131,7 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
         await page.context().close();
     });
 
-    await check('3D room: pressing the room steps back, any key returns', async () => {
+    await check('3D room: pressing the room steps back, Escape or the monitor returns', async () => {
         const page = await open(browser, { path: FORCED });
         await room3dOn(page);
         // Where the room is pressed decides which side the camera steps back to.
@@ -141,14 +142,19 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
             assert.ok(await page.evaluate(() => 'roomLook' in document.documentElement.dataset));
             await page.waitForTimeout(1800);
             views.push(await shellTransform(page));
+            // Only Escape returns; any other key leaves the view alone.
             await page.keyboard.press('Shift');
+            await page.waitForTimeout(200);
+            assert.ok(await page.evaluate(() => 'roomLook' in document.documentElement.dataset));
+            await page.keyboard.press('Escape');
             await page.waitForFunction(() => !('roomLook' in document.documentElement.dataset), null, { timeout: 15000 });
             assert.equal(await shellTransform(page), 'none');
         }
         assert.notEqual(views[0], views[1]);
         await command(page, 'room');
         await page.waitForFunction(() => 'roomLook' in document.documentElement.dataset);
-        // A drag orbits and does not leave the view; a plain press does.
+        // A drag orbits and does not leave the view; nor does pressing bare
+        // wall. Pressing the monitor returns.
         await page.waitForTimeout(1600);
         const before = await shellTransform(page);
         await page.mouse.move(700, 450);
@@ -158,7 +164,86 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
         await page.waitForTimeout(900);
         assert.ok('roomLook' in (await page.evaluate(() => ({ ...document.documentElement.dataset }))));
         assert.notEqual(await shellTransform(page), before);
-        await page.mouse.click(700, 450);
+        await page.mouse.click(720, 12);
+        await page.waitForTimeout(400);
+        assert.ok(await page.evaluate(() => 'roomLook' in document.documentElement.dataset));
+        const monitor = await spot(page, 'monitor');
+        await page.mouse.click(monitor.x, monitor.y);
+        await page.waitForFunction(() => !('roomLook' in document.documentElement.dataset), null, { timeout: 15000 });
+        assert.equal(await shellTransform(page), 'none');
+        assert.deepEqual(page.errors, []);
+        await page.context().close();
+    });
+
+    await check('3D room: the window, the handheld and the books come up close', async () => {
+        const page = await open(browser, { path: FORCED });
+        await room3dOn(page);
+        const data = () => page.evaluate(() => ({ ...document.documentElement.dataset }));
+        const settled = (ms = 1500) => page.waitForTimeout(ms);
+        await command(page, 'room');
+        await page.waitForFunction(() => 'roomLook' in document.documentElement.dataset);
+        await settled(1800);
+
+        // A hand over what can be pressed, the move cursor elsewhere.
+        const cursor = () => page.evaluate(() => getComputedStyle(document.body).cursor);
+        await page.mouse.move(720, 12);
+        await settled(200);
+        assert.equal(await cursor(), 'move');
+        const shelf = await spot(page, 'books');
+        await page.mouse.move(shelf.x, shelf.y);
+        await page.waitForFunction(() => document.documentElement.dataset.roomHover === 'books', null, { timeout: 5000 });
+        assert.equal(await cursor(), 'pointer');
+
+        // Books: each linked book can be pressed, and the links are listed.
+        await page.mouse.click(shelf.x, shelf.y);
+        assert.equal((await data()).roomFocus, 'books');
+        await settled();
+        const book = await spot(page, 'book:0');
+        await page.mouse.move(book.x, book.y);
+        await page.waitForFunction(() => document.documentElement.dataset.roomHover === 'book', null, { timeout: 5000 });
+        assert.equal(await page.textContent('#focus-book-label'), 'Blog');
+        assert.equal(await page.getAttribute('#focus-books a', 'href'), 'https://blog.jujin.kim');
+        const popup = page.waitForEvent('popup');
+        await page.mouse.click(book.x, book.y);
+        await (await popup).close();
+        assert.equal((await data()).roomFocus, 'books', 'opening a book stays at the shelf');
+        // Escape steps back one level at a time.
+        await page.keyboard.press('Escape');
+        await settled();
+        assert.ok(!('roomFocus' in (await data())) && 'roomLook' in (await data()));
+
+        // Handheld: a panel on each screen.
+        const handheld = await spot(page, 'console');
+        await page.mouse.click(handheld.x, handheld.y);
+        assert.equal((await data()).roomFocus, 'console');
+        await settled();
+        for (const id of ['focus-console-top', 'focus-console-bottom']) {
+            const panel = await page.evaluate((id) => {
+                const el = document.getElementById(id), style = getComputedStyle(el), box = el.getBoundingClientRect();
+                return { text: el.textContent, display: style.display, transform: style.transform, inside: box.left >= 0 && box.right <= innerWidth && box.top >= 0 && box.bottom <= innerHeight };
+            }, id);
+            assert.equal(panel.text, 'TODO: implement');
+            assert.equal(panel.display, 'block');
+            assert.ok(panel.transform.startsWith('matrix3d') && panel.inside, id);
+        }
+        // Pressing beside it steps back to the room.
+        await page.mouse.click(40, 860);
+        await settled();
+        assert.ok(!('roomFocus' in (await data())) && 'roomLook' in (await data()));
+        assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('focus-console-top')).display), 'none');
+
+        // Window: the swarm fills the view and a press inside it stays there.
+        const win = await spot(page, 'window');
+        await page.mouse.click(win.x, win.y);
+        assert.equal((await data()).roomFocus, 'window');
+        await settled();
+        await page.mouse.click(720, 400);
+        await settled(300);
+        assert.equal((await data()).roomFocus, 'window');
+        await page.click('#focus-back');
+        await settled();
+        assert.ok(!('roomFocus' in (await data())) && 'roomLook' in (await data()));
+        await page.keyboard.press('Escape');
         await page.waitForFunction(() => !('roomLook' in document.documentElement.dataset), null, { timeout: 15000 });
         assert.equal(await shellTransform(page), 'none');
         assert.deepEqual(page.errors, []);

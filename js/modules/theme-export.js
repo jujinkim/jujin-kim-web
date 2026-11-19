@@ -1,4 +1,4 @@
 // Export theme functions for global use
-import { setTheme as setThemeInternal } from './theme.js?v=20261119.11';
+import { setTheme as setThemeInternal } from './theme.js?v=20261120.3';
 
 window.setTheme = setThemeInternal;

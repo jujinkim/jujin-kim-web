@@ -1,6 +1,6 @@
-import { createWorld } from './world.js?v=20261119.11';
-import { createAudio } from './audio.js?v=20261119.11';
-import { room3d } from './room3d.js?v=20261119.11';
+import { createWorld } from './world.js?v=20261120.3';
+import { createAudio } from './audio.js?v=20261120.3';
+import { room3d } from './room3d.js?v=20261120.3';
 
 // The background of the terminal screen: an evolving particle swarm drawn on
 // the #starfield canvas. It follows the pointer, evolves by a genetic
@@ -91,11 +91,11 @@ function followSky(canvas) {
             document.body.insertBefore(canvas, document.getElementById('room3d'));
         } else home.prepend(canvas);
         canvas.classList.toggle('in-sky', inSky);
-        world.setSky(rect);
+        world.setSky(rect, room3d.focused === 'window');
         world.resize();
         return;
     }
-    if (inSky) world.setSky(rect);
+    if (inSky) world.setSky(rect, room3d.focused === 'window');
 }
 
 export function setAnimationResolution(value) {
@@ -132,7 +132,8 @@ export function initAnimations() {
         },
         onFrame: () => {
             if (audio?.enabled) audio.update(world.energy, world.breath);
-            if (++skyCheck % 12 === 0) followSky(canvas);
+            // The window moves on screen while the camera does.
+            if (++skyCheck % 12 === 0 || room3d.looking) followSky(canvas);
         },
         onGiveUp: giveUp,
         onContextLost: giveUp

@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL } from '../constants.js?v=20261119.11';
+import { CONTACT_EMAIL, BOOK_LINKS } from '../constants.js?v=20261120.3';
 
 function calculateAge() {
     const birthDate = new Date(1992, 9, 20); // October 20, 1992 (month is 0-indexed)
@@ -52,6 +52,17 @@ export function initContent() {
     loadAboutSection();
     loadProjectsSection();
     loadTechnologiesSection();
+    loadRoomFocus();
+}
+
+// The 3D room's close-ups. The books on the shelf are links; the same links
+// are listed here so they can be reached without pressing a book.
+function loadRoomFocus() {
+    const books = document.getElementById('focus-books');
+    if (!books) return;
+    books.innerHTML = BOOK_LINKS.map(
+        ({ title, url }) => `<a href="${url}"${url.startsWith('mailto:') ? '' : ' target="_blank" rel="noopener noreferrer"'}>${title}</a>`
+    ).join('');
 }
 
 function getKstTime() {

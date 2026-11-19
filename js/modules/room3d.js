@@ -4,16 +4,22 @@
 // transformed while reading. Away from rest (entrance, look-around) the shell
 // follows the camera through a CSS matrix3d.
 //
+// In the look-around view some things can be pressed: the monitor returns to
+// reading, the handheld, the books and the window bring the camera up close.
+//
 // World units are metres. The origin is the viewport centre on the screen
 // plane, +y is up and +z points at the viewer.
 
-const VENDOR = '../vendor/three.min.js?v=20261119.11';
+import { BOOK_LINKS } from '../constants.js?v=20261120.3';
+
+const VENDOR = '../vendor/three.min.js?v=20261120.3';
 const OFF_KEY = 'room3d-off';
 const SCREEN_HEIGHT = 0.33;
 const CAMERA_DISTANCE = 1.15; // in viewport heights
 const NEAR = 0.05;
 const FAR = 30;
 const LOOK_MS = 1100;
+const FOCUS_MS = 900;
 // The room is drawn in chunky pixels: one rendered pixel per PIXEL CSS pixels.
 const PIXEL = 2;
 const PIXEL_LEAN = 4;
@@ -21,6 +27,14 @@ const PIXEL_LEAN = 4;
 const WINDOW = { x0: -1.6, x1: -0.55, y0: 0.3, y1: 1.3, z: -0.85 };
 // Look-around orbit limits: yaw and pitch in radians, distance in rest distances.
 const ORBIT = { yaw: 1.1, pitchMin: 0.03, pitchMax: 1.0, distMin: 1.5, distMax: 5.5 };
+// Outline colour of the things that can be pressed.
+const GLOW = [0.3, 1, 0.55];
+// The handheld's two screens as [object, top left, top right, bottom left]
+// in that object's space, and the size in CSS px of the DOM panel laid on each.
+const LCD = {
+    top: ['lid', [-0.031, -0.0117, 0.06], [0.031, -0.0117, 0.06], [-0.031, -0.0117, 0.012], 248, 192],
+    bottom: ['handheld', [-0.031, 0.0127, -0.024], [0.031, 0.0127, -0.024], [-0.031, 0.0127, 0.022], 248, 184]
+};
 
 const root = document.documentElement;
 const desktop = matchMedia('(min-width: 1000px) and (min-height: 600px)');
@@ -211,13 +225,15 @@ function buildRoom(scene) {
 
     // Window: frame, bars, sill, curtain and the city behind it.
     const frame = std(0x1b1f26, 0.6);
-    span(room, frame, WX0, WX1, WY0 - 0.03, WY0, WZ - 0.09, WZ + 0.05);
-    span(room, frame, WX0, WX1, WY1, WY1 + 0.03, WZ - 0.09, WZ + 0.02);
-    span(room, frame, WX0 - 0.03, WX0, WY0, WY1, WZ - 0.09, WZ + 0.02);
-    span(room, frame, WX1, WX1 + 0.03, WY0, WY1, WZ - 0.09, WZ + 0.02);
     const midX = (WX0 + WX1) / 2;
-    span(room, frame, midX - 0.012, midX + 0.012, WY0, WY1, WZ - 0.06, WZ - 0.03);
-    span(room, frame, WX0, WX1, 0.88, 0.904, WZ - 0.06, WZ - 0.03);
+    parts.windowFrame = [
+        span(room, frame, WX0, WX1, WY0 - 0.03, WY0, WZ - 0.09, WZ + 0.05),
+        span(room, frame, WX0, WX1, WY1, WY1 + 0.03, WZ - 0.09, WZ + 0.02),
+        span(room, frame, WX0 - 0.03, WX0, WY0, WY1, WZ - 0.09, WZ + 0.02),
+        span(room, frame, WX1, WX1 + 0.03, WY0, WY1, WZ - 0.09, WZ + 0.02),
+        span(room, frame, midX - 0.012, midX + 0.012, WY0, WY1, WZ - 0.06, WZ - 0.03),
+        span(room, frame, WX0, WX1, 0.88, 0.904, WZ - 0.06, WZ - 0.03)
+    ];
     const city = buildCity();
     parts.city = city;
     // The sky part of the texture is transparent and written as it is (no
@@ -237,6 +253,7 @@ function buildRoom(scene) {
     curtain.position.set(WX0 + 0.14, 0.82, WZ + 0.07);
     curtain.castShadow = curtain.receiveShadow = true;
     room.add(curtain);
+    parts.windowFrame.push(curtain);
     rod(room, frame, [WX0 - 0.15, 1.46, WZ + 0.07], [WX1 + 0.15, 1.46, WZ + 0.07], 0.008);
 
     const windowLight = new T.SpotLight(0xffffff, 1, 12, 0.5, 0.5, 1.4);
@@ -328,6 +345,7 @@ function buildRoom(scene) {
     span(lid, shellBlue, -0.066, 0.066, -0.01, 0, 0, 0.074);
     span(lid, inner, -0.062, 0.062, -0.0108, -0.01, 0.003, 0.071, false);
     span(lid, lcd, -0.031, 0.031, -0.0114, -0.0108, 0.012, 0.06, false);
+    Object.assign(parts, { handheld, lid });
 
     // Lamp: base, two arms, shade, bulb and the light it throws on the desk.
     const lamp = new T.Group();
@@ -457,11 +475,12 @@ function buildRoom(scene) {
     span(shelf, darkWood, -0.34, 0.34, -0.02, 0, 0, 0.16);
     const spines = [0x8a3b3b, 0x2f6a5c, 0xc7a04a, 0x3b4f8a, 0x7a4a8a, 0x9b6a3b, 0x2f5a7a, 0x555b66];
     let bx = -0.31;
-    spines.forEach((color, i) => {
+    parts.books = spines.map((color, i) => {
         const w = 0.022 + ((i * 7) % 5) * 0.004;
         const h = 0.15 + ((i * 5) % 4) * 0.018;
-        span(shelf, std(color, 0.8), bx, bx + w, 0, h, 0.01, 0.13);
+        const mesh = span(shelf, std(color, 0.8), bx, bx + w, 0, h, 0.01, 0.13);
         bx += w + 0.002;
+        return { x0: bx - w - 0.002, x1: bx - 0.002, h, mesh };
     });
     span(shelf, metal, 0.12, 0.3, 0, 0.07, 0.02, 0.14);
     parts.shelf = shelf;
@@ -526,6 +545,157 @@ function buildMonitor(group, m) {
     S.powerHalo.position.set(led.position.x, led.position.y, FRONT + 0.01);
     S.powerHalo.scale.setScalar(size * 0.9);
     group.add(S.powerHalo);
+}
+
+// ---------- things that can be pressed in the look-around view ----------
+
+// A target is a set of meshes with a box around them in `object`'s space.
+// The pointer is tested against the box. The outline follows the meshes'
+// own silhouette: a mask copy of each mesh sets the target's stencil bit
+// where the thing is visible, then slightly larger copies are drawn where
+// that bit is clear, so only the rim outside the silhouette shows, hidden by
+// whatever is in front. Drawing flips the bit, so no pixel is lit twice.
+const maskMaterial = (bit) =>
+    new T.MeshBasicMaterial({
+        colorWrite: false, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1,
+        stencilWrite: true, stencilRef: bit, stencilWriteMask: bit, stencilZPass: 7681 /* replace */
+    });
+
+function addTarget(id, sources, object, min, max, { thick = 0.007, book = false, bit = 1, fillers = [] } = {}) {
+    // Two layers: the line itself and a wider, fainter one around it.
+    const [line, halo] = [0, 1].map(() => {
+        const made = new T.MeshBasicMaterial({
+            transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, toneMapped: false,
+            stencilWrite: true, stencilRef: 0, stencilFunc: 514 /* equal */, stencilFuncMask: bit,
+            stencilWriteMask: bit, stencilZPass: 5386 /* invert */
+        });
+        made.color.setRGB(...GLOW);
+        return made;
+    });
+    const materials = [line, halo];
+    const extras = [];
+    const add = (source, material, order, grow) => {
+        const mesh = new T.Mesh(source.geometry, material);
+        mesh.renderOrder = order;
+        mesh.visible = false;
+        mesh.userData.outline = true;
+        if (grow) {
+            // Grown about the middle of the mesh by the same margin on every side.
+            const box = source.geometry.boundingBox;
+            for (const axis of ['x', 'y', 'z']) {
+                const size = box.max[axis] - box.min[axis];
+                mesh.scale[axis] = (size + 2 * grow) / size;
+                mesh.position[axis] = ((box.min[axis] + box.max[axis]) / 2) * (1 - mesh.scale[axis]);
+            }
+        }
+        source.add(mesh);
+        extras.push(mesh);
+    };
+    const mask = (source, at) => {
+        materials.push(maskMaterial(at));
+        add(source, materials[materials.length - 1], 10);
+    };
+    const t = thick / object.scale.x;
+    for (const source of sources) {
+        source.geometry.computeBoundingBox();
+        const { min: low, max: high } = source.geometry.boundingBox;
+        mask(source, bit);
+        // Flat things (the screen) are part of the silhouette but have no rim of their own.
+        if (Math.min(high.x - low.x, high.y - low.y, high.z - low.z) < 1e-5) continue;
+        add(source, line, 11, t);
+        add(source, halo, 12, t * 3);
+    }
+    // Meshes that only cut this group's outlines, each under its own bit.
+    for (const [source, at] of fillers) mask(source, at);
+    S.targets.push({ id, object, min, max, book, bit, extras, materials, line, halo, glow: 0, shown: false });
+}
+
+function buildTargets(m) {
+    for (const target of S.targets) {
+        target.extras.forEach((mesh) => mesh.removeFromParent());
+        target.materials.forEach((material) => material.dispose());
+    }
+    S.targets = [];
+    const { room, handheld, shelf, books, windowFrame } = S.parts;
+    const meshes = (group) => {
+        const found = [];
+        group.traverse((child) => child.isMesh && !child.userData.outline && found.push(child));
+        return found;
+    };
+    const x0 = -m.gw / 2 - m.bl, x1 = m.gw / 2 + m.br, y0 = -m.gh / 2 - m.bb, y1 = m.gh / 2 + m.bt;
+    addTarget('monitor', meshes(S.monitor), S.monitor, [x0, y0 - m.stand, -0.42], [x1, y1, 0.018], { thick: 0.008, bit: 1 });
+    addTarget('window', windowFrame, room, [WINDOW.x0 - 0.03, WINDOW.y0 - 0.03, WINDOW.z - 0.1], [WINDOW.x1 + 0.03, WINDOW.y1 + 0.03, WINDOW.z + 0.06], { thick: 0.009, bit: 2 });
+    addTarget('console', meshes(handheld), handheld, [-0.075, 0, -0.078], [0.075, 0.085, 0.045], { thick: 0.004, bit: 4 });
+    addTarget('books', meshes(shelf), shelf, [-0.35, -0.025, 0], [0.35, 0.215, 0.165], { bit: 8 });
+    // A book can be pressed once the camera is at the shelf, if it has a link.
+    // Every book has a stencil bit: a resting book's outline is cut by the
+    // whole row, so it is not drawn across its neighbours (see tick).
+    let fillers = books.map((b, i) => [b.mesh, 1 << i]).filter((entry, i) => !BOOK_LINKS[i]);
+    books.forEach((b, i) => {
+        if (!BOOK_LINKS[i]) return;
+        addTarget(`book:${i}`, [b.mesh], shelf, [b.x0, 0, 0.01], [b.x1, b.h, 0.132], { thick: 0.0022, book: true, bit: 1 << i, fillers });
+        fillers = [];
+    });
+}
+
+// Distance along a world ray to a target's box, or Infinity.
+function hitBox(target, origin, direction) {
+    const inverse = S.matrix.copy(target.object.matrixWorld).invert();
+    const o = S.rayA.copy(origin).applyMatrix4(inverse);
+    const d = S.rayB.copy(origin).add(direction).applyMatrix4(inverse).sub(o);
+    let near = -Infinity, far = Infinity;
+    for (const [i, axis] of ['x', 'y', 'z'].entries()) {
+        if (Math.abs(d[axis]) < 1e-9) {
+            if (o[axis] < target.min[i] || o[axis] > target.max[i]) return Infinity;
+            continue;
+        }
+        const a = (target.min[i] - o[axis]) / d[axis], b = (target.max[i] - o[axis]) / d[axis];
+        near = Math.max(near, Math.min(a, b));
+        far = Math.min(far, Math.max(a, b));
+        if (near > far) return Infinity;
+    }
+    return far < 0 ? Infinity : Math.max(near, 0);
+}
+
+// The id of what is under a viewport point: in the room view the nearest
+// target, up close only the thing being looked at (or one of its books).
+function pick(x, y) {
+    const origin = S.camera.position;
+    const direction = S.rayD.set((x / S.W) * 2 - 1, 1 - (y / S.H) * 2, 0.5).unproject(S.camera).sub(origin).normalize();
+    const focused = S.focusTarget ? S.focusId : null;
+    let best = null, bestAt = Infinity;
+    const test = (accept) => {
+        for (const target of S.targets) {
+            if (!accept(target)) continue;
+            const at = hitBox(target, origin, direction);
+            if (at < bestAt) [best, bestAt] = [target.id, at];
+        }
+    };
+    if (focused === 'books') test((target) => target.book);
+    if (!best) test((target) => (focused ? target.id === focused : !target.book));
+    return best;
+}
+
+function setHover(id) {
+    if (S.hover === id) return;
+    S.hover = id;
+    if (id) root.dataset.roomHover = id.split(':')[0];
+    else delete root.dataset.roomHover;
+    if (S.panels.label) S.panels.label.textContent = id?.startsWith('book:') ? BOOK_LINKS[+id.slice(5)].title : '';
+    if (!S.raf) S.raf = requestAnimationFrame(tick);
+}
+
+function openBook(id) {
+    const { url } = BOOK_LINKS[+id.slice(5)];
+    if (url.startsWith('mailto:')) location.href = url;
+    else window.open(url, '_blank', 'noopener');
+}
+
+function clearFocus() {
+    S.focusT = S.focusTarget = 0;
+    S.focusId = null;
+    delete root.dataset.roomFocus;
+    setHover(null);
 }
 
 // ---------- layout: fit the model to the DOM ----------
@@ -618,6 +788,29 @@ function layout() {
     S.orbitHome = { yaw: Math.atan2(lookX, 1), pitch: Math.atan2(lookY, Math.hypot(lookX, 1)), dist: wide ? 3.5 : 3.2 };
     if (!S.lookTarget && !S.lookT) resetOrbit();
 
+    // Close-up poses: far enough back that the thing fills `fill` of the
+    // view's height, or most of its width on a narrow screen.
+    S.scene.updateMatrixWorld(true);
+    buildTargets(m);
+    const seenW = W / u / dm, seenH = H / u / dm; // metres in view per metre of distance
+    const aimed = (position, target) => ({
+        position,
+        quaternion: new T.Quaternion().setFromRotationMatrix(new T.Matrix4().lookAt(position, target, new T.Vector3(0, 1, 0)))
+    });
+    const closeUp = (object, centre, from, w, h, fill) => {
+        const target = new T.Vector3(...centre).applyMatrix4(object.matrixWorld);
+        const distance = Math.max((w * object.scale.x) / seenW / 0.85, (h * object.scale.x) / seenH / fill);
+        return aimed(new T.Vector3(...from).transformDirection(object.matrixWorld).multiplyScalar(distance).add(target), target);
+    };
+    // At the window the visitor stands at the right-hand pane (the curtain
+    // covers the other) and looks up over the roofs: the sky fills the view.
+    const pane = new T.Vector3((WINDOW.x0 + WINDOW.x1) / 2 + 0.27, WINDOW.y0 + 0.25, WINDOW.z + 0.45).add(room.position);
+    S.poses.focus = {
+        window: aimed(pane, pane.clone().add(new T.Vector3(0, 0.36, -1))),
+        books: closeUp(shelf, [0, 0.09, 0.08], [0, 0.4, 1], 0.7, 0.3, 0.62),
+        console: closeUp(S.parts.handheld, [0, 0.03, -0.015], [0, 0.75, 1], 0.15, 0.14, 0.6)
+    };
+
     const ratio = 1 / (S.lean ? PIXEL_LEAN : PIXEL);
     S.renderer.setPixelRatio(ratio);
     S.renderer.setSize(W, H, false);
@@ -670,6 +863,12 @@ function placeCamera() {
                 S.matrix.lookAt(camera.position, pose.target, camera.up)
             );
             S.poseQuaternion.copy(camera.quaternion);
+            if (S.focusT > 0 && S.focusId) {
+                // Up close: from wherever the orbit is to the thing's own pose.
+                const f = ease(S.focusT), close = S.poses.focus[S.focusId];
+                camera.position.lerp(close.position, f);
+                S.poseQuaternion.slerp(close.quaternion, f);
+            }
         } else S.poseQuaternion.copy(pose.quaternion);
         camera.position.lerp(rest, k);
         camera.quaternion.copy(S.poseQuaternion).slerp(S.identity, k);
@@ -683,11 +882,63 @@ function placeCamera() {
     camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
     camera.updateMatrixWorld(true);
     carryShell(k);
+    carryPanels();
     return k;
 }
 
+// The CSS matrix3d that puts an element on a plane in the world. `local`
+// maps the element's own pixels to world space; left and top are where its
+// layout corner is in the viewport. CSS does the perspective divide.
+function cssMatrix(local, left, top) {
+    const { camera, W, H } = S;
+    const c = local.premultiply(camera.matrixWorldInverse).premultiply(camera.projectionMatrix).elements;
+    const out = new Array(16);
+    for (let col = 0; col < 4; col++) {
+        const x = c[col * 4], y = c[col * 4 + 1], w = c[col * 4 + 3];
+        out[col * 4] = 0.5 * W * x + (0.5 * W - left) * w;
+        out[col * 4 + 1] = -0.5 * H * y + (0.5 * H - top) * w;
+        out[col * 4 + 2] = col === 2 ? 1 : 0;
+        out[col * 4 + 3] = w;
+    }
+    const scale = 1 / out[15];
+    return `matrix3d(${out.map((v) => +(v * scale).toFixed(7)).join(',')})`;
+}
+
+// DOM that belongs to a close-up: a panel on each of the handheld's screens
+// and the title over the book under the pointer.
+function carryPanels() {
+    const level = S.focusId ? clamp((ease(S.focusT) - 0.6) / 0.4, 0, 1) * ease(S.lookT) : 0;
+    const lcd = S.focusId === 'console' ? level : 0;
+    if (lcd || S.lcdShown)
+        for (const [name, [key, a, b, c, w, h]] of Object.entries(LCD)) {
+            const panel = S.panels[name];
+            if (!panel) continue;
+            if (!lcd) {
+                panel.removeAttribute('style');
+                continue;
+            }
+            const world = S.parts[key].matrixWorld;
+            const o = S.rayA.set(...a).applyMatrix4(world);
+            const x = S.rayB.set(...b).applyMatrix4(world).sub(o).divideScalar(w);
+            const y = S.rayD.set(...c).applyMatrix4(world).sub(o).divideScalar(h);
+            const matrix = cssMatrix(S.matrix.set(x.x, y.x, 0, o.x, x.y, y.y, 0, o.y, x.z, y.z, 1, o.z, 0, 0, 0, 1), 0, 0);
+            panel.style.cssText = `display:block;width:${w}px;height:${h}px;opacity:${lcd.toFixed(3)};transform:${matrix}`;
+        }
+    S.lcdShown = lcd > 0;
+
+    const label = S.panels.label;
+    const book = level && S.hover?.startsWith('book:') ? S.parts.books[+S.hover.slice(5)] : null;
+    if (label && (book || S.labelShown)) {
+        if (book) {
+            const v = S.rayA.set((book.x0 + book.x1) / 2, book.h, 0.07).applyMatrix4(S.parts.shelf.matrixWorld).project(S.camera);
+            label.style.cssText = `display:block;left:${((v.x * 0.5 + 0.5) * S.W).toFixed(1)}px;top:${((0.5 - v.y * 0.5) * S.H).toFixed(1)}px`;
+        } else label.removeAttribute('style');
+        S.labelShown = !!book;
+    }
+}
+
 function carryShell(k) {
-    const { shell, camera, W, H, u, shellLeft: L, shellTop: Tp } = S;
+    const { shell, W, H, u, shellLeft: L, shellTop: Tp } = S;
     if (k >= 1) {
         if (S.carried) {
             shell.style.removeProperty('transform');
@@ -696,23 +947,11 @@ function carryShell(k) {
         }
         return;
     }
-    // Shell-local pixels -> world -> clip -> viewport pixels, relative to the
-    // shell's own layout corner. CSS does the perspective divide.
-    const c = S.matrix
-        .set(1 / u, 0, 0, (L - W / 2) / u, 0, -1 / u, 0, (H / 2 - Tp) / u, 0, 0, 1, 0, 0, 0, 0, 1)
-        .premultiply(camera.matrixWorldInverse)
-        .premultiply(camera.projectionMatrix).elements;
-    const out = new Array(16);
-    for (let col = 0; col < 4; col++) {
-        const x = c[col * 4], y = c[col * 4 + 1], w = c[col * 4 + 3];
-        out[col * 4] = 0.5 * W * x + (0.5 * W - L) * w;
-        out[col * 4 + 1] = -0.5 * H * y + (0.5 * H - Tp) * w;
-        out[col * 4 + 2] = col === 2 ? 1 : 0;
-        out[col * 4 + 3] = w;
-    }
-    const scale = 1 / out[15];
+    // The shell lies on the screen plane, one metre per u pixels.
     shell.style.transformOrigin = '0 0';
-    shell.style.transform = `matrix3d(${out.map((v) => +(v * scale).toFixed(7)).join(',')})`;
+    shell.style.transform = cssMatrix(
+        S.matrix.set(1 / u, 0, 0, (L - W / 2) / u, 0, -1 / u, 0, (H / 2 - Tp) / u, 0, 0, 1, 0, 0, 0, 0, 1), L, Tp
+    );
     S.carried = true;
 }
 
@@ -745,7 +984,16 @@ function tick(now) {
         const step = reduced.matches ? 1 : (dt * 1000) / LOOK_MS;
         S.lookT = S.lookTarget > S.lookT ? Math.min(1, S.lookT + step) : Math.max(0, S.lookT - step);
         busy = true;
-        if (S.lookT === 0) delete root.dataset.roomLook;
+        if (S.lookT === 0) {
+            delete root.dataset.roomLook;
+            clearFocus();
+        }
+    }
+    if (S.focusT !== S.focusTarget) {
+        const step = reduced.matches ? 1 : (dt * 1000) / FOCUS_MS;
+        S.focusT = S.focusTarget > S.focusT ? Math.min(1, S.focusT + step) : Math.max(0, S.focusT - step);
+        busy = true;
+        if (S.focusT === 0) S.focusId = null;
     }
     if (S.lookT > 0)
         for (const axis of ['yaw', 'pitch', 'dist']) {
@@ -753,6 +1001,31 @@ function tick(now) {
             if (next !== S.orbit[axis]) busy = true;
             S.orbit[axis] = next;
         }
+
+    // What the pointer is over, checked when it or the camera has moved.
+    if (S.pointer && (S.hoverCheck || busy)) {
+        S.hoverCheck = false;
+        const hit = S.lookTarget ? pick(S.pointer.x, S.pointer.y) : null;
+        setHover(S.focusTarget && !hit?.startsWith('book:') ? null : hit);
+    }
+    // Outlines: they fade in and out faintly, and stay lit under the pointer.
+    const roomLevel = ease(S.lookT) * (1 - ease(S.focusT));
+    const bookLevel = S.focusId === 'books' ? ease(S.focusT) * ease(S.lookT) : 0;
+    const breath = S.ambient ? 0.225 * (1 - Math.cos(now * 0.0018)) : 0.2;
+    for (const target of S.targets) {
+        const glow = reduced.matches ? +(S.hover === target.id) : approach(target.glow, S.hover === target.id ? 1 : 0, dt, 0.07);
+        if (glow !== target.glow) busy = true;
+        target.glow = glow;
+        const opacity = (target.book ? bookLevel : roomLevel) * (breath + (1 - breath) * glow);
+        target.line.opacity = opacity;
+        target.halo.opacity = opacity * (0.25 + 0.2 * glow);
+        // Under the pointer a book's outline goes all the way round it.
+        if (target.book) target.line.stencilFuncMask = target.halo.stencilFuncMask = glow > 0.3 ? target.bit : 0xff;
+        const shown = opacity > 0.01;
+        if (shown === target.shown) continue;
+        target.shown = shown;
+        for (const mesh of target.extras) mesh.visible = shown;
+    }
 
     // Light mood: the monitor's glow and the room lights fade toward targets.
     const power = approach(S.power, S.powerTarget, dt, 0.18);
@@ -815,13 +1088,13 @@ function tick(now) {
         S.pyDrawn = S.py;
         S.kDrawn = k;
     }
-    if (busy || S.ambient) S.raf = requestAnimationFrame(tick);
+    if ((busy || S.ambient) && !S.raf) S.raf = requestAnimationFrame(tick);
 }
 
 // ---------- lifecycle ----------
 
 function build(canvas, gl) {
-    const renderer = new T.WebGLRenderer({ canvas, context: gl, antialias: false });
+    const renderer = new T.WebGLRenderer({ canvas, context: gl, antialias: false, stencil: true });
     renderer.outputColorSpace = T.SRGBColorSpace;
     renderer.toneMapping = T.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.25;
@@ -863,6 +1136,15 @@ function build(canvas, gl) {
         glass: document.getElementById('monitor-glass'),
         ambientBase: sky.ambient, screenBase: 0.5,
         entrance: 1, lookT: 0, lookTarget: 0, px: 0, py: 0,
+        focusId: null, focusT: 0, focusTarget: 0, hover: null, pointer: null, hoverCheck: false,
+        targets: [],
+        panels: {
+            top: document.getElementById('focus-console-top'),
+            bottom: document.getElementById('focus-console-bottom'),
+            label: document.getElementById('focus-book-label')
+        },
+        back: document.getElementById('focus-back'),
+        rayA: new T.Vector3(), rayB: new T.Vector3(), rayD: new T.Vector3(),
         power: 1, powerTarget: 1, lights: 1, lightsTarget: 1, lamp: true,
         screenColor: new T.Color(0x050607), fanRate: 0.25, fx: {}, frame: 0, last: 0, raf: 0, dirty: true, still: false, ambient: false, carried: false,
         tmp: new T.Vector3(), target: new T.Vector3(), matrix: new T.Matrix4(),
@@ -888,8 +1170,10 @@ function build(canvas, gl) {
     }, 9000);
 
     // Pressing the room (anything outside the monitor) steps back to look at
-    // it. There a drag orbits, the wheel or a pinch zooms, and a plain press
-    // or any other key returns.
+    // it. There a drag orbits and the wheel or a pinch zooms. Pressing the
+    // monitor returns; the handheld, the books and the window come up close,
+    // and from there a press beside them or Escape steps back out.
+    S.back?.addEventListener('click', () => room3d.focus(null), { signal });
     const pointers = new Map();
     let drag = null;
     const spread = () => {
@@ -899,6 +1183,7 @@ function build(canvas, gl) {
     const capture = { signal, capture: true };
     window.addEventListener('pointerdown', (event) => {
         let opening = false;
+        if (event.target.closest?.('#room-focus')) return;
         if (!S.lookTarget) {
             if (event.target !== document.body && event.target !== root) return;
             if (!desktop.matches || event.button !== 0 || !room3d.look(true, { x: event.clientX, y: event.clientY })) return;
@@ -910,14 +1195,20 @@ function build(canvas, gl) {
     }, capture);
     window.addEventListener('pointermove', (event) => {
         const point = pointers.get(event.pointerId);
+        if (!pointers.size && event.pointerType === 'mouse' && S.lookTarget) {
+            S.pointer = { x: event.clientX, y: event.clientY };
+            S.hoverCheck = true;
+            if (!S.raf) S.raf = requestAnimationFrame(tick);
+        }
         if (!point || !S.lookTarget || !drag) return;
         const before = pointers.size === 2 ? spread() : 0;
         const dx = event.clientX - point.x, dy = event.clientY - point.y;
         point.x = event.clientX;
         point.y = event.clientY;
-        if (pointers.size === 2) return orbitBy(0, 0, before / spread());
+        if (pointers.size === 2) return S.focusTarget ? undefined : orbitBy(0, 0, before / spread());
         drag.moved += Math.abs(dx) + Math.abs(dy);
-        if (drag.moved < 5) return;
+        if (drag.moved < 5 || S.focusTarget) return;
+        setHover(null);
         root.dataset.roomLook = 'drag';
         orbitBy(-dx * 0.006, dy * 0.005);
     }, capture);
@@ -926,7 +1217,13 @@ function build(canvas, gl) {
         const pressed = drag && drag.moved < 5 && !drag.opening && event.type === 'pointerup';
         drag = null;
         if ('roomLook' in root.dataset) root.dataset.roomLook = '';
-        if (pressed) endLook();
+        if (!pressed || !S.lookTarget) return;
+        const hit = pick(event.clientX, event.clientY);
+        if (S.focusTarget) {
+            if (hit?.startsWith('book:')) openBook(hit);
+            else if (!hit) room3d.focus(null);
+        } else if (hit === 'monitor') endLook();
+        else if (hit) room3d.focus(hit);
     };
     window.addEventListener('pointerup', release, capture);
     window.addEventListener('pointercancel', release, capture);
@@ -937,6 +1234,7 @@ function build(canvas, gl) {
     window.addEventListener('wheel', (event) => {
         if (!S.lookTarget) return;
         event.preventDefault();
+        if (S.focusTarget) return;
         orbitBy(0, 0, Math.exp(clamp(event.deltaY, -120, 120) * 0.0015));
     }, { signal, capture: true, passive: false });
     const KEYS = {
@@ -945,11 +1243,14 @@ function build(canvas, gl) {
     };
     window.addEventListener('keydown', (event) => {
         if (!S.lookTarget) return;
-        const move = KEYS[event.key];
-        if (!move) return endLook();
+        const move = event.key === 'Escape' ? [] : !S.focusTarget && KEYS[event.key];
+        if (!move) return;
         event.preventDefault();
         event.stopPropagation();
-        orbitBy(...move);
+        // Escape steps back one level: close-up, room, reading.
+        if (move.length) orbitBy(...move);
+        else if (S.focusTarget) room3d.focus(null);
+        else endLook();
     }, capture);
 }
 
@@ -986,6 +1287,8 @@ export const room3d = {
                 const gl = canvas.getContext('webgl2', {
                     antialias: false,
                     alpha: true,
+                    // The outlines of the things that can be pressed are cut with it.
+                    stencil: true,
                     powerPreference: 'high-performance',
                     failIfMajorPerformanceCaveat: !force
                 });
@@ -1001,6 +1304,7 @@ export const room3d = {
                 root.style.setProperty('--room-sky', `linear-gradient(${S.parts.city.sky.top}, ${S.parts.city.sky.low} 62%)`);
                 root.dataset.room3d = 'on';
                 room3d.ready = true;
+                if (new URLSearchParams(location.search).get('debug') === '1') window.roomDebug = room3d;
                 return true;
             } catch (error) {
                 console.warn('3D room unavailable:', error.message);
@@ -1042,6 +1346,7 @@ export const room3d = {
         if (S.entrance < 1 && S.lookTarget) {
             S.lookT = S.lookTarget = 0;
             delete root.dataset.roomLook;
+            clearFocus();
         }
         placeCamera();
         invalidate();
@@ -1089,7 +1394,8 @@ export const room3d = {
         invalidate();
     },
 
-    // Step back to see the whole room and orbit it; a press or key returns.
+    // Step back to see the whole room and orbit it; pressing the monitor or
+    // Escape returns.
     // at: where the visitor pressed; the camera steps back toward the side
     // that shows that part of the room.
     look(on = !S?.lookTarget, at = null) {
@@ -1108,6 +1414,10 @@ export const room3d = {
                 }
             }
             root.dataset.roomLook = '';
+        } else {
+            S.focusTarget = 0;
+            delete root.dataset.roomFocus;
+            setHover(null);
         }
         invalidate();
         return true;
@@ -1115,6 +1425,36 @@ export const room3d = {
 
     get looking() {
         return !!S?.lookTarget;
+    },
+
+    // From the room view, bring the camera up close to 'console', 'books' or
+    // 'window'; null steps back to the room view.
+    focus(id) {
+        if (!S?.lookTarget || (id && !S.poses.focus[id])) return false;
+        if (id) {
+            S.focusId = id;
+            S.focusTarget = 1;
+            root.dataset.roomFocus = id;
+        } else {
+            S.focusTarget = 0;
+            delete root.dataset.roomFocus;
+        }
+        setHover(null);
+        invalidate();
+        return true;
+    },
+
+    get focused() {
+        return S?.focusTarget ? S.focusId : null;
+    },
+
+    // Where the front of a pressable thing is on screen (CSS px), for tests.
+    spot(id) {
+        const target = S?.targets.find((entry) => entry.id === id);
+        if (!target) return null;
+        const { min, max } = target;
+        const v = S.rayA.set((min[0] + max[0]) / 2, (min[1] + max[1]) / 2, max[2]).applyMatrix4(target.object.matrixWorld).project(S.camera);
+        return { x: (v.x * 0.5 + 0.5) * S.W, y: (0.5 - v.y * 0.5) * S.H };
     },
 
     // Frames ran slow: stop ambient motion.
@@ -1167,7 +1507,10 @@ export const room3d = {
         room3d.ready = false;
         delete root.dataset.room3d;
         delete root.dataset.roomLook;
+        delete root.dataset.roomFocus;
+        delete root.dataset.roomHover;
         if (!S) return;
+        for (const panel of Object.values(S.panels)) panel?.removeAttribute('style');
         cancelAnimationFrame(S.raf);
         clearInterval(S.cityTimer);
         S.events.abort();
