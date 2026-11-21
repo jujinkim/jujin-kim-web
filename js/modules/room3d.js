@@ -11,10 +11,10 @@
 // World units are metres. The origin is the viewport centre on the screen
 // plane, +y is up and +z points at the viewer.
 
-import { BOOK_LINKS } from '../constants.js?v=20261121.2';
-import { currentDaylight, onDaylight } from './daylight.js?v=20261121.2';
+import { BOOK_LINKS } from '../constants.js?v=20261121.3';
+import { currentDaylight, onDaylight } from './daylight.js?v=20261121.3';
 
-const VENDOR = '../vendor/three.min.js?v=20261121.2';
+const VENDOR = '../vendor/three.min.js?v=20261121.3';
 const OFF_KEY = 'room3d-off';
 const SCREEN_HEIGHT = 0.33;
 const CAMERA_DISTANCE = 1.15; // in viewport heights
@@ -721,6 +721,13 @@ function setHover(id) {
     if (!S.raf) S.raf = requestAnimationFrame(tick);
 }
 
+function setOut(on) {
+    if (S.out === on) return;
+    S.out = on;
+    if (on) root.dataset.roomOut = '';
+    else delete root.dataset.roomOut;
+}
+
 function openBook(id) {
     const { url } = BOOK_LINKS[+id.slice(5)];
     if (url.startsWith('mailto:')) location.href = url;
@@ -732,6 +739,7 @@ function clearFocus() {
     S.focusId = null;
     delete root.dataset.roomFocus;
     setHover(null);
+    setOut(false);
 }
 
 // ---------- layout: fit the model to the DOM ----------
@@ -1041,10 +1049,11 @@ function tick(now) {
 
     // What the pointer is over, checked when it or the camera has moved.
     if (S.pointer && (S.hoverCheck || busy)) {
-        S.hoverCheck = false;
+        S.hoverCheck = busy;
         const hit = S.lookTarget ? pick(S.pointer.x, S.pointer.y) : null;
         const quiet = (S.focusTarget && !hit?.startsWith('book:')) || S.targets.find((target) => target.id === hit)?.quiet;
         setHover(quiet ? null : hit);
+        setOut(!!(S.lookTarget && S.focusTarget && !hit));
     }
     // Outlines: they fade in and out faintly, and stay lit under the pointer.
     const roomLevel = ease(S.lookT) * (1 - ease(S.focusT));
@@ -1202,7 +1211,7 @@ function build(canvas, gl) {
         glass: document.getElementById('monitor-glass'),
         ambientBase: 1, screenBase: 0.5, skyTint: new T.Color(), skyBase: new T.Color(0x7f93bd),
         entrance: 1, lookT: 0, lookTarget: 0, px: 0, py: 0,
-        focusId: null, focusT: 0, focusTarget: 0, hover: null, pointer: null, hoverCheck: false,
+        focusId: null, focusT: 0, focusTarget: 0, hover: null, out: false, pointer: null, hoverCheck: false,
         targets: [], lcdShown: {},
         panels: {
             top: document.getElementById('focus-console-top'),
@@ -1264,10 +1273,12 @@ function build(canvas, gl) {
     }, capture);
     window.addEventListener('pointermove', (event) => {
         const point = pointers.get(event.pointerId);
-        if (!pointers.size && event.pointerType === 'mouse' && S.lookTarget) {
+        if (!pointers.size && event.pointerType === 'mouse') {
             S.pointer = { x: event.clientX, y: event.clientY };
-            S.hoverCheck = true;
-            if (!S.raf) S.raf = requestAnimationFrame(tick);
+            if (S.lookTarget) {
+                S.hoverCheck = true;
+                if (!S.raf) S.raf = requestAnimationFrame(tick);
+            }
         }
         if (!point || !S.lookTarget || !drag) return;
         const before = pointers.size === 2 ? spread() : 0;
@@ -1486,6 +1497,7 @@ export const room3d = {
             S.focusTarget = 0;
             delete root.dataset.roomFocus;
             setHover(null);
+            setOut(false);
         }
         invalidate();
         return true;
@@ -1508,6 +1520,7 @@ export const room3d = {
             delete root.dataset.roomFocus;
         }
         setHover(null);
+        setOut(false);
         invalidate();
         return true;
     },
@@ -1577,6 +1590,7 @@ export const room3d = {
         delete root.dataset.roomLook;
         delete root.dataset.roomFocus;
         delete root.dataset.roomHover;
+        delete root.dataset.roomOut;
         if (!S) return;
         for (const panel of Object.values(S.panels)) panel?.removeAttribute('style');
         cancelAnimationFrame(S.raf);

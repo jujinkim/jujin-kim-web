@@ -1,10 +1,10 @@
-import { room3d } from './room3d.js?v=20261121.2';
-import { CONTACT_EMAIL } from '../constants.js?v=20261121.2';
-import { toggleSwarm, toggleSound, swarmGeneration, resetSwarm, swarmPulse } from './animations.js?v=20261121.2';
-import { navigateToSection, sectionIds, activeSection } from './navigation.js?v=20261121.2';
-import { setLamp, roomPulse } from './room-life.js?v=20261121.2';
-import { PHASES, currentDaylight, kstClock, kstToday, phaseTime, setSkyTime, sunEvents } from './daylight.js?v=20261121.2';
-import { setTheme } from './theme.js?v=20261121.2';
+import { room3d } from './room3d.js?v=20261121.3';
+import { CONTACT_EMAIL } from '../constants.js?v=20261121.3';
+import { toggleSwarm, toggleSound, swarmGeneration, resetSwarm, swarmPulse } from './animations.js?v=20261121.3';
+import { navigateToSection, sectionIds, activeSection } from './navigation.js?v=20261121.3';
+import { setLamp, roomPulse } from './room-life.js?v=20261121.3';
+import { PHASES, currentDaylight, kstClock, kstToday, phaseTime, setSkyTime, sunEvents } from './daylight.js?v=20261121.3';
+import { setTheme } from './theme.js?v=20261121.3';
 
 let currentInput = '';
 let commandHistory = [];

@@ -1,13 +1,13 @@
-import { initASCIITitle } from './modules/ascii-art.js?v=20261121.2';
-import { initNavigation } from './modules/navigation.js?v=20261121.2';
-import { initAnimations } from './modules/animations.js?v=20261121.2';
-import { initTheme, setTheme } from './modules/theme.js?v=20261121.2';
-import { initContent } from './modules/content.js?v=20261121.2';
-import { initProfilePicture } from './modules/profile-ascii.js?v=20261121.2';
-import { initTerminalInput } from './modules/terminal-input.js?v=20261121.2';
-import { initCRTEffects } from './modules/crt-effects.js?v=20261121.2';
-import { initRoomLife } from './modules/room-life.js?v=20261121.2';
-import { initSectionReveal } from './modules/section-reveal.js?v=20261121.2';
+import { initASCIITitle } from './modules/ascii-art.js?v=20261121.3';
+import { initNavigation } from './modules/navigation.js?v=20261121.3';
+import { initAnimations } from './modules/animations.js?v=20261121.3';
+import { initTheme, setTheme } from './modules/theme.js?v=20261121.3';
+import { initContent } from './modules/content.js?v=20261121.3';
+import { initProfilePicture } from './modules/profile-ascii.js?v=20261121.3';
+import { initTerminalInput } from './modules/terminal-input.js?v=20261121.3';
+import { initCRTEffects } from './modules/crt-effects.js?v=20261121.3';
+import { initRoomLife } from './modules/room-life.js?v=20261121.3';
+import { initSectionReveal } from './modules/section-reveal.js?v=20261121.3';
 
 // Make functions globally available
 window.setTheme = setTheme;

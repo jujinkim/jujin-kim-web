@@ -201,16 +201,22 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
         const book = await spot(page, 'book:0');
         await page.mouse.move(book.x, book.y);
         await page.waitForFunction(() => document.documentElement.dataset.roomHover === 'book', null, { timeout: 5000 });
+        assert.equal(await cursor(), 'pointer');
         assert.equal(await page.textContent('#focus-book-label'), 'Blog');
         assert.equal(await page.getAttribute('#focus-books a', 'href'), 'https://blog.jujin.kim');
+        assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('focus-books')).cursor), 'default');
         const popup = page.waitForEvent('popup');
         await page.mouse.click(book.x, book.y);
         await (await popup).close();
         assert.equal((await data()).roomFocus, 'books', 'opening a book stays at the shelf');
+        // Hovering beside the shelf shows zoom-out; over the shelf itself shows default.
+        await page.mouse.move(40, 860);
+        await page.waitForFunction(() => 'roomOut' in document.documentElement.dataset, null, { timeout: 5000 });
+        assert.equal(await cursor(), 'zoom-out');
         // Escape steps back one level at a time.
         await page.keyboard.press('Escape');
         await settled();
-        assert.ok(!('roomFocus' in (await data())) && 'roomLook' in (await data()));
+        assert.ok(!('roomFocus' in (await data())) && !('roomOut' in (await data())) && 'roomLook' in (await data()));
 
         // The drink is pressable too, without an outline or a hand cursor.
         const drink = await spot(page, 'drink');
@@ -221,6 +227,13 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
         assert.equal((await data()).roomFocus, 'drink');
         await settled();
         assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('focus-drink')).visibility), 'visible');
+        const drinkClose = await spot(page, 'drink');
+        await page.mouse.move(drinkClose.x, drinkClose.y);
+        await page.waitForFunction(() => !('roomOut' in document.documentElement.dataset), null, { timeout: 5000 });
+        assert.equal(await cursor(), 'default');
+        await page.mouse.move(40, 860);
+        await page.waitForFunction(() => 'roomOut' in document.documentElement.dataset, null, { timeout: 5000 });
+        assert.equal(await cursor(), 'zoom-out');
         await page.keyboard.press('Escape');
         await settled();
 
@@ -238,10 +251,17 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
             assert.equal(panel.display, 'block');
             assert.ok(panel.transform.startsWith('matrix3d') && panel.inside, id);
         }
-        // Pressing beside it steps back to the room.
+        const handheldClose = await spot(page, 'console');
+        await page.mouse.move(handheldClose.x, handheldClose.y);
+        await page.waitForFunction(() => !('roomOut' in document.documentElement.dataset), null, { timeout: 5000 });
+        assert.equal(await cursor(), 'default');
+        // Pressing beside it shows zoom-out and steps back to the room.
+        await page.mouse.move(40, 860);
+        await page.waitForFunction(() => 'roomOut' in document.documentElement.dataset, null, { timeout: 5000 });
+        assert.equal(await cursor(), 'zoom-out');
         await page.mouse.click(40, 860);
         await settled();
-        assert.ok(!('roomFocus' in (await data())) && 'roomLook' in (await data()));
+        assert.ok(!('roomFocus' in (await data())) && !('roomOut' in (await data())) && 'roomLook' in (await data()));
         assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('focus-console-top')).display), 'none');
 
         // Phone: the home screen is laid on it and its apps are links.
@@ -263,6 +283,13 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
         assert.ok(home.transform.startsWith('matrix3d') && home.inside);
         assert.deepEqual(home.links, ['https://www.instagram.com/lbldsk/', 'https://www.threads.com/@lbldsk', 'https://blog.naver.com/ciiwol']);
         assert.equal(home.hit, home.links[0], 'an app can be pressed');
+        const phoneClose = await spot(page, 'phone');
+        await page.mouse.move(phoneClose.x, phoneClose.y);
+        await page.waitForFunction(() => !('roomOut' in document.documentElement.dataset), null, { timeout: 5000 });
+        assert.equal(await cursor(), 'default');
+        await page.mouse.move(40, 860);
+        await page.waitForFunction(() => 'roomOut' in document.documentElement.dataset, null, { timeout: 5000 });
+        assert.equal(await cursor(), 'zoom-out');
         await page.keyboard.press('Escape');
         await settled();
         assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('focus-phone')).display), 'none');
@@ -272,6 +299,9 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
         await page.mouse.click(win.x, win.y);
         assert.equal((await data()).roomFocus, 'window');
         await settled();
+        await page.mouse.move(720, 400);
+        await settled(200);
+        assert.equal(await cursor(), 'default');
         await page.mouse.click(720, 400);
         await settled(300);
         assert.equal((await data()).roomFocus, 'window');

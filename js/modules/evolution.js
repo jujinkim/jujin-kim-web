@@ -1,4 +1,4 @@
-import { GENOMES, GENE_COUNT, GENES, SEED_GENOME, STORAGE_KEY } from './config.js?v=20261121.2';
+import { GENOMES, GENE_COUNT, GENES, SEED_GENOME, STORAGE_KEY } from './config.js?v=20261121.3';
 
 // Pure genetic algorithm over GENOMES genomes of GENE_COUNT normalized genes.
 // No DOM or rendering here, so it runs under node for tests.
