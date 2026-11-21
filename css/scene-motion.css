@@ -352,6 +352,114 @@ html[data-room-focus] #room-hint .hint-focus.hint-mouse {
     line-height: 1.4;
     will-change: transform;
 }
+/* The phone's home screen. */
+#focus-phone {
+    padding: 0;
+    overflow: hidden;
+    border-radius: 22px;
+    background:
+        radial-gradient(120% 55% at 50% 108%, #ffb37a 0%, rgba(255, 140, 120, 0.75) 30%, transparent 62%),
+        radial-gradient(90% 50% at 8% 60%, rgba(214, 92, 160, 0.8), transparent 70%),
+        radial-gradient(80% 45% at 96% 38%, rgba(88, 110, 230, 0.75), transparent 72%),
+        linear-gradient(180deg, #0c1030 0%, #2a1f5c 42%, #6b2f77 72%, #d2607a 100%);
+    color: #fff;
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 12px;
+    line-height: 1.2;
+}
+.phone-status {
+    display: flex;
+    position: absolute;
+    inset: 10px 20px auto;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+}
+.phone-lens {
+    position: absolute;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    margin-left: -5px;
+    border-radius: 50%;
+    background: #000;
+}
+.phone-battery {
+    box-sizing: border-box;
+    width: 22px;
+    height: 11px;
+    padding: 1px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 3px;
+}
+.phone-battery i {
+    display: block;
+    width: 72%;
+    height: 100%;
+    border-radius: 1px;
+    background: #fff;
+}
+.phone-clock {
+    position: absolute;
+    inset: 96px 0 auto;
+    text-align: center;
+    font-size: 62px;
+    font-weight: 200;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 14px rgba(10, 8, 40, 0.35);
+}
+.phone-clock small {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    opacity: 0.8;
+}
+.phone-apps {
+    display: flex;
+    position: absolute;
+    inset: auto 14px 34px;
+    justify-content: space-around;
+    padding: 14px 6px 10px;
+    border-radius: 26px;
+    background: rgba(255, 255, 255, 0.16);
+}
+.phone-apps a {
+    display: grid;
+    gap: 6px;
+    justify-items: center;
+    width: 68px;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+html[data-room-focus='phone'] .phone-apps a {
+    pointer-events: auto;
+}
+.phone-apps svg {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    font-family: inherit;
+    transition: transform 0.15s;
+}
+.phone-apps a:hover svg,
+.phone-apps a:focus-visible svg {
+    transform: scale(1.08);
+}
+.phone-bar {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    width: 96px;
+    height: 4px;
+    margin-left: -48px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.75);
+}
 #focus-back {
     position: absolute;
     left: max(18px, env(safe-area-inset-left));

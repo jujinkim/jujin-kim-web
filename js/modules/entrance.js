@@ -3,7 +3,7 @@
 // room lights come up. With the CSS room: power on and boot log in a wide shot,
 // then the camera moves in. Any key, press or wheel skips it.
 
-import { room3d } from './room3d.js?v=20261121.1';
+import { room3d } from './room3d.js?v=20261121.2';
 
 const BOOT_AT = 520;
 const LINE_EVERY = 105;

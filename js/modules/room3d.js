@@ -5,15 +5,16 @@
 // follows the camera through a CSS matrix3d.
 //
 // In the look-around view some things can be pressed: the monitor returns to
-// reading, the handheld, the books and the window bring the camera up close.
+// reading, the handheld, the phone, the books and the window bring the camera
+// up close.
 //
 // World units are metres. The origin is the viewport centre on the screen
 // plane, +y is up and +z points at the viewer.
 
-import { BOOK_LINKS } from '../constants.js?v=20261121.1';
-import { currentDaylight, onDaylight } from './daylight.js?v=20261121.1';
+import { BOOK_LINKS } from '../constants.js?v=20261121.2';
+import { currentDaylight, onDaylight } from './daylight.js?v=20261121.2';
 
-const VENDOR = '../vendor/three.min.js?v=20261121.1';
+const VENDOR = '../vendor/three.min.js?v=20261121.2';
 const OFF_KEY = 'room3d-off';
 const SCREEN_HEIGHT = 0.33;
 const CAMERA_DISTANCE = 1.15; // in viewport heights
@@ -30,11 +31,13 @@ const WINDOW = { x0: -1.6, x1: -0.55, y0: 0.3, y1: 1.3, z: -0.85 };
 const ORBIT = { yaw: 1.1, pitchMin: 0.03, pitchMax: 1.0, distMin: 1.5, distMax: 5.5 };
 // Outline colour of the things that can be pressed.
 const GLOW = [0.3, 1, 0.55];
-// The handheld's two screens as [object, top left, top right, bottom left]
-// in that object's space, and the size in CSS px of the DOM panel laid on each.
+// Screens that light up in a close-up, as [close-up, object, top left, top
+// right, bottom left] in that object's space, and the size in CSS px of the
+// DOM panel laid on each. In the room they are off.
 const LCD = {
-    top: ['lid', [-0.031, -0.0117, 0.06], [0.031, -0.0117, 0.06], [-0.031, -0.0117, 0.012], 248, 192],
-    bottom: ['handheld', [-0.031, 0.0127, -0.024], [0.031, 0.0127, -0.024], [-0.031, 0.0127, 0.022], 248, 184]
+    top: ['console', 'lid', [-0.031, -0.0117, 0.06], [0.031, -0.0117, 0.06], [-0.031, -0.0117, 0.012], 248, 192],
+    bottom: ['console', 'handheld', [-0.031, 0.0127, -0.024], [0.031, 0.0127, -0.024], [-0.031, 0.0127, 0.022], 248, 184],
+    phone: ['phone', 'phone', [-0.034, 0.0082, -0.073], [0.034, 0.0082, -0.073], [-0.034, 0.0082, 0.073], 272, 584]
 };
 
 const root = document.documentElement;
@@ -347,7 +350,7 @@ function buildRoom(scene) {
     handheld.rotation.y = -0.45;
     room.add(handheld);
     const shellBlue = std(0x8fd0f0, 0.35);
-    const lcd = glowMaterial(0.5, 0.75, 0.9);
+    const lcd = std(0x0d1013, 0.25);
     const inner = std(0xd8eef8, 0.5);
     span(handheld, shellBlue, -0.066, 0.066, 0, 0.011, -0.037, 0.037);
     span(handheld, inner, -0.062, 0.062, 0.011, 0.0118, -0.034, 0.034, false);
@@ -364,6 +367,18 @@ function buildRoom(scene) {
     span(lid, inner, -0.062, 0.062, -0.0108, -0.01, 0.003, 0.071, false);
     span(lid, lcd, -0.031, 0.031, -0.0114, -0.0108, 0.012, 0.06, false);
     Object.assign(parts, { handheld, lid });
+
+    // A black slab phone lying left of the keyboard, screen up and off.
+    const phone = new T.Group();
+    phone.position.set(-0.32, 0.003, 0.275);
+    phone.rotation.y = 0.18;
+    room.add(phone);
+    const phoneBlack = std(0x0b0c0e, 0.35, 0.4);
+    span(phone, phoneBlack, -0.036, 0.036, 0, 0.0075, -0.075, 0.075);
+    span(phone, std(0x030405, 0.12), -0.034, 0.034, 0.0075, 0.0079, -0.073, 0.073, false);
+    span(phone, phoneBlack, 0.036, 0.0368, 0.003, 0.0055, -0.032, -0.012, false);
+    span(phone, phoneBlack, 0.036, 0.0368, 0.003, 0.0055, -0.004, 0.008, false);
+    parts.phone = phone;
 
     // Lamp: base, two arms, shade, bulb and the light it throws on the desk.
     const lamp = new T.Group();
@@ -645,6 +660,7 @@ function buildTargets(m) {
     addTarget('window', windowFrame, room, [WINDOW.x0 - 0.03, WINDOW.y0 - 0.03, WINDOW.z - 0.1], [WINDOW.x1 + 0.03, WINDOW.y1 + 0.03, WINDOW.z + 0.06], { thick: 0.009, bit: 2 });
     addTarget('console', meshes(handheld), handheld, [-0.075, 0, -0.078], [0.075, 0.085, 0.045], { thick: 0.004, bit: 4 });
     addTarget('books', meshes(shelf), shelf, [-0.35, -0.025, 0], [0.35, 0.215, 0.165], { bit: 8 });
+    addTarget('phone', meshes(S.parts.phone), S.parts.phone, [-0.04, 0, -0.079], [0.04, 0.012, 0.079], { thick: 0.003, bit: 16 });
     // The bottle and the glass: not outlined and no hand cursor, for whoever tries.
     addTarget('drink', [], room, [-0.74, 0, 0.02], [-0.52, 0.25, 0.24], { quiet: true });
     // A book can be pressed once the camera is at the shelf, if it has a link.
@@ -829,6 +845,7 @@ function layout() {
         window: aimed(pane, pane.clone().add(new T.Vector3(0, 0.36, -1))),
         books: closeUp(shelf, [0, 0.09, 0.08], [0, 0.4, 1], 0.7, 0.3, 0.62),
         console: closeUp(S.parts.handheld, [0, 0.03, -0.015], [0, 0.75, 1], 0.15, 0.14, 0.6),
+        phone: closeUp(S.parts.phone, [0, 0.008, 0], [0, 1, 0.3], 0.085, 0.16, 0.72),
         drink: closeUp(room, [-0.63, 0.11, 0.13], [0.25, 0.35, 1], 0.3, 0.27, 0.5)
     };
 
@@ -925,27 +942,26 @@ function cssMatrix(local, left, top) {
     return `matrix3d(${out.map((v) => +(v * scale).toFixed(7)).join(',')})`;
 }
 
-// DOM that belongs to a close-up: a panel on each of the handheld's screens
-// and the title over the book under the pointer.
+// DOM that belongs to a close-up: a panel on each screen of the handheld or
+// the phone, and the title over the book under the pointer.
 function carryPanels() {
     const level = S.focusId ? clamp((ease(S.focusT) - 0.6) / 0.4, 0, 1) * ease(S.lookT) : 0;
-    const lcd = S.focusId === 'console' ? level : 0;
-    if (lcd || S.lcdShown)
-        for (const [name, [key, a, b, c, w, h]] of Object.entries(LCD)) {
-            const panel = S.panels[name];
-            if (!panel) continue;
-            if (!lcd) {
-                panel.removeAttribute('style');
-                continue;
-            }
-            const world = S.parts[key].matrixWorld;
-            const o = S.rayA.set(...a).applyMatrix4(world);
-            const x = S.rayB.set(...b).applyMatrix4(world).sub(o).divideScalar(w);
-            const y = S.rayD.set(...c).applyMatrix4(world).sub(o).divideScalar(h);
-            const matrix = cssMatrix(S.matrix.set(x.x, y.x, 0, o.x, x.y, y.y, 0, o.y, x.z, y.z, 1, o.z, 0, 0, 0, 1), 0, 0);
-            panel.style.cssText = `display:block;width:${w}px;height:${h}px;opacity:${lcd.toFixed(3)};transform:${matrix}`;
+    for (const [name, [focus, key, a, b, c, w, h]] of Object.entries(LCD)) {
+        const panel = S.panels[name];
+        const lcd = S.focusId === focus ? level : 0;
+        if (!panel || (!lcd && !S.lcdShown[name])) continue;
+        S.lcdShown[name] = lcd > 0;
+        if (!lcd) {
+            panel.removeAttribute('style');
+            continue;
         }
-    S.lcdShown = lcd > 0;
+        const world = S.parts[key].matrixWorld;
+        const o = S.rayA.set(...a).applyMatrix4(world);
+        const x = S.rayB.set(...b).applyMatrix4(world).sub(o).divideScalar(w);
+        const y = S.rayD.set(...c).applyMatrix4(world).sub(o).divideScalar(h);
+        const matrix = cssMatrix(S.matrix.set(x.x, y.x, 0, o.x, x.y, y.y, 0, o.y, x.z, y.z, 1, o.z, 0, 0, 0, 1), 0, 0);
+        panel.style.cssText = `display:block;width:${w}px;height:${h}px;opacity:${lcd.toFixed(3)};transform:${matrix}`;
+    }
 
     const label = S.panels.label;
     const book = level && S.hover?.startsWith('book:') ? S.parts.books[+S.hover.slice(5)] : null;
@@ -1187,10 +1203,11 @@ function build(canvas, gl) {
         ambientBase: 1, screenBase: 0.5, skyTint: new T.Color(), skyBase: new T.Color(0x7f93bd),
         entrance: 1, lookT: 0, lookTarget: 0, px: 0, py: 0,
         focusId: null, focusT: 0, focusTarget: 0, hover: null, pointer: null, hoverCheck: false,
-        targets: [],
+        targets: [], lcdShown: {},
         panels: {
             top: document.getElementById('focus-console-top'),
             bottom: document.getElementById('focus-console-bottom'),
+            phone: document.getElementById('focus-phone'),
             label: document.getElementById('focus-book-label')
         },
         back: document.getElementById('focus-back'),
@@ -1478,8 +1495,8 @@ export const room3d = {
         return !!S?.lookTarget;
     },
 
-    // From the room view, bring the camera up close to 'console', 'books' or
-    // 'window'; null steps back to the room view.
+    // From the room view, bring the camera up close to 'console', 'phone',
+    // 'books' or 'window'; null steps back to the room view.
     focus(id) {
         if (!S?.lookTarget || (id && !S.poses.focus[id])) return false;
         if (id) {

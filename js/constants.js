@@ -11,5 +11,12 @@ export const BOOK_LINKS = [
     { title: 'Email', url: `mailto:${CONTACT_EMAIL}` }
 ];
 
+// The apps on the home screen of the phone on the desk in the 3D room.
+export const PHONE_APPS = [
+    { icon: 'instagram', title: 'Instagram', url: 'https://www.instagram.com/lbldsk/' },
+    { icon: 'threads', title: 'Threads', url: 'https://www.threads.com/@lbldsk' },
+    { icon: 'naverblog', title: 'Blog', url: 'https://blog.naver.com/ciiwol' }
+];
+
 // Avatar for https://gravatar.com/ciiwol.
 export const PROFILE_IMAGE_URL = 'https://0.gravatar.com/avatar/8c31344af0a708eccaacf885250fe9af40462e5cd8267ccde77bb948d69d6534?s=512&d=404';

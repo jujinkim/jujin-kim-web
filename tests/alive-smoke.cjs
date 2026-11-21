@@ -175,7 +175,7 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
         await page.context().close();
     });
 
-    await check('3D room: the window, the handheld and the books come up close', async () => {
+    await check('3D room: the window, the handheld, the phone and the books come up close', async () => {
         const page = await open(browser, { path: FORCED });
         await room3dOn(page);
         const data = () => page.evaluate(() => ({ ...document.documentElement.dataset }));
@@ -243,6 +243,29 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
         await settled();
         assert.ok(!('roomFocus' in (await data())) && 'roomLook' in (await data()));
         assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('focus-console-top')).display), 'none');
+
+        // Phone: the home screen is laid on it and its apps are links.
+        const phone = await spot(page, 'phone');
+        await page.mouse.click(phone.x, phone.y);
+        assert.equal((await data()).roomFocus, 'phone');
+        await settled();
+        const home = await page.evaluate(() => {
+            const el = document.getElementById('focus-phone'), style = getComputedStyle(el), box = el.getBoundingClientRect();
+            const links = [...el.querySelectorAll('.phone-apps a')];
+            const first = links[0].getBoundingClientRect();
+            return {
+                display: style.display, transform: style.transform, links: links.map((a) => a.href),
+                inside: box.left >= 0 && box.right <= innerWidth && box.top >= 0 && box.bottom <= innerHeight,
+                hit: document.elementFromPoint(first.left + first.width / 2, first.top + first.height / 2)?.closest('a')?.href
+            };
+        });
+        assert.equal(home.display, 'block');
+        assert.ok(home.transform.startsWith('matrix3d') && home.inside);
+        assert.deepEqual(home.links, ['https://www.instagram.com/lbldsk/', 'https://www.threads.com/@lbldsk', 'https://blog.naver.com/ciiwol']);
+        assert.equal(home.hit, home.links[0], 'an app can be pressed');
+        await page.keyboard.press('Escape');
+        await settled();
+        assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('focus-phone')).display), 'none');
 
         // Window: the swarm fills the view and a press inside it stays there.
         const win = await spot(page, 'window');

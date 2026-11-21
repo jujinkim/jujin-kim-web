@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL, BOOK_LINKS } from '../constants.js?v=20261121.1';
+import { CONTACT_EMAIL, BOOK_LINKS, PHONE_APPS } from '../constants.js?v=20261121.2';
 
 function calculateAge() {
     const birthDate = new Date(1992, 9, 20); // October 20, 1992 (month is 0-indexed)
@@ -59,10 +59,37 @@ export function initContent() {
 // are listed here so they can be reached without pressing a book.
 function loadRoomFocus() {
     const books = document.getElementById('focus-books');
-    if (!books) return;
-    books.innerHTML = BOOK_LINKS.map(
-        ({ title, url }) => `<a href="${url}"${url.startsWith('mailto:') ? '' : ' target="_blank" rel="noopener noreferrer"'}>${title}</a>`
-    ).join('');
+    if (books)
+        books.innerHTML = BOOK_LINKS.map(
+            ({ title, url }) => `<a href="${url}"${url.startsWith('mailto:') ? '' : ' target="_blank" rel="noopener noreferrer"'}>${title}</a>`
+        ).join('');
+    loadPhoneHome();
+}
+
+const APP_ICONS = {
+    instagram: `<defs><radialGradient id="app-instagram" cx="30%" cy="107%" r="150%"><stop offset="0.05" stop-color="#fdf497"/><stop offset="0.45" stop-color="#fd5949"/><stop offset="0.6" stop-color="#d6249f"/><stop offset="0.9" stop-color="#285aeb"/></radialGradient></defs><rect width="56" height="56" rx="14" fill="url(#app-instagram)"/><rect x="14" y="14" width="28" height="28" rx="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="28" cy="28" r="6.5" fill="none" stroke="#fff" stroke-width="3"/><circle cx="36" cy="20" r="1.8" fill="#fff"/>`,
+    threads: `<rect width="56" height="56" rx="14" fill="#0a0a0a"/><text x="28" y="38" text-anchor="middle" font-size="30" font-weight="700" fill="#fff">@</text>`,
+    naverblog: `<rect width="56" height="56" rx="14" fill="#03c75a"/><path d="M13 14h30a4 4 0 0 1 4 4v15a4 4 0 0 1-4 4H32l-4 5-4-5H13a4 4 0 0 1-4-4V18a4 4 0 0 1 4-4z" fill="#fff"/><text x="28" y="30" text-anchor="middle" font-size="13" font-weight="800" fill="#03c75a">blog</text>`
+};
+
+// The home screen of the phone on the desk: the clock in Suwon and the apps.
+function loadPhoneHome() {
+    const phone = document.getElementById('focus-phone');
+    if (!phone) return;
+    phone.innerHTML = `
+        <div class="phone-status"><span class="phone-time"></span><i class="phone-lens"></i><span class="phone-battery"><i></i></span></div>
+        <div class="phone-clock"><span class="phone-time"></span><small>Suwon</small></div>
+        <nav class="phone-apps" aria-label="Apps on the phone">${PHONE_APPS.map(
+            ({ icon, title, url }) => `<a href="${url}" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 56 56" aria-hidden="true">${APP_ICONS[icon]}</svg><span>${title}</span></a>`
+        ).join('')}</nav>
+        <i class="phone-bar"></i>`;
+    const clock = () => phone.querySelectorAll('.phone-time').forEach((el) => (el.textContent = getKstTime()));
+    clock();
+    // The screen wakes when the camera comes up to it.
+    new MutationObserver(() => document.documentElement.dataset.roomFocus === 'phone' && clock()).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-room-focus']
+    });
 }
 
 function getKstTime() {

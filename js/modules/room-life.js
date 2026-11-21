@@ -1,6 +1,6 @@
-import { onSwarm, swarmEnergy } from './animations.js?v=20261121.1';
-import { room3d } from './room3d.js?v=20261121.1';
-import { currentDaylight } from './daylight.js?v=20261121.1';
+import { onSwarm, swarmEnergy } from './animations.js?v=20261121.2';
+import { room3d } from './room3d.js?v=20261121.2';
+import { currentDaylight } from './daylight.js?v=20261121.2';
 
 // Ties the room's objects to real signals: the swarm's generations and energy,
 // terminal commands, section changes and the hour in Suwon (daylight.js). Nothing here

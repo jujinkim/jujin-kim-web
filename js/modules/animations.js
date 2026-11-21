@@ -1,6 +1,6 @@
-import { createWorld } from './world.js?v=20261121.1';
-import { createAudio } from './audio.js?v=20261121.1';
-import { room3d } from './room3d.js?v=20261121.1';
+import { createWorld } from './world.js?v=20261121.2';
+import { createAudio } from './audio.js?v=20261121.2';
+import { room3d } from './room3d.js?v=20261121.2';
 
 // The background of the terminal screen: an evolving particle swarm drawn on
 // the #starfield canvas. It follows the pointer, evolves by a genetic
