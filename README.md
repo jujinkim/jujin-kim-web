@@ -71,7 +71,7 @@ git diff --check
 
 The bezel uses a solid green body with nested outlines, corner seams, dark vents, and a separate dark control strip around an unpainted center. The stand, round adjustment knobs, rocker, and LED share the same three-color palette, with no simulated bevels or material shading. The room and case geometry use CSS. At viewport sizes of at least 1000×600, mouse movement shifts and tilts the monitor and moves the room in layers. Reduced-motion settings and sustained slow frames restore the straight-on view. Existing profile/title assets and screen effects remain. Compact layouts hide the room and retain thin CSS bezels. Web 1.0 and print hide the room, decorative frame, and stand. No settings or public JavaScript interfaces were added.
 
-Local entrypoints, module imports, fonts, and favicons use `v=20261120.13`. Bump the release key together for runtime releases.
+Local entrypoints, module imports, fonts, and favicons use `v=20261121.1`. Bump the release key together for runtime releases.
 
 ## Author
 
@@ -86,7 +86,7 @@ The terminal screen's background (`#starfield`) is a particle swarm drawn with h
 ## Entrance, living room, terminal presentation
 
 - **Entrance**: on the first visit in a tab the room is dark and the monitor small. It powers on, prints a boot log of real values (display, WebGL2, storage, the saved swarm generation), then the camera moves in. Any input skips it; `reboot` in the terminal replays it.
-- **Room**: the rack meter shows the swarm's fitness per lineage, the fans follow pointer energy, drive LEDs blink on generations, commands and section changes, the skyline's lit windows follow the visitor's clock, and `lamp on|off` switches the desk lamp.
+- **Room**: the rack meter shows the swarm's fitness per lineage, the fans follow pointer energy, drive LEDs blink on generations, commands and section changes, the sky, the window light and the skyline's lit windows follow the real sun over Suwon (`sky` shows or holds the hour), and `lamp on|off` switches the desk lamp, which starts off.
 - **Terminal**: changing section types a command at the prompt and prints the section. New commands: `ls`, `cd`/`cat`/`open <section>`, `lamp`, `pulse`, `theme`, `reboot`.
 - `tests/alive-smoke.cjs` covers these in flat display mode.
 

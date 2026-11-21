@@ -1,9 +1,10 @@
-import { room3d } from './room3d.js?v=20261120.13';
-import { CONTACT_EMAIL } from '../constants.js?v=20261120.13';
-import { toggleSwarm, toggleSound, swarmGeneration, resetSwarm, swarmPulse } from './animations.js?v=20261120.13';
-import { navigateToSection, sectionIds, activeSection } from './navigation.js?v=20261120.13';
-import { setLamp, roomPulse } from './room-life.js?v=20261120.13';
-import { setTheme } from './theme.js?v=20261120.13';
+import { room3d } from './room3d.js?v=20261121.1';
+import { CONTACT_EMAIL } from '../constants.js?v=20261121.1';
+import { toggleSwarm, toggleSound, swarmGeneration, resetSwarm, swarmPulse } from './animations.js?v=20261121.1';
+import { navigateToSection, sectionIds, activeSection } from './navigation.js?v=20261121.1';
+import { setLamp, roomPulse } from './room-life.js?v=20261121.1';
+import { PHASES, currentDaylight, kstClock, kstToday, phaseTime, setSkyTime, sunEvents } from './daylight.js?v=20261121.1';
+import { setTheme } from './theme.js?v=20261121.1';
 
 let currentInput = '';
 let commandHistory = [];
@@ -89,6 +90,17 @@ registerCommand('date', 'Show current date and time', () => new Date().toString(
 registerCommand('lamp', 'Desk lamp: lamp [on|off]', (args) => {
     const on = setLamp(args[0] === 'on' ? true : args[0] === 'off' ? false : undefined);
     return `Lamp ${on ? 'on' : 'off'}`;
+});
+registerCommand('sky', `Sky over Suwon: sky [HH:MM|${PHASES.join('|')}|now]`, (args) => {
+    const arg = (args[0] || '').toLowerCase();
+    const clock = /^(\d{1,2}):(\d{2})$/.exec(arg);
+    if (clock && +clock[1] < 24 && +clock[2] < 60) setSkyTime(kstToday(+clock[1], +clock[2]));
+    else if (PHASES.includes(arg)) setSkyTime(phaseTime(arg, Date.now()));
+    else if (arg === 'now') setSkyTime(null);
+    else if (arg) return `Usage: sky [HH:MM|${PHASES.join('|')}|now]`;
+    const day = currentDaylight();
+    const events = sunEvents(day.ms);
+    return `Suwon ${kstClock(day.ms)} KST: ${day.phase}${arg && arg !== 'now' ? ' (held; sky now to release)' : ''}\nSunrise ${kstClock(events.sunrise)}, sunset ${kstClock(events.sunset)}`;
 });
 registerCommand('perf', 'Show frame timing and the state of the 3D room', () => {
     const d = window.crtDiagnostics;

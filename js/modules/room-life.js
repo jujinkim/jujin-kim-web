@@ -1,8 +1,9 @@
-import { onSwarm, swarmEnergy } from './animations.js?v=20261120.13';
-import { room3d } from './room3d.js?v=20261120.13';
+import { onSwarm, swarmEnergy } from './animations.js?v=20261121.1';
+import { room3d } from './room3d.js?v=20261121.1';
+import { currentDaylight } from './daylight.js?v=20261121.1';
 
 // Ties the room's objects to real signals: the swarm's generations and energy,
-// terminal commands, section changes and the visitor's local time. Nothing here
+// terminal commands, section changes and the hour in Suwon (daylight.js). Nothing here
 // moves on its own except the curtain.
 
 const TICK_MS = 250;
@@ -19,7 +20,7 @@ let fans = [];
 let drives = [];
 let windows = [];
 let levels = REST_LEVELS.slice();
-let lamp = true;
+let lamp = false;
 
 // DOM element -> the 3D room's name for the same object.
 const FLASH_3D = new Map();
@@ -37,13 +38,6 @@ function flash(element, className, ms) {
     setTimeout(() => element.classList.remove(className), ms);
 }
 
-// How many skyline windows are lit depends on the visitor's clock.
-function litShare(hour) {
-    if (hour >= 20 || hour < 5) return 0.6;
-    if (hour >= 17 || hour < 8) return 0.38;
-    return 0.1;
-}
-
 function buildSkyline() {
     const buildings = document.querySelectorAll('.room-skyline i');
     let seed = 7;
@@ -57,7 +51,7 @@ function buildSkyline() {
             windows.push(pane);
         }
     });
-    const share = litShare(new Date().getHours());
+    const share = currentDaylight().lit;
     windows.forEach((pane) => pane.classList.toggle('is-lit', random() < share));
 }
 
@@ -65,7 +59,7 @@ function buildSkyline() {
 // drifting toward the share the current hour calls for.
 function driftSkyline() {
     if (!windows.length) return;
-    const share = litShare(new Date().getHours());
+    const share = currentDaylight().lit;
     const lit = windows.filter((pane) => pane.classList.contains('is-lit')).length / windows.length;
     const pane = windows[Math.floor(Math.random() * windows.length)];
     pane.classList.toggle('is-lit', lit < share ? true : lit > share + 0.08 ? false : !pane.classList.contains('is-lit'));
@@ -140,7 +134,7 @@ export function initRoomLife() {
     FLASH_3D.set(document.querySelector('.power-led'), 'power');
     buildSkyline();
     body().dataset.roomLive = '';
-    setLamp(true);
+    setLamp(false);
     showLevels(0);
 
     onSwarm('generation', (gen, fitness) => {

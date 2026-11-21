@@ -335,8 +335,13 @@ const lastOutput = (page) => page.evaluate(() => document.querySelector('.termin
         assert.equal(await page.evaluate(() => location.hash), '#about');
         await command(page, 'cd nowhere');
         assert.match(await lastOutput(page), /no such file/);
-        await command(page, 'lamp off');
         assert.equal(await page.evaluate(() => document.body.dataset.lamp), 'off');
+        await command(page, 'lamp on');
+        assert.equal(await page.evaluate(() => document.body.dataset.lamp), 'on');
+        await command(page, 'sky sunset');
+        assert.match(await lastOutput(page), /KST: sunset/);
+        await command(page, 'sky now');
+        assert.match(await lastOutput(page), /Sunrise \d\d:\d\d, sunset \d\d:\d\d/);
         await command(page, 'pulse');
         assert.match(await lastOutput(page), /Pulse sent/);
         await command(page, 'theme light');

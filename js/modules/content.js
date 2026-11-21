@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL, BOOK_LINKS } from '../constants.js?v=20261120.13';
+import { CONTACT_EMAIL, BOOK_LINKS } from '../constants.js?v=20261121.1';
 
 function calculateAge() {
     const birthDate = new Date(1992, 9, 20); // October 20, 1992 (month is 0-indexed)

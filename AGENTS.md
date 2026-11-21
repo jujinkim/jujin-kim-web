@@ -27,6 +27,7 @@ jujin_kim_web/
 │       ├── animations.js       # Swarm background on #starfield (drives world.js)
 │       ├── world.js, sim.js, evolution.js, renderer.js, shaders.js,
 │       │   input.js, quality.js, text-targets.js, audio.js, config.js   # Swarm internals
+│       ├── daylight.js         # Sun over Suwon: the sky's seven moods, one-minute clock
 │       ├── theme.js            # Theme switching mechanics (light/dark/system)
 │       ├── theme-export.js     # Helper functions for exporting themes
 │       ├── content.js          # Main content templates for all sections
@@ -60,7 +61,7 @@ jujin_kim_web/
   - `ESC`: Return directly to the Home section.
 - **Terminal Input (Home section only)**:
   - Command handling resides in `js/modules/terminal-input.js`.
-  - Supported commands: `help`, `clear`, `about`, `skills`, `contact`, `date`, `ls`, `cd`, `cat`, `open`, `lamp`, `pulse`, `theme`, `room`, `perf`, `reboot`, `swarm`, `gen`, `reset`, `sound`.
+  - Supported commands: `help`, `clear`, `about`, `skills`, `contact`, `date`, `ls`, `cd`, `cat`, `open`, `lamp`, `sky`, `pulse`, `theme`, `room`, `perf`, `reboot`, `swarm`, `gen`, `reset`, `sound`.
 
 ### 3. Content & Shared Values
 - **Content Rendering**: All section contents (HTML templates) are rendered dynamically via `load*Section` helpers in `js/modules/content.js`.
@@ -87,7 +88,7 @@ jujin_kim_web/
 
 - **Compact screens**: Enable curvature only at viewport sizes of at least 1000x600. Smaller viewports use flat CRT with native DOM input/scrolling and no curved-glass shading. Preserve state when crossing the breakpoint.
 
-- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261120.13` release key. Bump the key together for runtime releases.
+- **Release caching**: Keep local entrypoints, module imports (including dynamic imports), font URLs, and favicon links on the same `v=20261121.1` release key. Bump the key together for runtime releases.
 
 - **Vanilla ES6 Modules**: Stick strictly to ES6 modules and template literals. Avoid introducing frameworks, compiler steps, or external build pipelines.
 - **ASCII & Text**: Use ASCII characters unless a file already mixes in Unicode (such as emoji in content templates).
@@ -113,7 +114,7 @@ jujin_kim_web/
 
 - **Base**: the room, the monitor and the terminal are the site. The owner is an engineer first; effects exist to make that base feel alive, not to replace it.
 - **Entrance** (`js/modules/entrance.js`, `css/scene-motion.css`): once per tab. `html[data-entrance]` goes `dark` -> `boot` -> `dolly` and is then removed. The existing 600ms power-on runs first, a boot log prints real values, then `desktop-scene.js` `setCamera(0..1)` moves from the wide shot to the reading position. Any key, press or wheel skips it. It is skipped for reduced motion, web1 and repeat visits. Curvature and tilt start only after it ends; the monitor must be back at `transform: none`.
-- **Room** (`js/modules/room-life.js`): every moving object is tied to a real signal (swarm generation and energy, terminal commands, section changes, local time). Do not add decorative random motion. Only `transform` and `opacity` animate. `stillRoom()` stops it when frames run slow.
+- **Room** (`js/modules/room-life.js`): every moving object is tied to a real signal (swarm generation and energy, terminal commands, section changes, the sun over Suwon). Do not add decorative random motion. Only `transform` and `opacity` animate. `stillRoom()` stops it when frames run slow.
 - **Terminal presentation** (`js/modules/section-reveal.js`): `navigation.js` dispatches `section-changed`; the prompt line types the command and the section prints block by block (never per character: curved mode re-uploads tiles on every DOM change). The section is in the DOM immediately; any input finishes the printing.
 - **Commands**: add with `registerCommand(name, help, run)` in `terminal-input.js`; `help` is generated from the table.
 - **Check**: `ALIVE_PLAYWRIGHT=/path/to/playwright node tests/alive-smoke.cjs` (runs in flat mode, no HTML-in-Canvas needed).
@@ -134,6 +135,6 @@ jujin_kim_web/
 - **Display mode**: curvature (`screen-curvature.js`) is not started while the 3D room is on; the screen is flat DOM with the CRT overlays.
 - **Entrance**: the camera starts in the hallway, the door opens, it walks to the desk in `WALK_MS` (1s), then the monitor powers on, the boot log prints and the lights come up. The DOM screen is hidden during the walk (`html[data-entrance-walk]`) because DOM cannot be occluded by the door.
 - **Phones**: the 3D room is drawn only during the entrance and the `room` view; while reading the canvas is `display: none`.
-- **Signals**: `room-life.js` stays the single source. It drives the CSS room and mirrors every signal into `room3d` (`setLevels`, `setFan`, `flash`, `setLamp`). Sky, window light and lit windows follow the visitor's clock.
+- **Signals**: `room-life.js` stays the single source. It drives the CSS room and mirrors every signal into `room3d` (`setLevels`, `setFan`, `flash`, `setLamp`). Sky, window light and lit windows follow the real sun over Suwon, not the visitor's clock: `daylight.js` computes the sun's position and today's dawn, sunrise, noon, sunset and dusk there, blends seven moods (night, dawn, sunrise, day, afternoon, sunset, evening) between those moments and calls back once a minute. The window faces north: no direct sun, only skylight that leans in from the sun's side, so the shadows swing during the day. The room stays dim and the desk lamp starts off (`lamp on`). `sky HH:MM|<mood>|now` holds the sky at a moment for a look. Check the maths with `node --test tests/daylight.test.mjs`.
 - **Performance ladder** (`crt-effects.js` `degrade`): still the room (no ambient motion, 1x pixel ratio) -> render at 0.7x -> drop 3D for the tab (only when the last sample is under 30fps or p95 over 50ms; otherwise the ladder stops here) -> the existing display steps. Pointer tracking is never switched off while the 3D room is on; the one-slow-sample rule in `desktop-scene.js` applies only to the CSS room.
 - **Vendor**: `js/vendor/three.min.js` is a tree-shaken bundle of three r187. To change what it exports, edit `js/vendor/three.entry.js` and rebuild in a scratch folder with `npm i three@0.187.0 && npx esbuild three.entry.js --bundle --minify --format=esm --target=es2020 --outfile=three.min.js`. This is a one-off; the site still has no build step.

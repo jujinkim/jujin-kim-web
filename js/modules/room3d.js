@@ -10,9 +10,10 @@
 // World units are metres. The origin is the viewport centre on the screen
 // plane, +y is up and +z points at the viewer.
 
-import { BOOK_LINKS } from '../constants.js?v=20261120.13';
+import { BOOK_LINKS } from '../constants.js?v=20261121.1';
+import { currentDaylight, onDaylight } from './daylight.js?v=20261121.1';
 
-const VENDOR = '../vendor/three.min.js?v=20261120.13';
+const VENDOR = '../vendor/three.min.js?v=20261121.1';
 const OFF_KEY = 'room3d-off';
 const SCREEN_HEIGHT = 0.33;
 const CAMERA_DISTANCE = 1.15; // in viewport heights
@@ -111,25 +112,9 @@ function glowSprite(parent, texture, color, size, x, y, z) {
 
 // ---------- the city outside the window ----------
 
-function litShare(hour) {
-    if (hour >= 20 || hour < 5) return 0.55;
-    if (hour >= 17 || hour < 8) return 0.36;
-    return 0.08;
-}
-
-// The sky, the window light and the room's base brightness follow the
-// visitor's clock.
-function daylight(hour) {
-    if (hour >= 20 || hour < 5)
-        return { top: '#04060f', low: '#1b1d3a', tower: '#070a13', light: [0.42, 0.52, 1.0], power: 7, ambient: 1.1 };
-    if (hour >= 17 || hour < 8)
-        return { top: '#1b2148', low: '#d0683e', tower: '#120f1c', light: [1.0, 0.58, 0.34], power: 10, ambient: 1.3 };
-    return { top: '#3c6cab', low: '#b4cde4', tower: '#2a3542', light: [0.86, 0.92, 1.0], power: 14, ambient: 1.8 };
-}
-
-function buildCity() {
-    const hour = new Date().getHours();
-    const sky = daylight(hour);
+// The sky itself is not painted here (see the window in buildRoom): only the
+// towers, in the colour the hour gives them, and their lit windows.
+function buildCity(day) {
     let seed = 11;
     const random = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
     const panes = [];
@@ -146,37 +131,59 @@ function buildCity() {
             x += w + random() * 14;
         }
     }
-    const share = litShare(hour);
-    for (const pane of panes) pane.lit = random() < share;
+    for (const pane of panes) pane.lit = random() < day.lit;
 
     const canvas = document.createElement('canvas');
     canvas.width = 1024;
     canvas.height = 512;
     const ctx = canvas.getContext('2d');
+    let tower = '';
+    let glow = 1;
+    let texture = null;
     const drawPane = (pane) => {
-        ctx.fillStyle = pane.lit ? (pane.warm ? '#ffd68a' : '#a8e6ff') : sky.tower;
+        ctx.fillStyle = tower;
         ctx.fillRect(pane.x, pane.y, 6, 7);
+        if (!pane.lit) return;
+        // A lit window is plain to see at night and washed out by day.
+        ctx.globalAlpha = glow;
+        ctx.fillStyle = pane.warm ? '#ffd68a' : '#a8e6ff';
+        ctx.fillRect(pane.x, pane.y, 6, 7);
+        ctx.globalAlpha = 1;
     };
-    // No sky is painted: it stays transparent (see the window in buildRoom).
-    for (const tower of towers) {
-        ctx.fillStyle = sky.tower;
-        ctx.fillRect(tower.x, 512 - tower.h, tower.w, tower.h);
+    // Repaints the city for the hour: the colour of its towers, and how many
+    // windows are lit when the share has moved further than drift() follows.
+    function paint(day) {
+        let lit = panes.reduce((n, pane) => n + pane.lit, 0);
+        const wanted = Math.round(day.lit * panes.length);
+        let changed = Math.abs(lit - wanted) > panes.length * 0.02;
+        for (let guard = panes.length * 20; changed && lit !== wanted && guard > 0; guard--) {
+            const pane = panes[Math.floor(Math.random() * panes.length)];
+            if (pane.lit === lit > wanted) lit += (pane.lit = !pane.lit) ? 1 : -1;
+        }
+        const level = 0.3 + 0.7 * day.dark;
+        if (day.tower === tower && Math.abs(level - glow) < 0.01 && !changed) return;
+        tower = day.tower;
+        glow = level;
+        ctx.clearRect(0, 0, 1024, 512);
+        ctx.fillStyle = tower;
+        for (const block of towers) ctx.fillRect(block.x, 512 - block.h, block.w, block.h);
+        panes.forEach(drawPane);
+        if (texture) texture.needsUpdate = true;
     }
-    panes.forEach(drawPane);
-    const texture = new T.CanvasTexture(canvas);
+    paint(day);
+    texture = new T.CanvasTexture(canvas);
     texture.colorSpace = T.SRGBColorSpace;
 
     // People come home and go to bed: one pane changes now and then, drifting
     // toward the share the current hour calls for.
-    function drift() {
-        const target = litShare(new Date().getHours());
+    function drift(target) {
         const lit = panes.reduce((n, pane) => n + pane.lit, 0) / panes.length;
         const pane = panes[Math.floor(Math.random() * panes.length)];
         pane.lit = lit < target ? true : lit > target + 0.06 ? false : !pane.lit;
         drawPane(pane);
         texture.needsUpdate = true;
     }
-    return { texture, sky, drift };
+    return { texture, paint, drift };
 }
 
 // ---------- scene ----------
@@ -234,7 +241,7 @@ function buildRoom(scene) {
         span(room, frame, midX - 0.012, midX + 0.012, WY0, WY1, WZ - 0.06, WZ - 0.03),
         span(room, frame, WX0, WX1, 0.88, 0.904, WZ - 0.06, WZ - 0.03)
     ];
-    const city = buildCity();
+    const city = buildCity(currentDaylight());
     parts.city = city;
     // The sky part of the texture is transparent and written as it is (no
     // blending), which leaves a hole in this canvas: the page behind it
@@ -256,10 +263,8 @@ function buildRoom(scene) {
     parts.windowFrame.push(curtain);
     rod(room, frame, [WX0 - 0.15, 1.46, WZ + 0.07], [WX1 + 0.15, 1.46, WZ + 0.07], 0.008);
 
-    const windowLight = new T.SpotLight(0xffffff, 1, 12, 0.5, 0.5, 1.4);
-    windowLight.color.setRGB(...city.sky.light);
-    windowLight.position.set(-1.9, 2.3, -3.2);
-    windowLight.target.position.set(-0.1, -0.5, 0.7);
+    // Placed and coloured by applyDaylight.
+    const windowLight = new T.SpotLight(0xffffff, 1, 12, 0.5, 0.7, 1.4);
     windowLight.castShadow = true;
     windowLight.shadow.mapSize.set(1024, 1024);
     windowLight.shadow.camera.near = 1;
@@ -1111,6 +1116,34 @@ function tick(now) {
     if ((busy || S.ambient) && !S.raf) S.raf = requestAnimationFrame(tick);
 }
 
+// ---------- daylight ----------
+
+// The window looks north, so the sun never shines in: what comes through is
+// skylight, in the colour and strength the hour gives it. The sky is brighter
+// on the sun's side (east is +x, the window faces -z), so the light leans in
+// from there and the shadows on the desk swing across during the day.
+function applyDaylight(day) {
+    if (!S) return;
+    S.day = day;
+    const p = S.parts;
+    const light = p.windowLight;
+    const azimuth = (day.sun.azimuth * Math.PI) / 180;
+    const height = Math.max(0, Math.sin((day.sun.elevation * Math.PI) / 180));
+    const side = 0.5 * Math.sin(azimuth);
+    const rise = 0.52 + 0.28 * height;
+    const cx = (WINDOW.x0 + WINDOW.x1) / 2, cy = (WINDOW.y0 + WINDOW.y1) / 2;
+    light.position.set(cx + side * 2.35, cy + rise * 2.35, WINDOW.z - 2.35);
+    light.target.position.set(cx - side * 1.6, cy - rise * 1.6, WINDOW.z + 1.6);
+    light.color.setRGB(...day.light);
+    light.intensity = day.power;
+    S.ambientBase = day.ambient;
+    S.ambientLight.color.copy(S.skyBase).lerp(S.skyTint.setRGB(...day.light), 0.35);
+    p.city.paint(day);
+    root.style.setProperty('--room-sky', `linear-gradient(${day.top}, ${day.low} 62%)`);
+    S.renderer.shadowMap.needsUpdate = true;
+    invalidate();
+}
+
 // ---------- lifecycle ----------
 
 function build(canvas, gl) {
@@ -1125,9 +1158,6 @@ function build(canvas, gl) {
     scene.background = new T.Color(0x020306);
     const camera = new T.PerspectiveCamera();
     const parts = buildRoom(scene);
-    const sky = parts.city.sky;
-    parts.windowLight.intensity = sky.power;
-
     const ambientLight = new T.HemisphereLight(0x7f93bd, 0x2a211b, 1);
     scene.add(ambientLight);
     // The screen throws its light forward over the desk; a weak point light
@@ -1154,7 +1184,7 @@ function build(canvas, gl) {
         canvas, renderer, scene, camera, parts, monitor, materials, powerHalo, ambientLight, screenLight, screenSpill, fill,
         shell: document.getElementById('monitor-shell'),
         glass: document.getElementById('monitor-glass'),
-        ambientBase: sky.ambient, screenBase: 0.5,
+        ambientBase: 1, screenBase: 0.5, skyTint: new T.Color(), skyBase: new T.Color(0x7f93bd),
         entrance: 1, lookT: 0, lookTarget: 0, px: 0, py: 0,
         focusId: null, focusT: 0, focusTarget: 0, hover: null, pointer: null, hoverCheck: false,
         targets: [],
@@ -1165,7 +1195,7 @@ function build(canvas, gl) {
         },
         back: document.getElementById('focus-back'),
         rayA: new T.Vector3(), rayB: new T.Vector3(), rayD: new T.Vector3(),
-        power: 1, powerTarget: 1, lights: 1, lightsTarget: 1, lamp: true,
+        power: 1, powerTarget: 1, lights: 1, lightsTarget: 1, lamp: false,
         screenColor: new T.Color(0x050607), fanRate: 0.25, fx: {}, frame: 0, last: 0, raf: 0, dirty: true, still: false, ambient: false, carried: false,
         tmp: new T.Vector3(), target: new T.Vector3(), matrix: new T.Matrix4(),
         identity: new T.Quaternion(), poseQuaternion: new T.Quaternion(),
@@ -1173,6 +1203,8 @@ function build(canvas, gl) {
     };
     const signal = S.events.signal;
     readTheme();
+    applyDaylight(currentDaylight());
+    S.offDaylight = onDaylight(applyDaylight);
     layout();
 
     let resizeFrame = 0;
@@ -1185,7 +1217,7 @@ function build(canvas, gl) {
     canvas.addEventListener('webglcontextlost', () => room3d.destroy(), { signal });
     S.cityTimer = setInterval(() => {
         if (!S.ambient) return;
-        parts.city.drift();
+        parts.city.drift(S.day.lit);
         invalidate();
     }, 9000);
 
@@ -1321,7 +1353,6 @@ export const room3d = {
                 T = await import(VENDOR);
                 if (dead) return false;
                 build(canvas, gl);
-                root.style.setProperty('--room-sky', `linear-gradient(${S.parts.city.sky.top}, ${S.parts.city.sky.low} 62%)`);
                 root.dataset.room3d = 'on';
                 room3d.ready = true;
                 if (new URLSearchParams(location.search).get('debug') === '1') window.roomDebug = room3d;
@@ -1533,6 +1564,7 @@ export const room3d = {
         for (const panel of Object.values(S.panels)) panel?.removeAttribute('style');
         cancelAnimationFrame(S.raf);
         clearInterval(S.cityTimer);
+        S.offDaylight();
         S.events.abort();
         S.shell.style.removeProperty('transform');
         S.shell.style.removeProperty('transform-origin');
